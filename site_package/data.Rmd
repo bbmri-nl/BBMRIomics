@@ -1,0 +1,56 @@
+---
+title: "Available Data"
+output: 
+  html_document:
+    highlight: tango
+    toc: true
+    toc_float:
+      collapsed: false
+---
+
+## Generated Omic data ##
+
+***brief description***
+
+## Available datasets ##
+
+***brief description***
+
+## Loading the data in **R** ##
+
+Load a specific data set with `data(name_dataset)`. The **BBMRIomics**
+global variable `DATASETS` lists all available data sets. Once loaded
+check the name of the loaded data with `ls()` and view its content by
+just typing the name of the dataset in the console this will
+automatically call the buildin `show`-method and summarizes the
+content of the loaded dataset.
+
+```{r}
+library(BBMRIomics)
+DATASETS
+data(methData_Betas_CODAM_F2_cleaned)
+ls()
+betas
+```
+
+The datasets are **R/Bioconductor**
+**SummarizedExperiment**-objects. The **SummarizedExperiment** class
+is used to store rectangular matrices of experimental results; a data
+container storing feature data like gene counts or betas-values,
+annotation on the features, gene identifiers or genomic location, as
+well as annotation on the samples, i.e. phenotypes and metadata.
+
+The advantage of having all information in one object should be
+clear. Subsetting the object will automatically subset the annotation
+or sample information. 
+
+See for more information on **SummarizedExperiments**:
+1. [Vignette](http://bioconductor.org/packages/release/bioc/vignettes/SummarizedExperiment/inst/doc/SummarizedExperiment.html)
+2. [Tutorial](http://bioconductor.org/help/course-materials/2012/BiocEurope2012/SummarizedExperiment.pdf)
+3. [Paper](http://www.nature.com/nmeth/journal/v12/n2/full/nmeth.3252.html)
+
+
+
+
+
+

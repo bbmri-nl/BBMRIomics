@@ -1,0 +1,26 @@
+---
+title: "BBMRI-OmicsNL"
+date: "`r BiocStyle::doc_date()`"
+bibliography: BBMRIOmicsNL.bib
+---
+
+***need editting Marian?***
+
+The BIOS consortium has generated for around 4000 individuals, across
+six biobanks, transcriptomic and epigenomic (DNA methylation)
+data. Furthermore, basic phenotypic information has been collected for
+these individuals, as well as, detailed information on the data
+generation, i.e., sequencing machine, flow-cell, array position on the
+chip, date of hybridization, etc. Apart from the data generated and
+collected by the BIOS consortium other BBMRI consortia have generated
+data that can be linked to the BIOS data collection e.g., the GoNL
+sequencing data and the brainshake metabolomics data (RP4). 
+
+The aim of the `BBMRIOmicsNL`-package is to make integrated analyses,
+within the BIOS data collection or across BBMRI projects, as easy as
+possible, using the R-programming language[@Rsite].
+
+
+
+
+

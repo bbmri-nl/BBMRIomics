@@ -1,0 +1,5 @@
+.gitignore
+src/*.o
+src/*.so
+inst/Examples/*
+vignettes/*cache*

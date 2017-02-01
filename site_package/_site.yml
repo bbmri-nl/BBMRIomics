@@ -1,0 +1,33 @@
+name: "BBMRI-Omics"
+navbar:
+  title: "BBMRI-Omics"
+  type: inverse
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "About"
+      href: about.html	          
+    - text: "Data"
+      href: data.html	  
+    - text: "Basic Usage"
+      href: usage.html	  
+    - text: "Examples" 
+      menu:
+        - text: "DNA methylation"
+        - text: "EWAS"
+          href: EWAS.html		  
+        - text: "RNA seq"
+        - text: "TWAS"
+          href: TWAS.html  		  
+    - text: "Data quality control and preprocessing"
+      menu:
+        - text: "DNA methylation"
+        - text: "quality control"
+          href: DNAm_qc.html		  
+        - text: "preprocessing"
+          href: DNAm_preprocessing.html		  
+        - text: "RNA seq"
+        - text: "quality control"		
+          href: RNA_qc.html		  
+        - text: "preprocessing"
+          href: RNA_preprocessing.html

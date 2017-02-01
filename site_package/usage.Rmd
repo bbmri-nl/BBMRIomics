@@ -1,0 +1,16 @@
+## Exploratory data analysis ##
+
+What is the age distribution across cohorts
+
+```{r, eval=FALSE}
+
+data(methData_F2_cleaned)
+cData <- colData(methData)
+
+library(ggplot2)
+biobank_ordered <- with(cData, reorder(biobank, Age, median, na.rm=TRUE))
+gp <- ggplot(pheno, aes(biobank_ordered, Age))
+gp <- gp + geom_boxplot(aes(fill = factor(Sex)))
+gp <- gp + theme(axis.text.x = element_text(angle = 90, hjust = 0, size=7))
+gp
+```
