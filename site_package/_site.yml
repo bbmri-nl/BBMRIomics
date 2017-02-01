@@ -1,6 +1,6 @@
-name: "BBMRI-Omics"
+name: "BBMRIomics"
 navbar:
-  title: "BBMRI-Omics"
+  title: "BBMRIomics"
   type: inverse
   left:
     - text: "Home"

@@ -1,12 +1,21 @@
 **/*$~
+**/#*
+
 *.[o]
 *.[so]
 **/symbols.rds
+
 **/.Rhistory
 **/.RData
 **/*.Rout
+
 **/*.log
 **/*.pdf
 **/*.aux
 **/*.tex
+
+**/_site
+**/*_files
+**/*_cache
+
 

@@ -1,0 +1,90 @@
+---
+title: "Running an EWAS"
+output:
+  html_document:
+    highlight: tango
+    toc: true
+    toc_float:
+      collapsed: false
+---
+
+```{r, child="_setup.Rmd"}
+```
+
+**intro**
+
+several work flows:
+1. [f1000](https://f1000research.com/articles/5-1281/v1)
+2. [Leiden450K](https://git.lumc.nl/molepi/Leiden450K)
+
+
+## Collect data ##
+
+```{r}
+library(BBMRIomics)
+data(methData_Mvalues_CODAM_F2_cleaned)
+covariates <- c("Sex", "Smoking", "Sentrix_Position")
+phenotype <- "Sampling_Age"
+nas <- apply(as.data.frame(colData(mvalues))[,c(phenotype, covariates)], 1, anyNA)
+table(nas)
+mvalues <- mvalues[, !nas]
+```
+
+## Create design ##
+
+```{r}
+design <- as.data.frame(colData(mvalues))[,c(phenotype, covariates)]
+str(design)
+design$Smoking <- factor(design$Smoking)
+design$Sentrix_Position <- factor(design$Sentrix_Position)
+str(design)
+design <- model.matrix(~., design)
+str(design)
+```
+
+## Run EWAS using **[limma](http://bioconductor.org/packages/limma/)** ##
+
+```{r}
+data <- assays(mvalues)$data
+library(limma)
+fit <- lmFit(data, design)
+```
+
+## Inspect the results ##
+
+```{r}
+tstat <- fit$coef/fit$stdev.unscaled/fit$sigma
+pval <- 2 * pnorm(-abs(tstat[, 2]))
+padj <- p.adjust(sort(pval, decreasing = FALSE), method = "bonf")
+head(padj[padj < 0.05])
+```
+
+```{r}
+gp <- ggplot(data.frame(pval=pval), aes(sample=-log10(pval)))
+gp <- gp + stat_qq(distribution=stats::qexp, dparams=list(rate=1/log10(exp(1))))
+gp <- gp + xlab(expression(paste("Expected -log"[10], plain(P))))
+gp <- gp + ylab(expression(paste("Observed -log"[10], plain(P))))
+gp <- gp + geom_abline(slope=1, intercept=0)
+gp
+```
+
+```{r}
+rowRanges(mvalues)
+head(pval)
+tail(pval)
+rData <- rowRanges(mvalues)
+mcols(rData)$pval <- pval
+rData
+
+library(GenomeInfoDb)
+seqlevels(rData) <- mapSeqlevels(seqlevels(rData), "Ensembl")
+rData
+seqlevels(rData) <- gsub("X", 23, seqlevels(rData))
+seqlevels(rData) <- gsub("Y", 24, seqlevels(rData))
+data <- as.data.frame(rData)
+data$seqnames <- as.integer(data$seqnames)
+
+library(qqman)
+manhattan(data, chr="seqnames", bp="start", p="pval")
+
+```

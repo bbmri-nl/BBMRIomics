@@ -1,5 +1,14 @@
 ---
-params:
-  url: https://metadatabase.bbmrirp3-lumc.surf-hosted.nl
-  
-  
+title: "Setup"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache=TRUE)
+
+suppressPackageStartupMessages({ ##to get rid of annoying startup messages (like ours ;)!)
+    library(BBMRIomics)
+    library(ggplot2)
+    library(qqman)
+})
+
+```

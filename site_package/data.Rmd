@@ -8,6 +8,9 @@ output:
       collapsed: false
 ---
 
+```{r, child="_setup.Rmd"}
+```
+
 ## Generated Omic data ##
 
 ***brief description***

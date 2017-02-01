@@ -1,16 +1,89 @@
-## Exploratory data analysis ##
+---
+title: "Exploratory data analysis"
+output: 
+  html_document:
+    highlight: tango
+    toc: true
+    toc_float:
+      collapsed: false
+---
 
-What is the age distribution across cohorts
+```{r, child="_setup.Rmd"}
+```
 
-```{r, eval=FALSE}
+## Inspect phenotypes and metadata: `colData` ##
 
-data(methData_F2_cleaned)
-cData <- colData(methData)
+Load a dataset and inspect the **colData** using
+`colData(dataset)`. The `column`-data contains information for each
+column. This can be phenotypic information; `Sampling_Age`, `Sex` or
+`Height`, blood parameters, such white blood cell counts or
+information specific to the omic data-type, e.g. in case of the array
+DNA methylation data, `Hydridization_Data`, `Stain_Date`, etc.
 
+
+```{r}
+library(BBMRIomics)
+data(methData_Betas_CODAM_F2_cleaned)
+cData <- colData(betas)
+colnames(cData)
+head(cData)
+```
+
+Tabulation ca be used for inspection of the distribution of
+categorical variables.
+
+```{r}
+xtabs(~Sex+Smoking, data=as.data.frame(cData))
+```
+
+Use plots for example, a histogram for inspection of the `Sampling_Age`
+distribution.
+
+```{r}
 library(ggplot2)
-biobank_ordered <- with(cData, reorder(biobank, Age, median, na.rm=TRUE))
-gp <- ggplot(pheno, aes(biobank_ordered, Age))
-gp <- gp + geom_boxplot(aes(fill = factor(Sex)))
-gp <- gp + theme(axis.text.x = element_text(angle = 90, hjust = 0, size=7))
-gp
+qplot(Sampling_Age, data=as.data.frame(cData), geom="histogram")
+summary(cData$Sampling_Age)
+```
+
+Optionally stratify by `Sex`.
+
+
+```{r}
+gp <- ggplot(as.data.frame(cData), aes(x=Sampling_Age))
+gp <- gp + geom_histogram()
+gp + facet_grid(Sex~.)
+```
+
+### Missing data ###
+
+Not all phenotypic data is complete.
+
+```{r}
+per.complete[per.complete == 0] ##complete
+per.complete[per.complete == 100] ##completely missing
+per.complete[per.complete > 0 & per.complete < 100] ##partial missing
+```
+
+## Inspect feature information: `rowRanges` ##
+
+For array DNA methylation the `rowRanges` contain the probe
+information provide by the **FDb.InfiniumMethylation.hg19**
+Bioconductor annotation package. This package contains the same
+information as the Illumina Human DNA methylation 450k manifest file
+but in a convenient format, as `GRanges`-object.
+
+```{r}
+rowRanges(betas)
+```
+
+## Inspect features: `assays` ##
+
+
+```{r}
+data <- assays(betas)$data
+data[1:5, 1:5]
+```
+
+```{r}
+hist(data[1,], xlim=c(0, 1), main=paste("beta-value distribution for probe:", rownames(data)[1]))
 ```

@@ -1,7 +1,7 @@
 ---
-title: "BBMRI-OmicsNL"
+title: "BBMRIomics"
 date: "`r BiocStyle::doc_date()`"
-bibliography: BBMRIOmicsNL.bib
+bibliography: BBMRIomics.bib
 ---
 
 ***need editting Marian?***
@@ -16,7 +16,7 @@ collected by the BIOS consortium other BBMRI consortia have generated
 data that can be linked to the BIOS data collection e.g., the GoNL
 sequencing data and the brainshake metabolomics data (RP4). 
 
-The aim of the `BBMRIOmicsNL`-package is to make integrated analyses,
+The aim of the `BBMRIomics`-package is to make integrated analyses,
 within the BIOS data collection or across BBMRI projects, as easy as
 possible, using the R-programming language[@Rsite].
 

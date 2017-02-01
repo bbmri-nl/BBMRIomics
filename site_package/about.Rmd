@@ -1,18 +1,16 @@
 ---
 title: "About"
-params:
-  url: https://metadatabase.bbmrirp3-lumc.surf-hosted.nl
 ---
-
-```{r, child="_sessioninfo.Rmd", include=FALSE}
-```
-
-```{r}
-params$url
-```
 
 This web-site is generated using
 [**rmarkdown**](http://rmarkdown.rstudio.com/index.html).
+on `r format(Sys.time(), '%d %B, %Y')`.
+
+**and some more details**
+
+Questions, typo's, bugs please contact: m.van_iterson@lumc.nl
+
+## Session information: ##
 
 ```{r, child="_sessioninfo.Rmd"}
 ```
