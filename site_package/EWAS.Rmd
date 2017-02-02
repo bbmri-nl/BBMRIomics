@@ -42,7 +42,7 @@ design <- model.matrix(~., design)
 str(design)
 ```
 
-## Run EWAS using **[limma](http://bioconductor.org/packages/limma/)** ##
+## Run EWAS ##
 
 ```{r}
 data <- assays(mvalues)$data
@@ -50,7 +50,7 @@ library(limma)
 fit <- lmFit(data, design)
 ```
 
-## Inspect the results ##
+## Inspect results ##
 
 ```{r}
 tstat <- fit$coef/fit$stdev.unscaled/fit$sigma

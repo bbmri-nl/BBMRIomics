@@ -6,6 +6,7 @@ output:
     toc: true
     toc_float:
       collapsed: false
+bibliography: BBMRIomics.bib
 ---
 
 ```{r, child="_setup.Rmd"}

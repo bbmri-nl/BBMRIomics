@@ -11,7 +11,9 @@ output:
 ```{r, child="_setup.Rmd"}
 ```
 
-## Inspect phenotypes and metadata: `colData` ##
+## Inspect data ##
+
+### metadata ###
 
 Load a dataset and inspect the **colData** using
 `colData(dataset)`. The `column`-data contains information for each
@@ -54,17 +56,7 @@ gp <- gp + geom_histogram()
 gp + facet_grid(Sex~.)
 ```
 
-### Missing data ###
-
-Not all phenotypic data is complete.
-
-```{r}
-per.complete[per.complete == 0] ##complete
-per.complete[per.complete == 100] ##completely missing
-per.complete[per.complete > 0 & per.complete < 100] ##partial missing
-```
-
-## Inspect feature information: `rowRanges` ##
+### feature annotation ###
 
 For array DNA methylation the `rowRanges` contain the probe
 information provide by the **FDb.InfiniumMethylation.hg19**
@@ -76,8 +68,7 @@ but in a convenient format, as `GRanges`-object.
 rowRanges(betas)
 ```
 
-## Inspect features: `assays` ##
-
+### features ###
 
 ```{r}
 data <- assays(betas)$data
@@ -87,3 +78,8 @@ data[1:5, 1:5]
 ```{r}
 hist(data[1,], xlim=c(0, 1), main=paste("beta-value distribution for probe:", rownames(data)[1]))
 ```
+
+## Exploratory plots ##
+
+
+

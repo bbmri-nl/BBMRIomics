@@ -1,10 +1,9 @@
 ---
 title: "BBMRIomics"
-date: "`r BiocStyle::doc_date()`"
 bibliography: BBMRIomics.bib
 ---
 
-***need editting Marian?***
+***need editting***
 
 The BIOS consortium has generated for around 4000 individuals, across
 six biobanks, transcriptomic and epigenomic (DNA methylation)

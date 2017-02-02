@@ -23,7 +23,7 @@ navbar:
       menu:
         - text: "DNA methylation"
         - text: "quality control"
-          href: DNAm_qc.html		  
+          href: DNAm_qc.html       
         - text: "preprocessing"
           href: DNAm_preprocessing.html		  
         - text: "RNA seq"
@@ -31,3 +31,17 @@ navbar:
           href: RNA_qc.html		  
         - text: "preprocessing"
           href: RNA_preprocessing.html
+    - text: "Apps"
+      menu:
+        - text: "DNam qc CODAM"
+          href: http://bios-vm.bbmrirp3-lumc.surf-hosted.nl:8008/BIOSRutils/DNAm/CODAM
+        - text: "DNam qc LL"
+          href: http://bios-vm.bbmrirp3-lumc.surf-hosted.nl:8008/BIOSRutils/DNAm/LL
+        - text: "DNam qc LLS"            
+          href: http://bios-vm.bbmrirp3-lumc.surf-hosted.nl:8008/BIOSRutils/DNAm/LLS
+        - text: "DNam qc NTR"            
+          href: http://bios-vm.bbmrirp3-lumc.surf-hosted.nl:8008/BIOSRutils/DNAm/NTR
+        - text: "DNam qc RS"            
+          href: http://bios-vm.bbmrirp3-lumc.surf-hosted.nl:8008/BIOSRutils/DNAm/RS
+        - text: "DNam qc PAN"            
+          href: http://bios-vm.bbmrirp3-lumc.surf-hosted.nl:8008/BIOSRutils/DNAm/PAN          

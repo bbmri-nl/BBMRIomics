@@ -19,7 +19,7 @@ output:
 
 ***brief description***
 
-## Loading the data in **R** ##
+## Loading the data ##
 
 Load a specific data set with `data(name_dataset)`. The **BBMRIomics**
 global variable `DATASETS` lists all available data sets. Once loaded

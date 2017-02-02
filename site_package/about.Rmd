@@ -2,15 +2,9 @@
 title: "About"
 ---
 
-This web-site is generated using
-[**rmarkdown**](http://rmarkdown.rstudio.com/index.html).
-on `r format(Sys.time(), '%d %B, %Y')`.
-
-**and some more details**
+**maybe some text**
 
 Questions, typo's, bugs please contact: m.van_iterson@lumc.nl
-
-## Session information: ##
 
 ```{r, child="_sessioninfo.Rmd"}
 ```
