@@ -8,7 +8,7 @@
                           "###################################################################################\n")
 
     ##couchDB url
-    couchHost <- "metadatabase.bbmrirp3-lumc.vm.surfsara.nl"
+    couchHost <- "metadatabase.bbmrirp3-lumc.surf-hosted.nl"
     ##srm url
     srmUrl <- "fly1.grid.sara.nl:2882/pnfs/grid.sara.nl/data/"
     
