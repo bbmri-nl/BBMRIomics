@@ -23,8 +23,8 @@
     ##directories SRM
     assign("SRMBASE", paste0("https://", srmUrl, "bbmri.nl/"), envir=globalenv())    
     
-    assign("MDB", paste0("https:", couchHost, ":6984/bios/"), envir=globalenv())
-    assign("RDB", paste0("https:", couchHost, ":6984/rp3_analysis/"), envir=globalenv())
+    assign("MDB", paste0("https://", couchHost, ":6984/bios/"), envir=globalenv())
+    assign("RDB", paste0("https://", couchHost, ":6984/rp3_analysis/"), envir=globalenv())
 
     ##views/designs
     views <- list("freeze1RNASeq","freeze1Methylation", "freeze2RNASeq","freeze2Methylation",
