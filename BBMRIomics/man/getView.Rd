@@ -4,16 +4,16 @@
 \alias{getView}
 \title{get view from metadatabase}
 \usage{
-getView(view, url = MDB, usrpwd = USRPWDRP3, selection = "?reduce=false",
+getView(view, url, usrpwd = "anonymous", selection = "?reduce=false",
   force.keys = FALSE, row.names = FALSE, verbose = TRUE)
 }
 \arguments{
 \item{view}{name of the view}
 
-\item{url}{unique resource location of the metadatabase default MDB}
+\item{url}{unique resource location of the metadatabase}
 
 \item{usrpwd}{username and passwrd concatenated by colon 'usr:pwd'
-defaults to USRPWDRP3 if not available the 'anonymous' account will
+defaults to 'anonymous' account will
 be used using stored output of the metadatabase}
 
 \item{selection}{some view have a reduce option}

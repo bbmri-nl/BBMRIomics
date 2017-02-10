@@ -3,9 +3,9 @@
 ##' TODO handle reduce options properly
 ##' @title get view from metadatabase
 ##' @param view name of the view
-##' @param url unique resource location of the metadatabase default MDB
+##' @param url unique resource location of the metadatabase
 ##' @param usrpwd username and passwrd concatenated by colon 'usr:pwd'
-##' defaults to USRPWDRP3 if not available the 'anonymous' account will
+##' defaults to 'anonymous' account will
 ##' be used using stored output of the metadatabase
 ##' @param selection some view have a reduce option
 ##' @param force.keys FALSE
@@ -44,7 +44,7 @@
 ##' g <- g + facet_grid(sex ~ biobank_id)
 ##' g
 ##' }
-getView <- function(view, url = MDB, usrpwd=USRPWDRP3, selection="?reduce=false", force.keys=FALSE, row.names=FALSE, verbose = TRUE){
+getView <- function(view, url, usrpwd="anonymous", selection="?reduce=false", force.keys=FALSE, row.names=FALSE, verbose = TRUE){
 
 
     ##can we replace all this by couchDB list function transforming JSON directly to csv e.g.
@@ -94,7 +94,7 @@ getView <- function(view, url = MDB, usrpwd=USRPWDRP3, selection="?reduce=false"
     }
     else {
         message("No username and password provided for the MDB use stored views!")
-        response <- file.path(path.package("BIOSRutils"), "views", paste0(design, "_", view, ".json"))
+        response <- file.path(path.package("BBMRIomics"), "views", paste0(design, "_", view, ".json"))
     }
 
     view <- fromJSON(response)
@@ -120,7 +120,7 @@ getView <- function(view, url = MDB, usrpwd=USRPWDRP3, selection="?reduce=false"
     return(values)
 }
 
-.getDoc <- function(id, url = MDB, usrpwd=USRPWDRP3, verbose=TRUE) {
+.getDoc <- function(id, url, usrpwd, verbose=TRUE) {
     request <- paste0("curl -X GET ", url, id, " -u ", usrpwd, " -k -g")
 
     if(verbose)
@@ -136,7 +136,7 @@ getView <- function(view, url = MDB, usrpwd=USRPWDRP3, selection="?reduce=false"
     fromJSON(response)
 }
 
-.putDoc <- function(doc,  url = MDB, usrpwd=USRPWDRP3, verbose=TRUE, ...) {
+.putDoc <- function(doc,  url, usrpwd, verbose=TRUE, ...) {
 
     json <- toJSON(doc, digits = 12, auto_unbox = TRUE) ##set number of digits large than default of 6
     json <- gsub("\\{\\}", "null", json) ## empty list set to "null"
@@ -173,7 +173,7 @@ getView <- function(view, url = MDB, usrpwd=USRPWDRP3, selection="?reduce=false"
 .validateDoc <- function(json, SCHEMA) {
 
     if(class(json) == "list") {
-        json <- toJSON(doc, digits = 12, auto_unbox = TRUE, pretty=TRUE) ##set number of digits large than default of 6
+        json <- toJSON(json, digits = 12, auto_unbox = TRUE, pretty=TRUE) ##set number of digits large than default of 6
         json <- gsub("\\{\\}", "null", json) ## empty list set to "null"
     }
 

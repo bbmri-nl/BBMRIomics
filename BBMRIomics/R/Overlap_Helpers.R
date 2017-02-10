@@ -19,7 +19,7 @@ makeSE <- function(assaysData, colData, rowData, note=NULL){
 
     exptData <- SimpleList(creationDate = date(),
                            author = "M. van Iterson",
-                           BIOSRutilsVersion = as.character(packageVersion("BIOSRutils")),
+                           BBMRIomicsVersion = as.character(packageVersion("BBMRIomics")),
                            note = note)
 
     ##match rowData with assaysData

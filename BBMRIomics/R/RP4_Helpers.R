@@ -3,14 +3,14 @@
 ##' connect to a molgenis database using the R-API
 ##' @title connect to a molgenis database using the R-API
 ##' @param usrpwd username:password default reading from .biosrutils
-##' @param src source url molgenis database
+##' @param url src source url molgenis database
 ##' @return setup molgenis connection
 ##' @author mvaniterson
 ##' @importFrom RCurl getURL
 ##' @export
-molgenis.connect <- function(usrpwd=USRPWDRP4, src="https://145.100.59.175/molgenis.R"){
+molgenis.connect <- function(usrpwd, url){
     options(RCurlOptions = list(ssl.verifypeer=FALSE, ssl.verifyhost=FALSE))
-    eval(expr = parse(text = getURL(src)), envir=globalenv())
+    eval(expr = parse(text = getURL(url)), envir=globalenv())
     usrpwd <- unlist(strsplit(gsub("'", "", usrpwd), ":"))
     molgenis.login(usrpwd[1], usrpwd[2])
     message("\nRun 'ls()' to see the available functions to interact with the molgenis database!")

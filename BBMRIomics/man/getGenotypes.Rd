@@ -15,6 +15,8 @@ getGenotypes(imputation_id, biobank = c("ALL", "CODAM", "LL", "LLS", "NTR",
 \item{snps}{GRanges with snps}
 
 \item{type}{imputation type either "GoNL", "HRC" or "GoNLv5"}
+
+\item{...}{optional BPPARAM arguments}
 }
 \value{
 matrix with genotypes
