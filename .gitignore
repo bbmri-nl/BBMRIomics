@@ -19,3 +19,4 @@
 **/*_cache
 
 *.tar.gz
+.Rproj.user

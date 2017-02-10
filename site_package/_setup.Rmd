@@ -3,7 +3,7 @@ title: "Setup"
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(cache=TRUE)
+knitr::opts_chunk$set(cache=TRUE, eval=FALSE)
 
 suppressPackageStartupMessages({ ##to get rid of annoying startup messages (like ours ;)!)
     library(BBMRIomics)
@@ -12,10 +12,11 @@ suppressPackageStartupMessages({ ##to get rid of annoying startup messages (like
     library(qqman)
     
     library(MethylAid)
-    library(Leiden450K)
+    library(DNAmArray)
 
     library(BiocParallel)
     library(shiny)
 })
 
 ```
+
