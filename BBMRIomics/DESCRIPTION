@@ -9,6 +9,7 @@ Description:
     R helper functions for BBMRI omics, DNA methylation, RNA
     sequencing metabolomics and (imputed) genotypes, analysis.
 License: GPL (>= 2)
+LazyData: False
 Depends:
     R (>= 3.3),
     SummarizedExperiment

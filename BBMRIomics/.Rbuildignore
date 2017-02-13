@@ -3,3 +3,5 @@ src/*.o
 src/*.so
 inst/Examples/*
 vignettes/*cache*
+^.*\.Rproj$
+^\.Rproj\.user$

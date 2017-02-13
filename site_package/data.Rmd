@@ -30,7 +30,7 @@ content of the loaded dataset.
 
 ```{r}
 library(BBMRIomics)
-DATASETS
+data(package="BBMRIomics")
 data(methData_Betas_CODAM_F2_cleaned)
 ls()
 betas
