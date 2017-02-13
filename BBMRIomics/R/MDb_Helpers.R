@@ -1,5 +1,27 @@
 ##' get view from metadatabase
 ##'
+##' extract information from the metadatabase using predefined views
+##' and a list function to convert json to csv.xx
+##' @title get view from metadatabase
+##' @param viewname name of the view
+##' @param url unique resource location of the metadatabase
+##' @param converter default json2csv
+##' @return metadatabase view converted to a data.frame
+##' @author mvaniterson
+##' @importFrom RCurl getURL
+view <- function(viewname, url="http://127.0.0.1:5984/mdb_test/", converter="json2csv") {
+    url <- file.path(url, "_design/couchdbapp/_list", converter, viewname)
+    response <- getURL(paste0(url, "?reduce=false"))
+
+    #if no connection is possible return stored views
+    
+    tConn <- textConnection(response)
+    on.exit(close(tConn))    
+    invisible(read.table(tConn, sep=",", header=TRUE, na.string="null", as.is=TRUE))    
+}
+
+##' get view from metadatabase
+##'
 ##' TODO handle reduce options properly
 ##' @title get view from metadatabase
 ##' @param view name of the view
@@ -45,11 +67,6 @@
 ##' g
 ##' }
 getView <- function(view, url, usrpwd="anonymous", selection="?reduce=false", force.keys=FALSE, row.names=FALSE, verbose = TRUE){
-
-
-    ##can we replace all this by couchDB list function transforming JSON directly to csv e.g.
-    ##https://developer.ibm.com/clouddataservices/2015/09/22/export-cloudant-json-as-csv-rss-or-ical/
-
     
     ##views/designs
     views <- list()
