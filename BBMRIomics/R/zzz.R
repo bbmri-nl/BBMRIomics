@@ -6,8 +6,7 @@
                           "##  Documentation : http://wiki.bbmri.nl/wiki/BIOS_start-                        ##\n",
                           "##  Questions     : m.van_iterson@lumc.nl or h.mei@lumc.nl                       ##\n",
                           "###################################################################################\n")
-
-    
+  
         
     ##assign urls and directories
     assign("VM_BASE", "/virdir/Scratch/RP3_data", envir=as.environment(paste0("package:", pkgname)))    

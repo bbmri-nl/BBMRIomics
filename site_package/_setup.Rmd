@@ -7,16 +7,23 @@ knitr::opts_chunk$set(cache=TRUE, eval=FALSE)
 
 suppressPackageStartupMessages({ ##to get rid of annoying startup messages (like ours ;)!)
     library(BBMRIomics)
-    
-    library(ggplot2)    
+
+    library(ggplot2)
     library(qqman)
-    
+
     library(MethylAid)
     library(DNAmArray)
 
     library(BiocParallel)
     library(shiny)
+
+    library(AnnotationHub)
+    library(rtracklayer)
+    library(GenomeInfoDb)
+    require(BSgenome.Hsapiens.UCSC.hg19)
+    require(Rsamtools)
+    require(Biostrings)
+
 })
 
 ```
-

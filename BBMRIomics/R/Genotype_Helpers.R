@@ -154,9 +154,9 @@ getGenotypes <- function(imputation_id, biobank=c("ALL", "CODAM", "LL", "LLS", "
 
     if(type == "HRC") {
         if(biobank == "ALL")
-            vcfs <- dir(file.path(VM_BASE, "HRC_Imputation"), pattern="dose.vcf.gz$", full.names=TRUE, recursive=TRUE)
+            vcfs <- dir(file.path(VM_BASE, "HRC_Imputation"), pattern="filtered.dose.vcf.gz$", full.names=TRUE, recursive=TRUE)
         else
-            vcfs <- dir(file.path(VM_BASE, "HRC_Imputation", biobank), pattern="dose.vcf.gz$", full.names=TRUE, recursive=TRUE)
+            vcfs <- dir(file.path(VM_BASE, "HRC_Imputation", biobank), pattern="filtered.dose.vcf.gz$", full.names=TRUE, recursive=TRUE)
         ##for(fl in vcfs) indexTabix(fl, format="vcf") ##if vcf are not indexed!
         ##TODO Bioconductor devel (bioc-3.4/R-3.3.0) contains `GenomicFiles` with vcfstack a nicer solution?
         genotypes <- bplapply(snps, .getHRC, files=vcfs, imputation_id = as.character(imputation_id), ...)
