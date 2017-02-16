@@ -33,7 +33,7 @@ read dosages files impute2-transformed
 }
 \examples{
 \dontrun{
-gzipped <- dir(file.path(VM_BASE, "GWAS_ImputationGoNLv5/dosages", RP3_BIOBANKS[1]),
+gzipped <- dir(file.path(VM_BASE_DATA, "GWAS_ImputationGoNLv5/dosages", RP3_BIOBANKS[1]),
 pattern= "gz$", full.names=TRUE)
 chunk <- read.dosages(gzipped[1], yieldSize=5000)
 chunk[1:5, 1:10]

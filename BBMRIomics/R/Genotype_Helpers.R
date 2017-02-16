@@ -31,7 +31,7 @@
 ##' @export
 ##' @examples
 ##' \dontrun{
-##' gzipped <- dir(file.path(VM_BASE, "GWAS_ImputationGoNLv5/dosages", RP3_BIOBANKS[1]),
+##' gzipped <- dir(file.path(VM_BASE_DATA, "GWAS_ImputationGoNLv5/dosages", RP3_BIOBANKS[1]),
 ##' pattern= "gz$", full.names=TRUE)
 ##' chunk <- read.dosages(gzipped[1], yieldSize=5000)
 ##' chunk[1:5, 1:10]
@@ -154,14 +154,14 @@ getGenotypes <- function(imputation_id, biobank=c("ALL", "CODAM", "LL", "LLS", "
 
     if(type == "HRC") {
         if(biobank == "ALL")
-            vcfs <- dir(file.path(VM_BASE, "HRC_Imputation"), pattern="filtered.dose.vcf.gz$", full.names=TRUE, recursive=TRUE)
+            vcfs <- dir(file.path(VM_BASE_DATA, "HRC_Imputation"), pattern="filtered.dose.vcf.gz$", full.names=TRUE, recursive=TRUE)
         else
-            vcfs <- dir(file.path(VM_BASE, "HRC_Imputation", biobank), pattern="filtered.dose.vcf.gz$", full.names=TRUE, recursive=TRUE)
+            vcfs <- dir(file.path(VM_BASE_DATA, "HRC_Imputation", biobank), pattern="filtered.dose.vcf.gz$", full.names=TRUE, recursive=TRUE)
         ##for(fl in vcfs) indexTabix(fl, format="vcf") ##if vcf are not indexed!
         ##TODO Bioconductor devel (bioc-3.4/R-3.3.0) contains `GenomicFiles` with vcfstack a nicer solution?
         genotypes <- bplapply(snps, .getHRC, files=vcfs, imputation_id = as.character(imputation_id), ...)
     } else if(type == "GoNL") {
-        vcfs <- dir(file.path(VM_BASE, "gonl-snv-release-5.4"), pattern=".vcf.gz$", full.names=TRUE, recursive=TRUE)
+        vcfs <- dir(file.path(VM_BASE_DATA, "gonl-snv-release-5.4"), pattern=".vcf.gz$", full.names=TRUE, recursive=TRUE)
         genotypes <- bplapply(snps, .getGONL, files=vcfs, imputation_id = as.character(imputation_id))
     }
     else if(type == "GoNLv5")

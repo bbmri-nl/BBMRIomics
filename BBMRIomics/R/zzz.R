@@ -1,20 +1,20 @@
 .onAttach <- function(libname, pkgname) {
 
-    packageStartupMessage("####################################################################################################\n",
-                          "##                                                                                                ##\n",                        
-                          "## FACILITATING BBMRIOMICS DOWNSTREAM ANALYSES USING R                                            ##\n",
-                          "##                                                                                                ##\n",
-                          "##  DOCUMENTATION :                                                                               ##\n",
-                          "##                  VIGNETTES : http://bios-vm.bbmrirp3-lumc.surf-hosted.nl/BBMRIomics/index.html ##\n",                          
-                          "##                  WIKI      : http://wiki.bbmri.nl/wiki/BIOS_start-                             ##\n",
-                          "##                                                                                                ##\n",
-                          "##  QUESTIONS     :                                                                               ##\n",
-                          "##                  FORUM : https://www.biostars.org/t/bbmri-nl-bios/                             ##\n",
-                          "##                  EMAIL : m.van_iterson@lumc.nl or h.mei@lumc.nl                                ##\n",
-                          "##                                                                                                ##\n",
-                          "## ", pkgname, " (", packageVersion(pkgname), ")                             ##\n",
-                          "####################################################################################################\n")
-        
+    packageStartupMessage("##########################################################################################\n",
+                          "##                                                                                      ##\n",                        
+                          "## FACILITATING BBMRIOMICS DOWNSTREAM ANALYSES USING R                                  ##\n",
+                          "##                                                                                      ##\n",
+                          "##  DOCUMENTATION :                                                                     ##\n",
+                          "##                  VIGNETTES : http://bios-vm.bbmrirp3-lumc.surf-hosted.nl/BBMRIomics/ ##\n",                          
+                          "##                  WIKI      : http://wiki.bbmri.nl/wiki/BIOS_start-                   ##\n",
+                          "##                                                                                      ##\n",
+                          "##  QUESTIONS     :                                                                     ##\n",
+                          "##                  FORUM : https://www.biostars.org/t/bbmri-nl-bios/                   ##\n",
+                          "##                  EMAIL : m.van_iterson@lumc.nl or h.mei@lumc.nl                      ##\n",
+                          "##                                                                                      ##\n",
+                          "## ", pkgname, " (", packageVersion(pkgname), ")                                                                  ##\n",
+                          "##########################################################################################\n")
+
     ##assign urls and directories
     assign("VM_BASE_DATA", "/virdir/Scratch/RP3_data", envir=as.environment(paste0("package:", pkgname)))
     assign("VM_BASE_ANALYSIS", "/virdir/Scratch/RP3_analysis", envir=as.environment(paste0("package:", pkgname)))    

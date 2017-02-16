@@ -34,6 +34,7 @@ view <- function(viewname, url="http://127.0.0.1:5984/mdb_test/", converter="jso
 ##' @param row.names use ids as row names in the returned data.frame
 ##' @param verbose default TRUE prints some additional output
 ##' @importFrom jsonlite fromJSON toJSON
+##' @importFrom utils read.table
 ##' @export
 ##' @return data.frame containing the view
 ##' @author mvaniterson
