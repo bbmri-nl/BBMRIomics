@@ -34,7 +34,7 @@ application; `summarize` and `visualize`. For more information see
 ### Creating targets-files ###
 
 ```{r, eval=FALSE}
-path450k <- file.path(VM_BASE, "IlluminaHumanMethylation450k")
+path450k <- file.path(VM_BASE_DATA, "IlluminaHumanMethylation450k")
 samplesheets <- getView("methylationSamplesheet")
 samplesheets <- samplesheets[!duplicated(samplesheets$run_id),]
 samplesheets <- samplesheets[order(samplesheets$ids),]

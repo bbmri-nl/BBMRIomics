@@ -3,9 +3,11 @@
 # Genotyping
 # 
 # 2017-26-01, M. van Iterson <m.van_iterson@lumc.nl>
-RSCRIPT=/usr/local/R/R-3.2.0/bin/Rscript
+RSCRIPT=Rscript
 COHORTS=(PAN LL LLS RS CODAM NTR)
 TYPES=(DNAm RNA HRC GoNL)
+
+echo $RSCRIPT --version
 
 #inter
 for cohort in ${COHORTS}

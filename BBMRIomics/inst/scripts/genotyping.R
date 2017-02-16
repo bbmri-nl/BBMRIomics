@@ -37,9 +37,7 @@ if (is.null(opt$typey)) {
 opt$cohort <- match.arg(opt$cohort, choices=c("ALL", "CODAM", "LL", "LLS", "NTR", "PAN", "RS"))
 
 suppressPackageStartupMessages({
-    require(BIOSRutils)
-    ##MDB <- "https://metadatabase.bbmrirp3-lumc.surf-hosted.nl:6984/bios"
-    USRPWDRP3 <- "anonymous"
+    require(BBBMRIomics)
 })
 
 ##some helper functions
@@ -47,9 +45,9 @@ suppressPackageStartupMessages({
 DNAmCalls <- function(cohort, DNAmFile, verbose=FALSE, maxbatch=500){
 
     suppressPackageStartupMessages({
-        require(BIOSRutils)
+        require(BBMRIomics)
         require(minfi)
-        require(Leiden450K)
+        require(DNAmArray)
         require(BiocParallel)
         require(FDb.InfiniumMethylation.hg19)
     })
@@ -57,7 +55,7 @@ DNAmCalls <- function(cohort, DNAmFile, verbose=FALSE, maxbatch=500){
     samplesheets <- getView("methylationSamplesheet", verbose=verbose)
 
     ##get location idat-files on VM
-    path450k <- file.path(RP3DATADIR, "IlluminaHumanMethylation450k")
+    path450k <- file.path(VM_BASE_DATA, "IlluminaHumanMethylation450k")
     samplesheets$biobank_id <- gsub("-.*$", "", samplesheets$ids)
     samplesheets$Basename <- with(samplesheets, file.path(path450k, "raw", Sentrix_Barcode,
                                                           paste(Sentrix_Barcode, Sentrix_Position, sep = "_")))
@@ -82,13 +80,13 @@ DNAmCalls <- function(cohort, DNAmFile, verbose=FALSE, maxbatch=500){
     register(MulticoreParam(6))
     if(nrow(targets) > maxbatch) {
         betas <- lapply(split(targets, 1+(1:nrow(targets))%/%maxbatch), function(targetsbatch) {
-            RGset <- read.450k.exp.par(targetsbatch, verbose=verbose)
+            RGset <- read.metharray.exp.par(targetsbatch, verbose=verbose)
             beta <- getBeta(RGset)
             betas <- rbind(beta[rownames(beta) %in% cpgs, ], getSnpBeta(RGset))
         })
         betas <- do.call('cbind', betas)
     } else {
-        RGset <- read.450k.exp.par(targets, verbose=verbose)
+        RGset <- read.metharray.exp.par(targets, verbose=verbose)
         betas <- getBeta(RGset)
         betas <- rbind(betas[rownames(betas) %in% cpgs,], getSnpBeta(RGset))
     }
@@ -116,7 +114,7 @@ RNACalls <- function(vcfFile){
 DNACalls <- function(cohort, snps=NULL, DNAFile, type, verbose){
 
     suppressPackageStartupMessages({
-        require(BIOSRutils)
+        require(BBMRIomics)
         require(BiocParallel)
     })
 
@@ -259,9 +257,9 @@ getRelations <- function(type, verbose){
 genotyping <- function(typex, typey, cohort, out, verbose) {
 
     suppressPackageStartupMessages({
-        require(BIOSRutils)
-        require(GenomicRanges)
-        source("/virdir/Backup/RP3_analysis/biosrutils/R/Genotyping.R", verbose=FALSE)
+        require(BBMRIomics)
+        require(GenomicRanges)        
+        source(file.path(path.package("BBMRIomics"), "scripts/Genotyping_Helpers.R"), verbose=FALSE)        
     })
 
     message("Start genotyping...")
@@ -281,9 +279,9 @@ genotyping <- function(typex, typey, cohort, out, verbose) {
     message("Extracting the data...")
 
     ##hard-coded
-    RNAFile <- "/virdir/Scratch/RP3_analysis/rnasnp/combined.vcf.gz"
-    DNAmFile <- "/virdir/Scratch/RP3_analysis/rnasnp/DNAm_snps.RData"
-    DNAFile <- "/virdir/Scratch/RP3_analysis/rnasnp/SNP_positions.bed"
+    RNAFile <- file.path(VM_BASE_ANALYSIS, "combined.vcf.gz")
+    DNAmFile <- file.path(VM_BASE_ANALYSIS, "DNAm_snps.RData")
+    DNAFile <- file.path(VM_BASE_ANALYSIS, "SNP_positions.bed")
 
     if(any(typey %in% c("DNAm", "RNA")) & any(typex %in% c("HRC", "GoNL"))) {
         tmp <- typey
@@ -397,6 +395,7 @@ genotyping <- function(typex, typey, cohort, out, verbose) {
     }
 
 }
+
 
 typex <- "DNAm"
 typey <- "HRC"

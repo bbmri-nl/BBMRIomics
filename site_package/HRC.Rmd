@@ -19,9 +19,9 @@ bibliography: BBMRIomics.bib
 
 ```{r, vcffiles}
 library(BBMRIomics)
-dir(VM_BASE)
-dir(VM_BASE, "HRC_Imputation")
-vcfs <- dir(file.path(VM_BASE, "HRC_Imputation",
+dir(VM_BASE_DATA)
+dir(VM_BASE_DATA, "HRC_Imputation")
+vcfs <- dir(file.path(VM_BASE_DATA, "HRC_Imputation",
                       "CODAM"), pattern = "filtered.dose.vcf.gz$", full.names = TRUE,
             recursive = TRUE)
 vcfs
