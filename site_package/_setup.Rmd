@@ -3,26 +3,27 @@ title: "Setup"
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(cache=TRUE, eval=FALSE)
+knitr::opts_chunk$set(cache=TRUE, eval=TRUE)
 
 suppressPackageStartupMessages({ ##to get rid of annoying startup messages (like ours ;)!)
     library(BBMRIomics)
 
     library(ggplot2)
     library(qqman)
-
     library(MethylAid)
     library(DNAmArray)
-
     library(BiocParallel)
     library(shiny)
-
     library(AnnotationHub)
     library(rtracklayer)
     library(GenomeInfoDb)
-    require(BSgenome.Hsapiens.UCSC.hg19)
-    require(Rsamtools)
-    require(Biostrings)
+    library(BSgenome.Hsapiens.UCSC.hg19)
+    library(Rsamtools)
+    library(Biostrings)
+    library(edgeR)
+    library(limma)
+    library(irlba)
+    library(qqman)
 
 })
 

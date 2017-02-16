@@ -25,3 +25,4 @@ wrapper around molgenis.get
 \author{
 mvaniterson
 }
+

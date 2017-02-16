@@ -5,8 +5,7 @@ Version: 0.0.2
 Date: 2017-02-01
 Author: Maarten van Iterson
 Maintainer: M. van Iterson <m.van_iterson@lumc.nl>
-Description:
-    R helper functions for BBMRI omics, DNA methylation, RNA
+Description: R helper functions for BBMRI omics, DNA methylation, RNA
     sequencing metabolomics and (imputed) genotypes, analysis.
 License: GPL (>= 2)
 LazyData: False
@@ -29,4 +28,4 @@ Collate:
     'Overlap_Helpers.R'
     'RP4_Helpers.R'
     'utils.R'
-RoxygenNote: 6.0.1
+RoxygenNote: 5.0.1

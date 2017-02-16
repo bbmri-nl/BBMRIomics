@@ -1,0 +1,107 @@
+---
+title: "Running a TWAS"
+output:
+  html_document:
+    highlight: tango
+    toc: true
+    toc_float:
+      collapsed: false
+---
+
+```{r, child="_setup.Rmd"}
+```
+
+**intro**
+
+
+## Collect data ##
+
+```{r, selectdata}
+library(BBMRIomics)
+data(rnaSeqData_ReadCounts_cleaned)
+covariates <- c("Sex", "Smoking", "biobank_id")
+phenotype <- "Sampling_Age"
+nas <- apply(as.data.frame(colData(counts))[,c(phenotype, covariates)], 1, anyNA)
+table(nas)
+counts <- counts[, !nas]
+```
+
+## Create design ##
+
+```{r, coldata2design}
+design <- as.data.frame(colData(counts))[,c(phenotype, covariates)]
+str(design)
+design$Smoking <- factor(design$Smoking)
+str(design)
+design <- model.matrix(~., design)
+str(design)
+```
+
+## Run TWAS ##
+
+```{r, twasprepro}
+data <- assays(counts)$data
+library(edgeR)
+y <- DGEList(data)
+sds <- apply(y, 1, sd)
+quantile(sds, probs=0.1)
+y <- y[sds > 0.04,]
+counts <- counts[sds > 0.04, ] ##for later use
+y <- calcNormFactors(y) ##takes some time
+data <- cpm(y, log=TRUE)
+```
+
+```{r, twas}
+library(limma)
+fit <- lmFit(data, design)
+```
+
+## Inspect results ##
+
+```{r, twasstats}
+tstat <- fit$coef/fit$stdev.unscaled/fit$sigma
+pval <- 2 * pnorm(-abs(tstat[, 2]))
+padj <- p.adjust(sort(pval, decreasing = FALSE), method = "bonf")
+head(padj[padj < 0.05])
+```
+
+```{r, qqplottwas}
+gp <- ggplot(data.frame(pval=pval), aes(sample=-log10(pval)))
+gp <- gp + stat_qq(distribution=stats::qexp, dparams=list(rate=1/log10(exp(1))))
+gp <- gp + xlab(expression(paste("Expected -log"[10], plain(P))))
+gp <- gp + ylab(expression(paste("Observed -log"[10], plain(P))))
+gp <- gp + geom_abline(slope=1, intercept=0)
+gp
+```
+
+```{r, manplottwas}
+rowRanges(counts)
+head(pval)
+tail(pval)
+rData <- rowRanges(counts)
+mcols(rData)$pval <- pval ##possible since we subsetted counts already
+rData
+
+library(GenomeInfoDb)
+seqlevels(rData) <- mapSeqlevels(seqlevels(rData), "Ensembl")
+rData
+seqlevels(rData) <- gsub("X", 23, seqlevels(rData))
+seqlevels(rData) <- gsub("Y", 24, seqlevels(rData))
+pdata <- as.data.frame(rData)
+pdata$seqnames <- as.integer(pdata$seqnames)
+
+library(qqman)
+manhattan(pdata, chr="seqnames", bp="start", p="pval")
+```
+
+
+The famous CpG near the ELOVL2 gene.
+
+```{r, tophittwas}
+top <- which.min(rData$pval)
+y <- data[top, ]
+x <- design[, 2]
+plot(x, y, main = paste("Pearson cor.:", signif(cor(x, y), 3)), xlab = "Age (in yrs)",
+     ylab = paste(rownames(data)[top], "Expression (TMM norm. log cpm)"))
+abline(lm(y ~ x), col = 2)
+```

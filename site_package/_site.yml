@@ -3,20 +3,29 @@ navbar:
   title: "BBMRIomics"
   type: inverse
   left:
-    - text: "Home"
-      href: index.html
     - text: "Data"
       href: data.html	  
     - text: "Basic Usage"
       href: usage.html	  
-    - text: "Examples" 
+    - text: "Use cases" 
       menu:
         - text: "DNA methylation"
         - text: "EWAS"
           href: EWAS.html		  
         - text: "RNA seq"
         - text: "TWAS"
-          href: TWAS.html  		  
+          href: TWAS.html
+        - text: "Metabolites"
+        - text: "MWAS"
+          href: MWAS.html
+        - text: "Genotypes"
+        - text: "imputed genotypes"
+          href: HRC.html
+        - text: "GoNL"
+          href: GoNL.html 
+        - text: "Integrated analyses"
+        - text:  "data linking"
+          href: data_linking.html          
     - text: "Data quality control and preprocessing"
       menu:
         - text: "DNA methylation"

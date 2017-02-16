@@ -35,32 +35,37 @@ For convenience we create a `TxDb`-package. For more information on
 using a `TxDb`-package see
 [GenomicFeatures](http://bioconductor.org/packages/release/bioc/vignettes/GenomicFeatures/inst/doc/GenomicFeatures.pdf).
 
-*** Note this requires sudo rights to install ***
+*** Note this requires sudo rights to install and use sudo -i to load /etc/profile with global R_SITE_LIB =/opt/... ***
 
-```{r, eval=FALSE}
-library(AnnotationHub)
-ah <- AnnotationHub()
-query(ah, c("ensembl", "sapiens", "71"))
+```{r, txdb, eval=FALSE}
 
 library(GenomicFeatures)
-txdb <- makeTxDbFromGFF(ah["AH7666"]$sourceurl,
-                        circ_seqs=character(), organism="Homo sapiens")
+library(rtracklayer)
+gtf <- "ftp://ftp.ensembl.org/pub/release-71/gtf/homo_sapiens/Homo_sapiens.GRCh37.71.gtf.gz"
+txdb <- makeTxDbFromGFF(gtf, organism="Homo sapiens")
+
+##Hack by James MacDonald (https://support.bioconductor.org/p/89855/)
+con <- dbconn(txdb)
+## insert a Resource URL entry in the metadata table,
+## pointing to the ftp site where the data were procured
+DBI::dbGetQuery(con, "INSERT INTO metadata VALUES ('Resource URL', 'ftp://ftp.ensembl.org/pub/release-71/gtf/homo_sapiens/Homo_sapiens.GRCh37.71.gtf.gz');")
 
 makeTxDbPackage(txdb,
                 version = "0.0.1",
                 maintainer = "m. van Iterson <m.van_iterson@lumc.nl>",
                 author = "m. van Iterson",
-                destDir= ".",
+                destDir= ".",                
                 license = "Artistic-2.0",
                 pkgname = "TxDb.Hsapiens.Ensembl.v71")
 
 library(devtools)
-install("~/TxDb.Hsapiens.Ensembl.v71")
+install("./TxDb.Hsapiens.Ensembl.v71")
+
 ```
 
 Now can use the Ensembl v71 annoation like any other `TxDb`-package.
 
-```{r}
+```{r, txdbexample, eval=FALSE}
 library(TxDb.Hsapiens.Ensembl.v71)
 (txdb <- TxDb.Hsapiens.Ensembl.v71)
 genes(txdb)
@@ -68,7 +73,7 @@ genes(txdb)
 
 ## Prepare sample metadata ##
 
-```{r}
+```{r, coldatarna, eval=FALSE}
 library(BIOSRutils)
 MDB <- "https://metadatabase.bbmrirp3-lumc.surf-hosted.nl:6984/bios/"
 RDB <- "https://metadatabase.bbmrirp3-lumc.surf-hosted.nl:6984/rp3_analysis/"
@@ -133,7 +138,7 @@ colData$hrc_id <- hrc$imputation_id[mid]
 
 ## Prepare count table ##
 
-```{r}
+```{r, countdata, eval=FALSE}
 library(BiocParallel)
 register(MulticoreParam(8, log=TRUE))
 files <- list.files(file.path(RP3DATADIR, "RNASeq/v2.1.3/", "gene_read"), full.names=TRUE, pattern="gene.read.count.gz$")
@@ -158,7 +163,7 @@ mid <- match(colnames(counts), colData$run_id)
 colnames(counts) <- colData$uuid[mid]
 ```
 
-```{r}
+```{r, rowdatarna, eval=FALSE}
 library(TxDb.Hsapiens.Ensembl.v71)
 rowRanges <- genes(TxDb.Hsapiens.Ensembl.v71)
 library(GenomeInfoDb)
@@ -174,7 +179,7 @@ save(counts, file = file.path("/virdir/Scratch/RP3_data/RNASeq/v2.1.3/gene_read/
 
 Code to calculate gene-level GC-content.
 
-```{r, eval=FALSE}
+```{r, gcrna, eval=FALSE}
 library(AnnotationHub)
 ah <- AnnotationHub()
 query(ah, c("ensembl", "sapiens", "71"))

@@ -4,11 +4,12 @@ BIOBANKS=RS PAN CODAM LLS LL NTR
 MDB=https://metadatabase.bbmrirp3-lumc.surf-hosted.nl:6984/bios
 RDB=https://metadatabase.bbmrirp3-lumc.surf-hosted.nl:6984/rp3_analysis
 USRPWD='usrpwd'
-R_PACKAGE_DIR=/usr/lib64/microsoft-r/3.3/lib64/R/library/BBMRIomics
+
+R_PACKAGE_DIR=/opt/R/microsoft-r/3.3/lib64/R/library/BBMRIomics
 
 ifeq ($(shell hostname),packer-ubuntu-16)
-	run=init methylation
-##rnaseq metabolomics views
+	run=init methylation rnaseq
+##metabolomics views
 else
 	run=stop
 endif
@@ -21,25 +22,20 @@ init:
 methylation: $(BIOBANKS) BIOS
 
 $(BIOBANKS): 
-	ln -s $(SRC)/IlluminaHumanMethylation450k/450k/$@/methData_Betas_$@_F2.RData $(R_PACKAGE_DIR)/data/methData_Betas_$@_F2_cleaned.RData
-	ln -s $(SRC)/IlluminaHumanMethylation450k/450k/$@/methData_Mvalues_$@_F2.RData $(R_PACKAGE_DIR)/data/methData_Mvalues_$@_F2_cleaned.RData
+	ln -fs $(SRC)/IlluminaHumanMethylation450k/450k/$@/methData_Betas_$@_F2_cleaned.RData $(R_PACKAGE_DIR)/data/methData_Betas_$@_F2_cleaned.RData
+	ln -fs $(SRC)/IlluminaHumanMethylation450k/450k/$@/methData_Mvalues_$@_F2_cleaned.RData $(R_PACKAGE_DIR)/data/methData_Mvalues_$@_F2_cleaned.RData
 
 BIOS:
-#	ln -s $(SRC)/IlluminaHumanMethylation450k/450k/methData_Betas_BIOS_F2.RData $(R_PACKAGE_DIR)/data/methData_Betas_BIOS_F2.RData
-#	ln -s $(SRC)/IlluminaHumanMethylation450k/450k/methData_Mvalues_BIOS_F2.RData $(R_PACKAGE_DIR)/data/methData_Mvalues_BIOS_F2.RData
+	ln -fs $(SRC)/IlluminaHumanMethylation450k/450k/methData_Betas_BIOS_F2_cleaned.RData $(R_PACKAGE_DIR)/data/methData_Betas_BIOS_F2_cleaned.RData
+	ln -fs $(SRC)/IlluminaHumanMethylation450k/450k/methData_Mvalues_BIOS_F2_cleaned.RData $(R_PACKAGE_DIR)/data/methData_Mvalues_BIOS_F2_cleaned.RData
 
-rnaseq: genes exons
+rnaseq: readcounts
 
-genes:
-	ln -s $(SRC)/RNASeq/run_01/genecounts/rnaSeqData_freeze1_06032015BIOS.RData $(R_PACKAGE_DIR)/data/rnaSeqData_freeze1_06032015BIOS.RData
-	ln -s $(SRC)/RNASeq/v2.1.3/gene_base/geneCountsF2.RData $(R_PACKAGE_DIR)/data/geneCountsF2.RData
-
-exons:
-	ln -s $(SRC)/RNASeq/run_01/exoncounts/rnaSeqData_freeze1_exon_14042015BIOS.RData $(R_PACKAGE_DIR)/data/rnaSeqData_freeze1_exon_14042015BIOS.RData
-	ln -s $(SRC)/RNASeq/v2.1.3/exon_base/exonCountsF2.RData $(R_PACKAGE_DIR)/data/exonCountsF2.RData
+readcounts:
+	ln -fs $(SRC)/RNASeq/v2.1.3/gene_read/rnaSeqData_ReadCounts_cleaned.RData $(R_PACKAGE_DIR)/data/rnaSeqData_ReadCounts_cleaned.RData
 
 metabolomics:
-	ln -s $(SRC)/RP4/metabolomics_RP3RP4_overlap.RData $(R_PACKAGE_DIR)/data/metabolomics_RP3RP4_overlap.RData
+	ln -fs $(SRC)/RP4/metabolomics_RP3RP4_overlap.RData $(R_PACKAGE_DIR)/data/metabolomics_RP3RP4_overlap.RData
 
 views:
 	curl -X GET $(MDB)/_design/EGA/_view/freeze1RNASeq?reduce=false -u $(USRPWD)  -k -g >  $(R_PACKAGE_DIR)/views/EGA_freeze1RNASeq.json

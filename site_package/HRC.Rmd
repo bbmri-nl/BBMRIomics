@@ -1,0 +1,42 @@
+---
+title: "Working with HRC imputed genotypes"
+output:
+  html_document:
+    highlight: tango
+    toc: true
+    toc_float:
+      collapsed: false
+bibliography: BBMRIomics.bib
+---
+
+```{r, child="_setup.Rmd"}
+```
+
+## Header 2 ##
+
+***brief description***
+
+
+```{r, vcffiles}
+library(BBMRIomics)
+dir(VM_BASE)
+dir(VM_BASE, "HRC_Imputation")
+vcfs <- dir(file.path(VM_BASE, "HRC_Imputation",
+                      "CODAM"), pattern = "filtered.dose.vcf.gz$", full.names = TRUE,
+            recursive = TRUE)
+vcfs
+```
+
+```{r, readvcf, eval=FALSE}
+library(VariantAnnotation)
+vcf <- readVcf(vcfs[15], "hg19")
+vcf
+```
+
+```{r, overlapsnps, eval=FALSE}
+library(TxDb.Hsapiens.Ensembl.v71)
+txdb <- TxDb.Hsapiens.Ensembl.v71
+rd <- rowRanges(vcf)
+loc <- locateVariants(rd, txdb, CodingVariants())
+head(loc, 6)
+```

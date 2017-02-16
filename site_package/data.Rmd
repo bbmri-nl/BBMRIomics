@@ -28,9 +28,12 @@ just typing the name of the dataset in the console this will
 automatically call the buildin `show`-method and summarizes the
 content of the loaded dataset.
 
-```{r}
+```{r, datasets}
 library(BBMRIomics)
 data(package="BBMRIomics")
+```
+
+```{r, loading}
 data(methData_Betas_CODAM_F2_cleaned)
 ls()
 betas

@@ -17,10 +17,15 @@ several work flows:
 1. [f1000](https://f1000research.com/articles/5-1281/v1)
 2. [Leiden450K](https://git.lumc.nl/molepi/Leiden450K)
 
-
 ## Collect data ##
 
-```{r}
+The follwoing code shows how to extract some covariates and the
+phenotype of interest from the
+`SummerizedExperiments`-object. Furthermore, we select a subset of the
+data for which the covariates and phenotype are complete, i.e. do not
+contain missing -values.
+
+```{r, selectdata}
 library(BBMRIomics)
 data(methData_Mvalues_CODAM_F2_cleaned)
 covariates <- c("Sex", "Smoking", "Sentrix_Position")
@@ -32,7 +37,11 @@ mvalues <- mvalues[, !nas]
 
 ## Create design ##
 
-```{r}
+Now we can create a design matrix appropriate for use in with
+`limma`'s `lmFit`-function. Both `Smoking` and `Sentrix_Position` are
+considered categorical variables.
+
+```{r, coldata2design}
 design <- as.data.frame(colData(mvalues))[,c(phenotype, covariates)]
 str(design)
 design$Smoking <- factor(design$Smoking)
@@ -44,7 +53,11 @@ str(design)
 
 ## Run EWAS ##
 
-```{r}
+Since, we had subsetted the whole `SummerizedExperiments`-object we
+can just extract the data without any further subsetting. Runnning the
+EWAS is now just one function-call.
+
+```{r, ewas}
 data <- assays(mvalues)$data
 library(limma)
 fit <- lmFit(data, design)
@@ -52,14 +65,22 @@ fit <- lmFit(data, design)
 
 ## Inspect results ##
 
-```{r}
+Since, we have over 100 samples we ignore the usual steps of obtaining
+regularized test-statistics using the function `eBayes`. The ordinary
+t-statistics can be extracted as follows (as described in the vignette
+of **limma**):
+
+```{r, ewasstats}
 tstat <- fit$coef/fit$stdev.unscaled/fit$sigma
 pval <- 2 * pnorm(-abs(tstat[, 2]))
 padj <- p.adjust(sort(pval, decreasing = FALSE), method = "bonf")
 head(padj[padj < 0.05])
 ```
 
-```{r}
+After preforming multiple-testing correction using Bonferroni's method
+we can inspect the results.
+
+```{r, qqplotewas}
 gp <- ggplot(data.frame(pval=pval), aes(sample=-log10(pval)))
 gp <- gp + stat_qq(distribution=stats::qexp, dparams=list(rate=1/log10(exp(1))))
 gp <- gp + xlab(expression(paste("Expected -log"[10], plain(P))))
@@ -68,7 +89,7 @@ gp <- gp + geom_abline(slope=1, intercept=0)
 gp
 ```
 
-```{r}
+```{r, manplotewas}
 rowRanges(mvalues)
 head(pval)
 tail(pval)
@@ -81,10 +102,19 @@ seqlevels(rData) <- mapSeqlevels(seqlevels(rData), "Ensembl")
 rData
 seqlevels(rData) <- gsub("X", 23, seqlevels(rData))
 seqlevels(rData) <- gsub("Y", 24, seqlevels(rData))
-data <- as.data.frame(rData)
-data$seqnames <- as.integer(data$seqnames)
-
+pdata <- as.data.frame(rData)
+pdata$seqnames <- as.integer(pdata$seqnames)
 library(qqman)
-manhattan(data, chr="seqnames", bp="start", p="pval")
+manhattan(pdata, chr="seqnames", bp="start", p="pval")
+```
 
+The famous CpG near the ELOVL2 gene.
+
+```{r, tophitewas}
+top <- which.min(rData$pval)
+y <- data[top, ]
+x <- design[, 2]
+plot(x, y, main = paste("Pearson cor.:", signif(cor(x, y), 3)), xlab = "Age (in yrs)",
+     ylab = paste(rownames(data)[top], "Methylation (on M-value scale)"))
+abline(lm(y ~ x), col = 2)
 ```

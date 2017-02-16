@@ -12,6 +12,10 @@ bibliography: BBMRIomics.bib
 ```{r, child="_setup.Rmd"}
 ```
 
+```{r, eval=TRUE}
+knitr::opts_chunk$set(eval=FALSE) ##this vignette should only be runs once!
+```
+
 ## Sample-level quality control ##
 
 The package
@@ -30,7 +34,7 @@ application; `summarize` and `visualize`. For more information see
 ### Creating targets-files ###
 
 ```{r, eval=FALSE}
-path450k <- file.path(RP3DATADIR, "IlluminaHumanMethylation450k")
+path450k <- file.path(VM_BASE, "IlluminaHumanMethylation450k")
 samplesheets <- getView("methylationSamplesheet")
 samplesheets <- samplesheets[!duplicated(samplesheets$run_id),]
 samplesheets <- samplesheets[order(samplesheets$ids),]
