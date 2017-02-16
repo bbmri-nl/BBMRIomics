@@ -1,0 +1,9 @@
+
+
+install libssl-dev ##require for openssl required for devtools
+install libxml2-dev ##require for XML
+
+options(unzip = 'internal') ##for devtools install_git
+
+install xorg ##require for R plotting
+touch ~/.Xauthority ##had to create empty file otherwise Xterminal was not working
