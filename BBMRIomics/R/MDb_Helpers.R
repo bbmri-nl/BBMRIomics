@@ -67,7 +67,7 @@ view <- function(viewname, url="http://127.0.0.1:5984/mdb_test/", converter="jso
 ##' g <- g + facet_grid(sex ~ biobank_id)
 ##' g
 ##' }
-getView <- function(view, url, usrpwd="anonymous", selection="?reduce=false", force.keys=FALSE, row.names=FALSE, verbose = TRUE){
+getView <- function(view, url, usrpwd="anonymous", selection="?reduce=false", force.keys=FALSE, row.names=FALSE, verbose = FALSE){
     
     ##views/designs
     views <- list()

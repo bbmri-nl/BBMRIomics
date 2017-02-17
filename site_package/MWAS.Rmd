@@ -1,5 +1,5 @@
 ---
-title: "template page title"
+title: "MWAS"
 output: 
   html_document:
     highlight: tango
@@ -13,11 +13,43 @@ bibliography: BBMRIomics.bib
 ```{r, child="_setup.Rmd"}
 ```
 
-## Header 2 ##
+## RP4 metabolites ##
 
-***brief description***
+### connect to database ###
 
+Access to the RP4 metabolites requires an additional account to the
+molgenis RP4 database.
+
+**BBMRIomics** provides `molgenis.connect` to connect to the molgenis
+database using its
+[RESTfull-API](http://molgenis.github.io/documentation) and
+`molgenis.get.all` for extraction of the data.
+
+```{r, rp4connect}
+library(BBMRIomics)
+RP4_DB
+molgenis.connect(usrpwd=RP4_DB_USRPWD, url=RP4_DB)
+ls()
+```
+
+### Extract data ###
+
+If a `molgenis.token` is available in the global environment your are
+ready to extract the data.
+
+```{r, getall}
+biobanks <- molgenis.get.all("biobanks", verbose = FALSE)
+head(biobanks)
+biobanks$abbreviation
+```
 
 ```{r}
-"some R code..."
+measurements <- molgenis.get.all("measurements")
+measurements$biobank <- gsub("-.*$", "", measurements$sample_id)
+biobank_ordered <- with(measurements, reorder(biobank, lac, median, na.rm = TRUE))
+gp <- ggplot(measurements, aes(biobank_ordered, lac))
+gp <- gp + geom_boxplot()
+gp <- gp + theme(axis.text.x = element_text(angle = 90, hjust = 0, size = 7))
+gp
 ```
+

@@ -279,9 +279,9 @@ genotyping <- function(typex, typey, cohort, out, verbose) {
     message("Extracting the data...")
 
     ##hard-coded
-    RNAFile <- file.path(VM_BASE_ANALYSIS, "combined.vcf.gz")
-    DNAmFile <- file.path(VM_BASE_ANALYSIS, "DNAm_snps.RData")
-    DNAFile <- file.path(VM_BASE_ANALYSIS, "SNP_positions.bed")
+    RNAFile <- file.path(VM_BASE_ANALYSIS, "BBMRIomics/data/combined.vcf.gz")
+    DNAmFile <- file.path(VM_BASE_ANALYSIS, "BBMRIomics/data/DNAm_snps.RData")
+    DNAFile <- file.path(VM_BASE_ANALYSIS, "BBMRIomics/data/SNP_positions.bed")
 
     if(any(typey %in% c("DNAm", "RNA")) & any(typex %in% c("HRC", "GoNL"))) {
         tmp <- typey

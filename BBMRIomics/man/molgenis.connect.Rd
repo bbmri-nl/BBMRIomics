@@ -4,12 +4,14 @@
 \alias{molgenis.connect}
 \title{connect to a molgenis database using the R-API}
 \usage{
-molgenis.connect(usrpwd, url)
+molgenis.connect(usrpwd, url, verbose = FALSE)
 }
 \arguments{
 \item{usrpwd}{username:password default reading from .biosrutils}
 
 \item{url}{src source url molgenis database}
+
+\item{verbose}{show additional output}
 }
 \value{
 setup molgenis connection

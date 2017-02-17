@@ -38,6 +38,8 @@ navbar:
           href: RNA_qc.html		  
         - text: "preprocessing"
           href: RNA_preprocessing.html
+        - text: "Linking RP4 with RP3"
+          href: linkingRP4_RP3.html
     - text: "Apps"
       menu:
         - text: "DNam qc CODAM"

@@ -1,0 +1,81 @@
+---
+title: "template page title"
+output: 
+  html_document:
+    highlight: tango
+    toc: true
+    toc_float:
+      collapsed: false
+bibliography: BBMRIomics.bib
+---
+
+```{r, child="_setup.Rmd"}
+```
+
+## Header 2 ##
+
+***brief description***
+
+## Linking to BIOS ##
+
+```{r, loadthedata, eval=FALSE}
+subjects <- molgenis.get.all("subjects", verbose=FALSE)
+dim(subjects)
+head(subjects)
+biobanks <- molgenis.get.all("biobanks", verbose=FALSE)
+dim(biobanks)
+head(biobanks)
+samples <- molgenis.get.all("samples", verbose=FALSE)
+dim(samples)
+head(samples)
+measurements <- molgenis.get.all("measurements", verbose=FALSE)
+dim(measurements)
+head(measurements)
+```
+
+In order to map the metabolite data to the bios data a little
+processing of the metabolite `bios_id` is required.
+
+```{r overlap, eval=FALSE}   
+subjects <- subset(subjects, !is.na(bios_id))
+table(subjects$biobank)
+subjects$real_bios_id <- ""
+
+ll <- subjects$biobank == "LIFELINES"
+subjects$real_bios_id[ll] <- subjects$bios_id[ll] ##everything fine
+
+rs <- subjects$biobank == "ERF_ERGO"
+subjects$real_bios_id[rs] <- subjects$bios_id[rs] ##everything fine
+
+lls <- subjects$biobank == "LLS_PARTOFFS" | subjects$biobank ==  "LLS_SIBS"
+subjects$real_bios_id[lls] <- paste0("LLS-", subjects$bios_id[lls]) ##a little bit pasting
+
+ids <- getView("getIds", url=RP3_MDB, usrpwd=RP3_MDB_USRPWD)
+ntr <- subjects$biobank == "VUNTR"
+id <- match(subjects$bios_id[ntr], ids$person_id[ids$biobank_id == "NTR"]) ##not bios id but person id
+head(subjects$bios_id[ntr])
+subjects$real_bios_id[ntr] <- ids$bios_id[ids$biobank_id == "NTR"][id]
+dim(subjects)
+head(subjects$real_bios_id)
+```
+
+Now we can select the overlapping individuals and create a 
+`SummarizedExperiment`-object.
+
+```{r, summarizedexperiments, eval=FALSE}
+library(GenomicFeatures)
+library(SummarizedExperiment)
+colnames(subjects)[2] <- "subject_id" ##I find the naming a bit confusing
+colnames(samples)[3] <- "sample_id"
+id <- match(subjects$subject_id, samples$subject_id)
+colData <- cbind(subjects, samples[id,])
+id <- match(colData$sample_id, measurements$sample_id)
+measurements <- measurements[id,]
+m <- measurements[,-c(1:2)]
+m <- apply(m, 1, as.numeric)
+rownames(m) <- colnames(measurements)[-c(1:2)]
+metabolomicData <- SummarizedExperiment(assays=list(measurements=m),
+                                        colData=DataFrame(colData))
+save(metabolomicData, file=file.path(VM_BASE_DATA, "RP4", "metabolomics_RP3RP4_overlap.RData"))
+```
+

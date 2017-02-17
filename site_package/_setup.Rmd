@@ -5,6 +5,8 @@ title: "Setup"
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(cache=TRUE, eval=TRUE)
 
+rm(list=ls()) ##clear work space
+
 suppressPackageStartupMessages({ ##to get rid of annoying startup messages (like ours ;)!)
     library(BBMRIomics)
 
