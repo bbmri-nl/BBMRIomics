@@ -8,16 +8,18 @@
 ##' @param converter default json2csv
 ##' @return metadatabase view converted to a data.frame
 ##' @author mvaniterson
-##' @importFrom RCurl getURL
-view <- function(viewname, url="http://127.0.0.1:5984/mdb_test/", converter="json2csv") {
-    url <- file.path(url, "_design/couchdbapp/_list", converter, viewname)
-    response <- getURL(paste0(url, "?reduce=false"))
+##' @importFrom readr read_csv
+##' @importFrom httr set_config config GET authenticate content
+view <- function(viewname, db="https://metadatabase.bbmrirp3-lumc.surf-hosted.nl:6984/bios-test/", converter="json2csv", usrpwd=NULL) {
 
-    #if no connection is possible return stored views
-    
-    tConn <- textConnection(response)
-    on.exit(close(tConn))    
-    invisible(read.table(tConn, sep=",", header=TRUE, na.string="null", as.is=TRUE))    
+    set_config(config(ssl_verifypeer = 0L, ssl_verifyhost = 0L))
+    url <- file.path(db, "_design/couchdbapp/_list", converter, viewname)
+    request <- paste0(url, "?reduce=false")
+    usrpwd <- unlist(strsplit(usrpwd, ":"))
+    response <- GET(url, authenticate(usrpwd[1], usrpwd[2])) ##verbose()
+    ##parsing done automatically including dates
+    ##also problemes are reported
+    as.data.frame(content(response, type="text/csv", as = "parsed", na="null"))
 }
 
 ##' get view from metadatabase

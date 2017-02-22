@@ -5,8 +5,6 @@
  * @param {object} doc - Document Object.
  */
 function(doc) {
-    var doc = doc.doc;
-    if (doc.hasOwnProperty('phenotype')) {
-        emit(null, doc.phenotype);
-    }
+    if (doc.hasOwnProperty('phenotype'))
+        emit(doc.biobank, doc.phenotype);
 }
