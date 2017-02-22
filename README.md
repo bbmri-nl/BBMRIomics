@@ -3,7 +3,7 @@
 **BBMRIomics** is an R package that facilitates BBMRI-omics downstream
 analysis using R on surfSARA HCP virtual machines.
 
-For an introduction and examples, visit the [BBMRIomics](bios-vm.bbmrirp3-lumc.surf-hosted.nl/BBMRIomics/index.html).
+For an introduction and examples, visit the [BBMRIomics](https://bios-vm.bbmrirp3-lumc.surf-hosted.nl/BBMRIomics/index.html).
 
 ## Features
 
