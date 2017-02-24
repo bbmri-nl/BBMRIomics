@@ -27,7 +27,7 @@ DNA methylation data, `Hydridization_Data`, `Stain_Date`, etc.
 library(BBMRIomics)
 data(methData_Betas_CODAM_F2_cleaned)
 cData <- colData(betas)
-colnames(cData)
+head(colnames(cData))
 head(cData)
 ```
 
@@ -73,7 +73,7 @@ rowRanges(betas)
 
 ```{r, assaydata}
 data <- assays(betas)$data
-data[1:5, 1:5]
+head(data)
 ```
 
 ```{r}

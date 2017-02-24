@@ -76,7 +76,6 @@ DNAmCalls <- function(cohort, DNAmFile, verbose=FALSE, maxbatch=500){
     load(DNAmFile)
     cpgs <- names(DNAmSNPs)
 
-
     register(MulticoreParam(6))
     if(nrow(targets) > maxbatch) {
         betas <- lapply(split(targets, 1+(1:nrow(targets))%/%maxbatch), function(targetsbatch) {
@@ -100,11 +99,9 @@ RNACalls <- function(vcfFile){
     suppressPackageStartupMessages({
         require(VariantAnnotation)
         require(Rsamtools)
-    })
-
-    if(!file.exists(gsub("vcf.gz", "vcf.gz.tbi", vcfFile)))
-        indexTabix(vcfFile, format="vcf")
-    vcf <- readVcf(TabixFile(vcfFile), "hg19")
+    })    
+    
+    vcf <- readVcf(vcfFile, "hg19")
     rnaCalls <- genotypeToSnpMatrix(vcf)$genotypes
     rnaCalls <- t(matrix(as.numeric(rnaCalls), nrow=nrow(rnaCalls), ncol=ncol(rnaCalls), dimnames=dimnames(rnaCalls)))
     rownames(rnaCalls) <- gsub("_.*$", "", rownames(rnaCalls))
@@ -273,13 +270,14 @@ genotyping <- function(typex, typey, cohort, out, verbose) {
     if(verbose) {
         message("Type comparison: ", type)
         message("Cohort: ", cohort)
-        message("Verbose option = ", verbose)
+        message("Verbose: ", verbose)
     }
 
     message("Extracting the data...")
 
     ##hard-coded
-    RNAFile <- file.path(VM_BASE_ANALYSIS, "BBMRIomics/data/combined.vcf.gz")
+    ##RNAFile <- file.path(VM_BASE_ANALYSIS, "BBMRIomics/data/output.vcf")
+    RNAFile <- file.path("~/output.vcf")
     DNAmFile <- file.path(VM_BASE_ANALYSIS, "BBMRIomics/data/DNAm_snps.RData")
     DNAFile <- file.path(VM_BASE_ANALYSIS, "BBMRIomics/data/SNP_positions.bed")
 
@@ -397,9 +395,10 @@ genotyping <- function(typex, typey, cohort, out, verbose) {
 }
 
 
-typex <- "DNAm"
-typey <- "HRC"
-cohort <- "NTR"
+typex <- "RNA"
+typey <- "RNA"
+cohort <- "ALL"
 verbose <- TRUE
 
-genotyping(typex=opt$typex, typey=opt$typey, cohort=opt$cohort, out=opt$out, verbose=opt$verbose)
+genotyping(typex, typey, cohort=cohort, out=NULL, verbose=verbose)
+##genotyping(typex=opt$typex, typey=opt$typey, cohort=opt$cohort, out=opt$out, verbose=opt$verbose)
