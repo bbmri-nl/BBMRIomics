@@ -13,9 +13,7 @@ bibliography: BBMRIomics.bib
 ```{r, child="_setup.Rmd"}
 ```
 
-## RP4 metabolites ##
-
-### connect to database ###
+## connect to database ##
 
 Access to the RP4 metabolites requires an additional account to the
 molgenis RP4 database.
@@ -32,18 +30,19 @@ molgenis.connect(usrpwd=RP4_DB_USRPWD, url=RP4_DB)
 ls()
 ```
 
-### Extract data ###
+## Extract data ##
 
 If a `molgenis.token` is available in the global environment your are
 ready to extract the data.
 
 ```{r, getall}
 biobanks <- molgenis.get.all("biobanks", verbose = FALSE)
-head(biobanks)
 biobanks$abbreviation
+table(biobanks$use_of_beta_blockers)
+biobanks$abbreviation[biobanks$use_of_beta_blockers]
 ```
 
-```{r}
+```{r, laclevels}
 measurements <- molgenis.get.all("measurements")
 measurements$biobank <- gsub("-.*$", "", measurements$sample_id)
 biobank_ordered <- with(measurements, reorder(biobank, lac, median, na.rm = TRUE))
@@ -53,3 +52,6 @@ gp <- gp + theme(axis.text.x = element_text(angle = 90, hjust = 0, size = 7))
 gp
 ```
 
+## Run MWAS ##
+
+**TODO** erik?

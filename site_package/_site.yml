@@ -54,6 +54,8 @@ navbar:
           href: http://bios-vm.bbmrirp3-lumc.surf-hosted.nl:8008/BIOSRutils/DNAm/RS
         - text: "DNam qc PAN"            
           href: http://bios-vm.bbmrirp3-lumc.surf-hosted.nl:8008/BIOSRutils/DNAm/PAN
-  right:          
+  right:
+    - text: "Contribute"
+      href: contribute.html	              
     - text: "About"
       href: about.html	          

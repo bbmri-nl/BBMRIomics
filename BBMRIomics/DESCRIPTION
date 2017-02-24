@@ -1,12 +1,12 @@
 Package: BBMRIomics
 Type: Package
 Title: R utilities for BBMRI omics data analysis
-Version: 0.0.2
-Date: 2017-02-01
+Version: 0.0.3
+Date: 2017-02-23
 Author: Maarten van Iterson
 Maintainer: M. van Iterson <m.van_iterson@lumc.nl>
 Description: R helper functions for BBMRI omics, DNA methylation, RNA
-    sequencing metabolomics and (imputed) genotypes, analysis.
+    sequencing, metabolomics and (imputed) genotypes, analysis.
 License: GPL (>= 2)
 LazyData: False
 Depends:
@@ -17,8 +17,10 @@ Imports:
     GenomicRanges,
     IRanges,
     jsonlite,
+    httr,
     RCurl,
     Rsamtools,
+    readr,
     S4Vectors,
     VariantAnnotation
 Collate:

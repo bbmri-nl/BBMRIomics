@@ -5,7 +5,7 @@
 \title{get view from metadatabase}
 \usage{
 getView(view, url, usrpwd = "anonymous", selection = "?reduce=false",
-  force.keys = FALSE, row.names = FALSE, verbose = TRUE)
+  force.keys = FALSE, row.names = FALSE, verbose = FALSE)
 }
 \arguments{
 \item{view}{name of the view}

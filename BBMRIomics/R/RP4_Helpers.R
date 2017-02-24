@@ -37,6 +37,7 @@ molgenis.connect <- function(usrpwd, url, verbose=FALSE){
 ##' @return data.frame containing the whole table
 ##' @author mvaniterson
 ##' @importFrom RCurl getURL curlEscape
+##' @importFrom utils read.csv
 ##' @export
 molgenis.get.all <- function(entity, nrows=1000, verbose=TRUE){
    

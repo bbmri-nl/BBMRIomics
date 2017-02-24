@@ -4,8 +4,9 @@
 ##' and a list function to convert json to csv.xx
 ##' @title get view from metadatabase
 ##' @param viewname name of the view
-##' @param url unique resource location of the metadatabase
+##' @param db metadatabase url
 ##' @param converter default json2csv
+##' @param usrpwd metadata usrpwd
 ##' @return metadatabase view converted to a data.frame
 ##' @author mvaniterson
 ##' @importFrom readr read_csv

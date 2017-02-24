@@ -1,0 +1,55 @@
+---
+title: "Contribute Use-Cases"
+output: 
+  html_document:
+    highlight: tango
+    toc: true
+    toc_float:
+      collapsed: false
+bibliography: BBMRIomics.bib
+---
+
+We welcome contributions to the
+[BBMRIomics](bios-vm.bbmrirp3-lumc.surf-hosted.nl/BBMRIomics/index.html)
+web-site, for example, with use-cases. The BBMRIomics web-site is
+completely build using R. Especially,
+[rmarkdown](http://rmarkdown.rstudio.com/) is used to generate the
+complete web-site from a few Rmarkdown-files. This rmarkdown
+[section](http://rmarkdown.rstudio.com/rmarkdown_websites.html) shows
+how easy it is to generate a web-site using rmarkdown. 
+
+## Adding a use-case ##
+
+Modify `_site.yml` by adding a new use-case under the use-case items, e.g. 
+
+- text:  "eqtl analysis"
+  href: eqtl.html
+  
+*beware spacing does matter!*
+
+Now from within the `site_package` directory generate a new template using 
+
+```bash
+make newpage file=eqtl
+```
+
+This will generate `eqtl.Rmd` for you with the same settings as the
+other Rmd-files in this folder. Provide your example with
+documentation and use `cache=TRUE` as an argument for the R-code
+chunk (maybe check one of the other Rmd-documents). 
+
+See, for more information on [rmarkdown](http://rmarkdown.rstudio.com/).
+
+Check if all code chunks run without errors, optionally add a library
+to `_setup.Rmd`. Now run
+
+```bash
+make render     
+```
+
+and if successfully run
+
+```bash
+sudo make publish
+```
+

@@ -12,10 +12,7 @@ bibliography: BBMRIomics.bib
 ```{r, child="_setup.Rmd"}
 ```
 
-## Header 2 ##
-
-***brief description***
-
+## Find the vcf-files ##
 
 ```{r, vcffiles}
 library(BBMRIomics)
@@ -27,16 +24,55 @@ vcfs <- dir(file.path(VM_BASE_DATA, "HRC_Imputation",
 vcfs
 ```
 
-```{r, readvcf, eval=FALSE}
-library(VariantAnnotation)
-vcf <- readVcf(vcfs[15], "hg19")
-vcf
+## Inspect eQTL ##
+
+Example eQTL from Zhernakova et al. [@Zhernakova2017] (see Figure 2:
+Identification of the strongest modifiers of eQTL effects).
+
+```{r, annotation}
+library(org.Hs.eg.db)
+select(org.Hs.eg.db, keys="NOD2", keytype="SYMBOL", columns="ENSEMBL")
+library(SNPlocs.Hsapiens.dbSNP142.GRCh37)
+gr <- rsidsToGRanges("rs1981760")
 ```
+
+```{r, readvcf}
+seqlevels(gr) <- gsub("ch", "", seqlevels(gr))
+genome(gr) <- "hg19"
+from <- vcfs[grepl("chr16", vcfs)]
+to <- tempfile()
+library(VariantAnnotation)
+zipped <- bgzip(from, to)
+fl <- indexTabix(zipped, format="vcf")
+vcf <- readVcf(fl, genome="hg19", param=gr)
+rs1981760 <- geno(vcf)$GT[1,]
+```
+
+```{r, linkhrcrna}
+data(rnaSeqData_ReadCounts_cleaned)
+hrc <- intersect(names(rs1981760), counts$hrc_id)
+counts <- counts[,counts$hrc_id %in% hrc]
+mid <- match(counts$hrc_id, names(rs1981760))
+rs1981760 <- rs1981760[mid]
+cnts <- assays(counts)$data
+dim(cnts)
+NOD2 <- cnts[rownames(cnts) == "ENSG00000167207", ]
+boxplot(NOD2~rs1981760)
+```
+
+## More information ##
+
+see [VariantAnnotation](http://bioconductor.org/packages/VariantAnnotation/).
+
+For example, extracting SNPs overlapping transcripts:
 
 ```{r, overlapsnps, eval=FALSE}
 library(TxDb.Hsapiens.Ensembl.v71)
 txdb <- TxDb.Hsapiens.Ensembl.v71
+vcf <- readVcf(vcfs[15], genome="hg19")
 rd <- rowRanges(vcf)
 loc <- locateVariants(rd, txdb, CodingVariants())
 head(loc, 6)
 ```
+
+## References ##

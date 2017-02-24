@@ -8,8 +8,8 @@ USRPWD='usrpwd'
 R_PACKAGE_DIR=/opt/R/microsoft-r/3.3/lib64/R/library/BBMRIomics
 
 ifeq ($(shell hostname),packer-ubuntu-16)
-	run=init methylation rnaseq
-##metabolomics views
+	run=init methylation rnaseq metabolomics
+##views
 else
 	run=stop
 endif

@@ -4,15 +4,18 @@
 \alias{view}
 \title{get view from metadatabase}
 \usage{
-view(viewname, url = "http://127.0.0.1:5984/mdb_test/",
-  converter = "json2csv")
+view(viewname,
+  db = "https://metadatabase.bbmrirp3-lumc.surf-hosted.nl:6984/bios-test/",
+  converter = "json2csv", usrpwd = NULL)
 }
 \arguments{
 \item{viewname}{name of the view}
 
-\item{url}{unique resource location of the metadatabase}
+\item{db}{metadatabase url}
 
 \item{converter}{default json2csv}
+
+\item{usrpwd}{metadata usrpwd}
 }
 \value{
 metadatabase view converted to a data.frame

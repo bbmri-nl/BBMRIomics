@@ -1,5 +1,5 @@
 ---
-title: "template page title"
+title: "Linking RP4 to RP3"
 output: 
   html_document:
     highlight: tango
@@ -12,13 +12,13 @@ bibliography: BBMRIomics.bib
 ```{r, child="_setup.Rmd"}
 ```
 
-## Header 2 ##
+**brief description**
 
-***brief description***
 
-## Linking to BIOS ##
+Extract data from database.
 
 ```{r, loadthedata, eval=FALSE}
+molgenis.connect(usrpwd=RP4_DB_USRPWD, url=RP4_DB)
 subjects <- molgenis.get.all("subjects", verbose=FALSE)
 dim(subjects)
 head(subjects)
@@ -33,23 +33,19 @@ dim(measurements)
 head(measurements)
 ```
 
-In order to map the metabolite data to the bios data a little
+In order to map the RP4 metabolite data to the RP3 bios data a little
 processing of the metabolite `bios_id` is required.
 
 ```{r overlap, eval=FALSE}   
 subjects <- subset(subjects, !is.na(bios_id))
 table(subjects$biobank)
 subjects$real_bios_id <- ""
-
 ll <- subjects$biobank == "LIFELINES"
 subjects$real_bios_id[ll] <- subjects$bios_id[ll] ##everything fine
-
 rs <- subjects$biobank == "ERF_ERGO"
 subjects$real_bios_id[rs] <- subjects$bios_id[rs] ##everything fine
-
 lls <- subjects$biobank == "LLS_PARTOFFS" | subjects$biobank ==  "LLS_SIBS"
 subjects$real_bios_id[lls] <- paste0("LLS-", subjects$bios_id[lls]) ##a little bit pasting
-
 ids <- getView("getIds", url=RP3_MDB, usrpwd=RP3_MDB_USRPWD)
 ntr <- subjects$biobank == "VUNTR"
 id <- match(subjects$bios_id[ntr], ids$person_id[ids$biobank_id == "NTR"]) ##not bios id but person id
@@ -79,3 +75,13 @@ metabolomicData <- SummarizedExperiment(assays=list(measurements=m),
 save(metabolomicData, file=file.path(VM_BASE_DATA, "RP4", "metabolomics_RP3RP4_overlap.RData"))
 ```
 
+The overlapping metabolite data is stored with in the `colData` the
+`real_bios_id` which can be used to link the data bios RP3 RNAseq or
+DNAm data. The data set can be loaded using `data(metabolomicData)`.
+
+
+```{r metabolomic}
+ data(metabolomics_RP3RP4_overlap)
+head(colData(metabolomicData))
+head(assays(metabolomicData)$measurements)
+```
