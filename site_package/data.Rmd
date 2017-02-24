@@ -39,22 +39,39 @@ ls()
 betas
 ```
 
-The datasets are **R/Bioconductor**
-**SummarizedExperiment**-objects. The **SummarizedExperiment** class
-is used to store rectangular matrices of experimental results; a data
-container storing feature data like gene counts or betas-values,
-annotation on the features, gene identifiers or genomic location, as
-well as annotation on the samples, i.e. phenotypes and metadata.
+## SummarizedExperiment ##
 
-The advantage of having all information in one object should be
-clear. Subsetting the object will automatically subset the annotation
-or sample information. 
+The datasets are stored in the **R/Bioconductor**
+**SummarizedExperiment**-objects.
 
-See for more information on **SummarizedExperiments**:
+*Brief summary from the* **SummarizedExperiment** *vignette:*
+
+The `SummarizedExperiment` class is used to store rectangular matrices
+of experimental results, which are commonly produced by sequencing and
+microarray experiments. Each object stores observations of one or more
+samples, along with additional meta-data describing both the
+observations (features) and samples (phenotypes).
+
+A key aspect of the `SummarizedExperiment` class is the coordination
+of the meta-data and assays when subsetting. For example, if you want
+to exclude a given sample you can do for both the meta-data and assay
+in one operation, which ensures the meta-data and observed data will
+remain in sync. Improperly accounting for meta and observational data
+has resulted in a number of incorrect results and retractions so this
+is a very desirable property.
+
+`SummarizedExperiment` is in many ways similar to the historical
+`ExpressionSet`, the main distinction being that `SummarizedExperiment` is
+more flexible in it’s row information, allowing both `GRanges` based as
+well as those described by arbitrary `DataFrame`s. This makes it ideally
+suited to a variety of experiments, particularly sequencing based
+experiments such as RNA-Seq and ChIp-Seq.
+
+See for more information on the **SummarizedExperiment** datastructure:
+
 1. [Vignette](http://bioconductor.org/packages/release/bioc/vignettes/SummarizedExperiment/inst/doc/SummarizedExperiment.html)
 2. [Tutorial](http://bioconductor.org/help/course-materials/2012/BiocEurope2012/SummarizedExperiment.pdf)
 3. [Paper](http://www.nature.com/nmeth/journal/v12/n2/full/nmeth.3252.html)
-
 
 
 

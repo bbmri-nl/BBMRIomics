@@ -27,8 +27,7 @@ DNA methylation data, `Hydridization_Data`, `Stain_Date`, etc.
 library(BBMRIomics)
 data(methData_Betas_CODAM_F2_cleaned)
 cData <- colData(betas)
-head(colnames(cData))
-head(cData)
+cData[1:5, 1:5]
 ```
 
 Tabulation ca be used for inspection of the distribution of
@@ -73,7 +72,7 @@ rowRanges(betas)
 
 ```{r, assaydata}
 data <- assays(betas)$data
-head(data)
+data[1:5, 1:5]
 ```
 
 ```{r}
