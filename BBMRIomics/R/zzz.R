@@ -39,13 +39,14 @@
     ## assign("VIEWS", views, envir=globalenv())
 
     ##if exists assign usrpwd and proxy
-    if(file.exists("~/.bbmriomics")) {
-        ##drop these three lines in the next release
-        usrpwdrp3 <- read.dcf("~/.bbmriomics", fields="usrpwd") ##for backward-compatibility                
-        usrpwdrp3 <- read.dcf("~/.bbmriomics", fields="usrpwdrp3")
-        usrpwdrp4 <- read.dcf("~/.bbmriomics", fields="usrpwdrp4")
+    configFiles <- c("~/.bbmriomics", "~/.biosrutils") ##for backward compatibility BIOSRutils
+    if(any(file.exists(configFiles))) {
+        configFile <- configFiles[file.exists(configFiles)]        
+        usrpwdrp3 <- read.dcf(configFile, fields="usrpwd") ##for backward compatibility                
+        usrpwdrp3 <- read.dcf(configFile, fields="usrpwdrp3")
+        usrpwdrp4 <- read.dcf(configFile, fields="usrpwdrp4")
 
-        proxy <- read.dcf("~/.bbmriomics", fields="proxy")
+        proxy <- read.dcf(configFile, fields="proxy")
         
         assign("RP3_MDB_USRPWD", as.character(usrpwdrp3), envir=as.environment(paste0("package:", pkgname)))
         assign("RP4_DB_USRPWD", as.character(usrpwdrp4), envir=as.environment(paste0("package:", pkgname)))

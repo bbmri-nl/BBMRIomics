@@ -1,5 +1,6 @@
 
 SRC=/virdir/Scratch/RP3_data
+HOST=bios-vm
 BIOBANKS=RS PAN CODAM LLS LL NTR
 MDB=https://metadatabase.bbmrirp3-lumc.surf-hosted.nl:6984/bios
 RDB=https://metadatabase.bbmrirp3-lumc.surf-hosted.nl:6984/rp3_analysis
@@ -7,7 +8,7 @@ USRPWD='usrpwd'
 
 R_PACKAGE_DIR=/opt/R/microsoft-r/3.3/lib64/R/library/BBMRIomics
 
-ifeq ($(shell hostname),packer-ubuntu-16)
+ifeq ($(shell hostname),$(HOST))
 	run=init methylation rnaseq metabolomics
 ##views
 else
