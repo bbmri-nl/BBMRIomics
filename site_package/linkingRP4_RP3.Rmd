@@ -61,6 +61,9 @@ Now we can select the overlapping individuals and create a
 ```{r, summarizedexperiments, eval=FALSE}
 library(GenomicFeatures)
 library(SummarizedExperiment)
+##drop duplicates 
+subjects <- subset(subjects, real_bios_id != "LLS-589") 
+
 colnames(subjects)[2] <- "subject_id" ##I find the naming a bit confusing
 colnames(samples)[3] <- "sample_id"
 id <- match(subjects$subject_id, samples$subject_id)
@@ -70,6 +73,9 @@ measurements <- measurements[id,]
 m <- measurements[,-c(1:2)]
 m <- apply(m, 1, as.numeric)
 rownames(m) <- colnames(measurements)[-c(1:2)]
+##add bios uuid for linking to other omics data
+mid <- match(colData$real_bios_id, ids$bios_id)
+colnames(m) <- ids$uuid[mid]
 metabolomicData <- SummarizedExperiment(assays=list(measurements=m),
                                         colData=DataFrame(colData))
 save(metabolomicData, file=file.path(VM_BASE_DATA, "RP4", "metabolomics_RP3RP4_overlap.RData"))
@@ -81,7 +87,7 @@ DNAm data. The data set can be loaded using `data(metabolomicData)`.
 
 
 ```{r metabolomic}
- data(metabolomics_RP3RP4_overlap)
+data(metabolomics_RP3RP4_overlap)
 head(colData(metabolomicData))
 head(assays(metabolomicData)$measurements)
 ```

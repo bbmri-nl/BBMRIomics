@@ -20,3 +20,42 @@ bibliography: BBMRIomics.bib
 ```{r}
 "some R code..."
 ```
+
+```{r}
+library(BBMRIomics)
+dir(file.path(VM_BASE_ANALYSIS, "BBMRIomics/data"))
+filex <- file.path(VM_BASE_ANALYSIS, "BBMRIomics/data/output.vcf")
+library(VariantAnnotation)
+vcf <- readVcf(filex, "hg19")
+rnaCalls <- genotypeToSnpMatrix(vcf)$genotypes
+rnaCalls <- t(matrix(as.numeric(rnaCalls),
+                     nrow=nrow(rnaCalls),
+                     ncol=ncol(rnaCalls),
+                     dimnames=dimnames(rnaCalls)))
+dim(rnaCalls)
+colnames(rnaCalls) <- gsub("\\.variant.*$", "", colnames(rnaCalls))
+rnaCalls[1:5, 1:5]
+data(rnaSeqData_ReadCounts_cleaned)
+dim(counts)
+missing <- setdiff(counts$run_id, colnames(rnaCalls))
+missing ##I don't know why
+```
+
+```{r}
+source(file.path(path.package("BBMRIomics"), "scripts/Genotyping_Helpers.R"), verbose=FALSE)
+typex <- "RNA"
+typey <- "RNA"
+filex <- file.path(VM_BASE_ANALYSIS, "BBMRIomics/data/output.vcf")
+##filey <- file.path(VM_BASE_ANALYSIS, "BBMRIomics/data/DNAm_snps.RData")
+cohort <- "ALL"
+verbose <- TRUE
+genotyping(typex, typey, filex, filey, cohort=cohort, out=NULL, verbose=verbose)
+```
+
+
+
+
+
+
+
+

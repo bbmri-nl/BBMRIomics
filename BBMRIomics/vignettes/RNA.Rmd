@@ -54,7 +54,7 @@ makeTxDbPackage(txdb,
                 version = "0.0.1",
                 maintainer = "m. van Iterson <m.van_iterson@lumc.nl>",
                 author = "m. van Iterson",
-                destDir= ".",                
+                destDir= ".",
                 license = "Artistic-2.0",
                 pkgname = "TxDb.Hsapiens.Ensembl.v71")
 
@@ -74,32 +74,30 @@ genes(txdb)
 ## Prepare sample metadata ##
 
 ```{r, coldatarna, eval=FALSE}
-library(BIOSRutils)
-MDB <- "https://metadatabase.bbmrirp3-lumc.surf-hosted.nl:6984/bios/"
-RDB <- "https://metadatabase.bbmrirp3-lumc.surf-hosted.nl:6984/rp3_analysis/"
-
-ids <- getView("getIds")
-
-runs <- getView("getRNASeqRuns")
+library(BBMRIomics)
+ids <- getView("getIds", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
+runs <- getView("getRNASeqRuns", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
 runs <- runs[!duplicated(runs$run_id),] ##drop overlapping freezes
-runs <- subset(runs, qc == "passed")
-runs <- subset(runs, type != "replicate")
+runs <- subset(runs, qc == "passed") ##keep those passing qc
+runs <- subset(runs, type != "replicate") ##drop replicated
 
-merged <- subset(runs, type == "merged")
-merged <- subset(merged, !(run_id %in% c("BD1NYRACXX-5-27_AC1JL5ACXX-6-27", "AC1C40ACXX-6-15_BD2D5MACXX-6-15")))
+##now we have still original, reruns and merged runs
+merged <- subset(runs, type == "merged") ##select
+merged <- subset(merged, !(run_id %in% c("BD1NYRACXX-5-27_AC1JL5ACXX-6-27", "AC1C40ACXX-6-15_BD2D5MACXX-6-15"))) ##these have were already merged in freeze one and have new merges so drop
 original <- subset(runs, !(ids %in% merged$ids) & type == "original")
-
 runs <- rbind(merged, original)
+dim(runs)
+table(runs$type)
 
 mid <- match(runs$ids, ids$ids)
 runs$uuid <- ids$uuid[mid]
 
-rdb <- getView("getStats", url=RDB)
+rdb <- getView("getStats", usrpwd=RP3_MDB_USRPWD, url=RP3_RDB)
 rdb <- do.call('cbind', rdb)
 
 runs <- merge(runs, rdb, by.x="run_id", by.y="ids", all.x=TRUE)
 
-relations <- getView("getRelations")
+relations <- getView("getRelations", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
 relations <- merge(relations, runs[, c("run_id", "ids")], by="ids") ##add run_id to relations
 ##renaming relation_id's to uuid's
 mid <- match(relations$relation_id, ids$ids)
@@ -107,12 +105,42 @@ relations$relation_uuid <- NA
 relations$relation_uuid[!is.na(mid)] <- ids$uuid[mid[!is.na(mid)]]
 
 ##harmonize phenotypes
+source(file.path(path.package("BBMRIomics"), "scripts/Phenotype_Helpers.R"), verbose=FALSE)
+source(file.path("~/BBMRIomics/BBMRIomics", "inst/scripts/Phenotype_Helpers.R"), verbose=FALSE)
 phenotypes <- cleanPhenotypes()
 colData <- merge(phenotypes, runs, by="ids", all.y=TRUE) ##add phenotypes
 
 colData <- merge(colData, relations[,c("run_id", "gonl_id", "relation_type", "relation_uuid")], by="run_id", all.x=TRUE) ##add relations
 
-colData <- .reduceRelations(colData)
+table(colData$relation_type)
+
+unrel <- subset(colData, is.na(relation_type) & !duplicated(uuid))
+rel <- subset(colData, !is.na(relation_type) & !is.na(relation_uuid) & !duplicated(uuid))
+
+intersect(unrel$uuid, rel$relation_uuid) ##BIOSA71B9B5A? Fix this
+intersect(unrel$relation_uuid, rel$uuid) ##?
+
+rel$pairs <- apply(rel[, c("uuid", "relation_uuid")], 1, function(x) paste0(sort(x), collapse=":"))
+
+rel[order(rel$pairs)[1:10], c("uuid", "relation_uuid", "relation_type", "pairs")]
+
+##drop pairs
+rel <- rel[!duplicated(rel$pairs), ]
+rel[order(rel$pairs)[1:25], c("uuid", "relation_uuid", "relation_type", "pairs")]
+
+
+intersect(rel$uuid, rel$relation_uuid)
+
+id <- "BIOSECD69F26"
+subset(rel, uuid == id | relation_uuid == id, c(ids, uuid, relation_type, relation_uuid, pairs))
+
+
+
+
+colData <- rbind(unrel, rel[,-116])
+
+
+dim(colData)
 
 ##renaming columns
 colnames(colData) <- gsub("^type$", "run_type", colnames(colData))
@@ -126,13 +154,15 @@ colData <- colData[, !(colnames(colData) %in% c("ids", "rna_id", "freeze"))]
 
 rownames(colData) <- colData$uuid
 
-imputation <- getView("getImputations")
+imputation <- getView("getImputations", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
 hrc <- subset(imputation, imputation_reference=="HRC")
 
 uuids <- intersect(colData$uuid, hrc$uuid)
 colData <- colData[colData$uuid %in% uuids, ]
 mid <- match(colData$uuid, hrc$uuid)
 colData$hrc_id <- hrc$imputation_id[mid]
+dim(colData)
+
 ```
 
 
@@ -141,7 +171,7 @@ colData$hrc_id <- hrc$imputation_id[mid]
 ```{r, countdata, eval=FALSE}
 library(BiocParallel)
 register(MulticoreParam(8, log=TRUE))
-files <- list.files(file.path(RP3DATADIR, "RNASeq/v2.1.3/", "gene_read"), full.names=TRUE, pattern="gene.read.count.gz$")
+files <- list.files(file.path(VM_BASE_DATA, "RNASeq/v2.1.3/", "gene_read"), full.names=TRUE, pattern="gene.read.count.gz$")
 ##select runs
 
 files <- files[gsub(".gene.read.count.gz", "", basename(files)) %in% colData$run_id]
@@ -172,7 +202,7 @@ rowRanges
 head(colData)
 counts[1:5, 1:5]
 counts <- makeSE(counts, colData, rowRanges, note="")
-save(counts, file = file.path("/virdir/Scratch/RP3_data/RNASeq/v2.1.3/gene_read/", paste0("rnaSeqData_ReadCounts_cleaned.RData")))
+save(counts, file = file.path(VM_BASE_DATA, "RNASeq/v2.1.3/gene_read/", paste0("rnaSeqData_ReadCounts_cleaned.RData")))
 ```
 
 ## Miscellaneous ##

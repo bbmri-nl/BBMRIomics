@@ -59,3 +59,11 @@ pheno$sex[!sex] <- "male"
 head(pheno)
 
 write.table(pheno, file="RP4_basic_overview.csv", row.names=FALSE, quote=FALSE, sep=",")
+
+##fix these relations once mdb is running again!!!
+##Fri Mar  3 13:02:43 2017
+##M van Iterson
+relations <- getView("getRelations", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
+complrel <- relations[!is.na(relations$relation_type), ]
+setdiff(complrel$ids, complrel$relation_id)
+setdiff(complrel$relation_id, complrel$ids)
