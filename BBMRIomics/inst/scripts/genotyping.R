@@ -9,6 +9,10 @@ option_list <- list(
                 help="Omic type of dataset 1 ('GoNL', 'HRC', 'DNAm', 'RNA')", metavar="character"),
     make_option(c("-y", "--typey"), type="character", default=NULL,
                 help="Omic type of dataset 2 ('GoNL', 'HRC', 'DNAm', 'RNA')", metavar="character"),
+    make_option(c("-fx", "--filex"), type="character", default=NULL,
+                help="File (full path) for typex", metavar="character"),
+    make_option(c("-fy", "--filey"), type="character", default=NULL,
+                help="File (full path) for typey", metavar="character"),
     make_option(c("-c", "--cohort"), type="character", default="ALL",
                 help="name cohort ('ALL', 'CODAM', 'LL', 'LLS', 'NTR', 'PAN', 'RS')", metavar="character"),
     make_option(c("-o", "--out"), type="character", default=".",
@@ -28,11 +32,25 @@ if (is.null(opt$typex)){
     opt$typex <- match.arg(opt$typex, choices=c("GoNL", "HRC", "DNAm", "RNA"))
 }
 
+if (is.null(opt$filex) | !file.exists(opt$filex)){
+    print_help(opt_parser)
+    stop("At least one existing omic type file should be given.", call.=FALSE)
+}
+
+if (is.null(opt$typey) & !is.null(opt$filey)) {
+    stop("You should provide to omic type of file:", opt$filey)
+}
+
+if (!is.null(opt$typey) & is.null(opt$filey)) {
+    stop("You should provide a file for omic type:", opt$typey)
+}
+
 if (is.null(opt$typey)) {
     opt$typey <- opt$typex
 } else {
     opt$typex <- match.arg(opt$typex, choices=c("GoNL", "HRC", "DNAm", "RNA"))
 }
+
 
 opt$cohort <- match.arg(opt$cohort, choices=c("ALL", "CODAM", "LL", "LLS", "NTR", "PAN", "RS"))
 
@@ -99,8 +117,8 @@ RNACalls <- function(vcfFile){
     suppressPackageStartupMessages({
         require(VariantAnnotation)
         require(Rsamtools)
-    })    
-    
+    })
+
     vcf <- readVcf(vcfFile, "hg19")
     rnaCalls <- genotypeToSnpMatrix(vcf)$genotypes
     rnaCalls <- t(matrix(as.numeric(rnaCalls), nrow=nrow(rnaCalls), ncol=ncol(rnaCalls), dimnames=dimnames(rnaCalls)))
@@ -251,12 +269,12 @@ getRelations <- function(type, verbose){
     relations
 }
 
-genotyping <- function(typex, typey, cohort, out, verbose) {
+genotyping <- function(typex, typey, filex, filey, cohort, out, verbose) {
 
     suppressPackageStartupMessages({
         require(BBMRIomics)
-        require(GenomicRanges)        
-        source(file.path(path.package("BBMRIomics"), "scripts/Genotyping_Helpers.R"), verbose=FALSE)        
+        require(GenomicRanges)
+        source(file.path(path.package("BBMRIomics"), "scripts/Genotyping_Helpers.R"), verbose=FALSE)
     })
 
     message("Start genotyping...")
@@ -277,8 +295,9 @@ genotyping <- function(typex, typey, cohort, out, verbose) {
 
     ##hard-coded
     ##RNAFile <- file.path(VM_BASE_ANALYSIS, "BBMRIomics/data/output.vcf")
-    RNAFile <- file.path("~/output.vcf")
-    DNAmFile <- file.path(VM_BASE_ANALYSIS, "BBMRIomics/data/DNAm_snps.RData")
+    ##RNAFile <- file.path("~/output.vcf")
+    ##DNAmFile <- file.path(VM_BASE_ANALYSIS, "BBMRIomics/data/DNAm_snps.RData")
+    
     DNAFile <- file.path(VM_BASE_ANALYSIS, "BBMRIomics/data/SNP_positions.bed")
 
     if(any(typey %in% c("DNAm", "RNA")) & any(typex %in% c("HRC", "GoNL"))) {
@@ -291,8 +310,8 @@ genotyping <- function(typex, typey, cohort, out, verbose) {
     xCalls <- switch(typex,
                      "GoNL"= DNACalls(cohort, file = DNAFile, type="GoNL", verbose = verbose),
                      "HRC"= DNACalls(cohort, file = DNAFile, type="HRC", verbose = verbose),
-                     "DNAm"= DNAmCalls(cohort, DNAmFile, verbose),
-                     "RNA"= RNACalls(RNAFile)) ##no subsetting on cohorts yet
+                     "DNAm"= DNAmCalls(cohort, filex, verbose),
+                     "RNA"= RNACalls(filex)) ##no subsetting on cohorts yet
 
     if(typey != typex) {
         if(typex == "RNA") {
@@ -314,8 +333,8 @@ genotyping <- function(typex, typey, cohort, out, verbose) {
         yCalls <- switch(typey,
                          "GoNL"= DNACalls(cohort, snps = snps, type="GoNL", verbose = verbose),
                          "HRC"= DNACalls(cohort, snps = snps, type="HRC", verbose = verbose),
-                         "DNAm"= DNAmCalls(cohort, DNAmFile, verbose),
-                         "RNA"= RNACalls(RNAFile)) ##no subsetting on cohorts yet
+                         "DNAm"= DNAmCalls(cohort, filey, verbose),
+                         "RNA"= RNACalls(filey)) ##no subsetting on cohorts yet
 
         if(typex == "DNAm") {
             mid <- match(rownames(yCalls), names(map))
@@ -372,7 +391,7 @@ genotyping <- function(typex, typey, cohort, out, verbose) {
         if(typey == typex)
             mm$ids.y <- runs$ids[match(mm$colnames.y, runs$run_id)]
         else if (typey == "HRC") {
-            
+
             runs <- getView("getImputations", verbose=verbose)
             runs <- subset(runs, imputation_reference == "HRC")
             colnames(runs)[colnames(runs) == "imputation_id"] <- "run_id"
@@ -383,9 +402,9 @@ genotyping <- function(typex, typey, cohort, out, verbose) {
             colnames(runs)[colnames(runs) == "gonl_id"] <- "run_id"
 
         }
-        
+
         mm <- merge(mm, runs[, c("run_id", "ids")], by.x="colnames.y", by.y="run_id")
-        
+
         ##colnames(mm) <-  c("colnames.y", "colnames.x", "mean", "var", "relation", "predicted", "ids.x", "ids.y")
         mm <- mm[, c( "mean", "var", "relation", "predicted", "colnames.x", "ids.x", "colnames.y", "ids.y")]
         mm[, 1:2] <- round(mm[, 1:2], 3)
@@ -397,8 +416,10 @@ genotyping <- function(typex, typey, cohort, out, verbose) {
 
 typex <- "RNA"
 typey <- "RNA"
+filex <- "~/output.vcf"
+filey <- file.path(VM_BASE_ANALYSIS, "BBMRIomics/data/DNAm_snps.RData")
 cohort <- "ALL"
 verbose <- TRUE
 
-genotyping(typex, typey, cohort=cohort, out=NULL, verbose=verbose)
-##genotyping(typex=opt$typex, typey=opt$typey, cohort=opt$cohort, out=opt$out, verbose=opt$verbose)
+genotyping(typex, typey, filex, filey, cohort=cohort, out=NULL, verbose=verbose)
+##genotyping(typex=opt$typex, typey=opt$typey, filex=opt$filex, filey=opt$filey, cohort=opt$cohort, out=opt$out, verbose=opt$verbose)
