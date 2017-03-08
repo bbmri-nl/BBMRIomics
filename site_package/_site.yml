@@ -24,8 +24,6 @@ navbar:
         - text: "GoNL"
           href: GoNL.html 
         - text: "Integrated analyses"
-        - text: "Linking RP4 with RP3"
-          href: linkingRP4_RP3.html
     - text: "Apps"
       menu:
         - text: "DNam qc CODAM"
@@ -40,8 +38,21 @@ navbar:
           href: http://bios-vm.bbmrirp3-lumc.surf-hosted.nl:8008/BBMRIomics/DNAm/RS
         - text: "DNam qc PAN"            
           href: http://bios-vm.bbmrirp3-lumc.surf-hosted.nl:8008/BBMRIomics/DNAm/PAN      
-  right:
-    - text: "Contribute"
-      href: contribute.html	              
+  right:    
+    - text: "Developers"
+      menu:
+        - text: "Access metadatabase"
+          href: metadatabase.html
+        - text: "Determining freeze 2"
+          href: freeze2.html
+        - text: "Creating Data Sets"
+        - text: "RNAseq"
+          href: create_RNA_datasets.html
+        - text: "DNAm"
+          href: create_DNAm_datasets.html          
+        - text: "Linking RP4 with RP3"
+          href: linkingRP4_RP3.html          
+        - text: "Contribute"
+          href: contribute.html	              
     - text: "About"
       href: about.html	          

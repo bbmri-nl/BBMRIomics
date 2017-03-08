@@ -19,7 +19,30 @@ The aim of the `BBMRIomics`-package is to make integrated analyses,
 within the BIOS data collection or across BBMRI projects, as easy as
 possible, using the R-programming language[@Rsite].
 
+see also our [wiki](http://wiki.bbmri.nl/wiki/BIOS_start-).
 
+## BIOS Forum ##
 
+We will be using the Biostars forum to answer any of your questions
+concerning the BIOS datasets. When using the correct tags during
+creation of your post there, we can easily see it.
 
+Please keep in mind that Biostars is a public forum and that any posts
+you make will be visible on the main page. As such, don't post any
+large snippets of data and make sure that any IDs and paths are
+censored.
+
+When posting your question, please include the following tag:
+
+ * bbmri-nl-bios
+
+Please also include in your title the following:
+
+ * [bbmri-nl-bios]
+ * start with the dataset in question, so Genotypes, Phenotypes, RNA-Seq or Methylation.
+ * Example: "[bbmri-nl-bios] Genotypes How can I find HRC imputation qualities?"
+
+Any questions posted this way will appear on [forum](https://www.biostars.org/t/bbmri-nl-bios/).
+
+## References ##
 

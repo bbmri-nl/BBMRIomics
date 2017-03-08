@@ -10,13 +10,19 @@ USRPWD='usrpwd'
 R_PACKAGE_DIR=/opt/R/microsoft-r/3.3/lib64/R/library/BBMRIomics
 
 ifeq ($(shell hostname),$(HOST))
-	run=init methylation rnaseq metabolomics
+	run=doc install init methylation rnaseq metabolomics
 ##views
 else
 	run=stop
 endif
 
 all: $(run)
+
+doc:
+	R -e "devtools::document('/mnt/virdir/Backup/RP3_analysis/BBMRIomics/BBMRIomics')"
+
+install:
+	R --no-site-file --no-environ --no-save --no-restore --quiet CMD INSTALL /mnt/virdir/Backup/RP3_analysis/BBMRIomics/BBMRIomics  --library='/opt/R/microsoft-r/3.3/lib64/R/library'
 
 init:
 	mkdir -p $(R_PACKAGE_DIR)/views

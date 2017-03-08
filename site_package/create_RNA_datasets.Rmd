@@ -1,5 +1,5 @@
 ---
-title: "RNA "
+title: "RNA"
 output:
   html_document:
     highlight: tango
@@ -38,18 +38,15 @@ using a `TxDb`-package see
 *** Note this requires sudo rights to install and use sudo -i to load /etc/profile with global R_SITE_LIB =/opt/... ***
 
 ```{r, txdb, eval=FALSE}
-
 library(GenomicFeatures)
 library(rtracklayer)
 gtf <- "ftp://ftp.ensembl.org/pub/release-71/gtf/homo_sapiens/Homo_sapiens.GRCh37.71.gtf.gz"
 txdb <- makeTxDbFromGFF(gtf, organism="Homo sapiens")
-
 ##Hack by James MacDonald (https://support.bioconductor.org/p/89855/)
 con <- dbconn(txdb)
 ## insert a Resource URL entry in the metadata table,
 ## pointing to the ftp site where the data were procured
 DBI::dbGetQuery(con, "INSERT INTO metadata VALUES ('Resource URL', 'ftp://ftp.ensembl.org/pub/release-71/gtf/homo_sapiens/Homo_sapiens.GRCh37.71.gtf.gz');")
-
 makeTxDbPackage(txdb,
                 version = "0.0.1",
                 maintainer = "m. van Iterson <m.van_iterson@lumc.nl>",
@@ -57,10 +54,8 @@ makeTxDbPackage(txdb,
                 destDir= ".",
                 license = "Artistic-2.0",
                 pkgname = "TxDb.Hsapiens.Ensembl.v71")
-
 library(devtools)
 install("./TxDb.Hsapiens.Ensembl.v71")
-
 ```
 
 Now can use the Ensembl v71 annoation like any other `TxDb`-package.
@@ -75,94 +70,41 @@ genes(txdb)
 
 ```{r, coldatarna, eval=FALSE}
 library(BBMRIomics)
-ids <- getView("getIds", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
-runs <- getView("getRNASeqRuns", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
-runs <- runs[!duplicated(runs$run_id),] ##drop overlapping freezes
-runs <- subset(runs, qc == "passed") ##keep those passing qc
-runs <- subset(runs, type != "replicate") ##drop replicated
+colData <- read.table(file=file.path(VM_BASE_ANALYSIS, "BBMRIomics/BBMRIomics/data", "freeze2_rna_identifiers.csv"), header=TRUE, sep=",", as.is=TRUE)
 
-##now we have still original, reruns and merged runs
-merged <- subset(runs, type == "merged") ##select
-merged <- subset(merged, !(run_id %in% c("BD1NYRACXX-5-27_AC1JL5ACXX-6-27", "AC1C40ACXX-6-15_BD2D5MACXX-6-15"))) ##these have were already merged in freeze one and have new merges so drop
-original <- subset(runs, !(ids %in% merged$ids) & type == "original")
-runs <- rbind(merged, original)
-dim(runs)
-table(runs$type)
-
-mid <- match(runs$ids, ids$ids)
-runs$uuid <- ids$uuid[mid]
-
+##add alignment metrics
 rdb <- getView("getStats", usrpwd=RP3_MDB_USRPWD, url=RP3_RDB)
 rdb <- do.call('cbind', rdb)
-
-runs <- merge(runs, rdb, by.x="run_id", by.y="ids", all.x=TRUE)
-
-relations <- getView("getRelations", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
-relations <- merge(relations, runs[, c("run_id", "ids")], by="ids") ##add run_id to relations
-##renaming relation_id's to uuid's
-mid <- match(relations$relation_id, ids$ids)
-relations$relation_uuid <- NA
-relations$relation_uuid[!is.na(mid)] <- ids$uuid[mid[!is.na(mid)]]
+colData <- merge(colData, rdb, by.x="run_id", by.y="ids", all.x=TRUE)
 
 ##harmonize phenotypes
 source(file.path(path.package("BBMRIomics"), "scripts/Phenotype_Helpers.R"), verbose=FALSE)
-source(file.path("~/BBMRIomics/BBMRIomics", "inst/scripts/Phenotype_Helpers.R"), verbose=FALSE)
 phenotypes <- cleanPhenotypes()
-colData <- merge(phenotypes, runs, by="ids", all.y=TRUE) ##add phenotypes
 
-colData <- merge(colData, relations[,c("run_id", "gonl_id", "relation_type", "relation_uuid")], by="run_id", all.x=TRUE) ##add relations
+##add phenotypes
+colData <- merge(colData, phenotypes, by="ids", all.x=TRUE) 
 
-table(colData$relation_type)
+##add genotype ids
+imputation <- getView("getImputations", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
+hrc <- subset(imputation, imputation_reference == "HRC")
+colData <- merge(colData, hrc[, c("ids", "imputation_id")], by="ids", all.x=TRUE)
 
-unrel <- subset(colData, is.na(relation_type) & !duplicated(uuid))
-rel <- subset(colData, !is.na(relation_type) & !is.na(relation_uuid) & !duplicated(uuid))
+##add uuid and gonl_id
+ids <- getView("getIds", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
+colData <- merge(colData, ids[, c("ids", "uuid", "gonl_id", "biobank_id")], by="ids", all.x=TRUE)
 
-intersect(unrel$uuid, rel$relation_uuid) ##BIOSA71B9B5A? Fix this
-intersect(unrel$relation_uuid, rel$uuid) ##?
-
-rel$pairs <- apply(rel[, c("uuid", "relation_uuid")], 1, function(x) paste0(sort(x), collapse=":"))
-
-rel[order(rel$pairs)[1:10], c("uuid", "relation_uuid", "relation_type", "pairs")]
-
-##drop pairs
-rel <- rel[!duplicated(rel$pairs), ]
-rel[order(rel$pairs)[1:25], c("uuid", "relation_uuid", "relation_type", "pairs")]
-
-
-intersect(rel$uuid, rel$relation_uuid)
-
-id <- "BIOSECD69F26"
-subset(rel, uuid == id | relation_uuid == id, c(ids, uuid, relation_type, relation_uuid, pairs))
-
-
-
-
-colData <- rbind(unrel, rel[,-116])
-
-
-dim(colData)
-
-##renaming columns
-colnames(colData) <- gsub("^type$", "run_type", colnames(colData))
-
-head(colData)
 ##ordering
-first <- match(c("ids", "uuid", "biobank_id", "run_type", "qc", "relation_type", "relation_uuid", "gonl_id", "run_id"), colnames(colData))
+first <- match(c("ids", "uuid", "biobank_id", "gonl_id", "run_id"), colnames(colData))
 
 colData <- cbind(colData[, first], colData[, -first])
-colData <- colData[, !(colnames(colData) %in% c("ids", "rna_id", "freeze"))]
-
 rownames(colData) <- colData$uuid
 
-imputation <- getView("getImputations", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
-hrc <- subset(imputation, imputation_reference=="HRC")
-
-uuids <- intersect(colData$uuid, hrc$uuid)
-colData <- colData[colData$uuid %in% uuids, ]
-mid <- match(colData$uuid, hrc$uuid)
-colData$hrc_id <- hrc$imputation_id[mid]
 dim(colData)
+head(colData)
 
+table(!is.na(colData$gonl_id))
+table(!is.na(colData$imputation_id))
+table(!(is.na(colData$imputation_id) & is.na(colData$gonl_id)))
 ```
 
 
@@ -201,8 +143,15 @@ rowRanges <- keepSeqlevels(rowRanges, c(1:22, "X", "Y", "MT"))
 rowRanges
 head(colData)
 counts[1:5, 1:5]
-counts <- makeSE(counts, colData, rowRanges, note="")
+counts <- makeSE(counts, colData[,-1], rowRanges, note="A maximal set of unrelated individuals for which both good quality RNA sequencing and DNA methylation data could be generated.")
 save(counts, file = file.path(VM_BASE_DATA, "RNASeq/v2.1.3/gene_read/", paste0("rnaSeqData_ReadCounts_cleaned.RData")))
+tmp <- counts
+for(biobank in unique(tmp$biobank_id)) {
+    counts <- tmp[, tmp$biobank_id == biobank]
+    save(counts, file = file.path(VM_BASE_DATA, "RNASeq/v2.1.3/gene_read/", paste0("rnaSeqData_ReadCounts_", biobank, "_cleaned.RData")))
+}
+
+
 ```
 
 ## Miscellaneous ##

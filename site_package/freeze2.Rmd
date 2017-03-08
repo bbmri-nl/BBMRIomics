@@ -1,0 +1,181 @@
+---
+title: "Determining Freeze 2"
+output:
+  html_document:
+    highlight: tango
+    toc: true
+    toc_float:
+      collapsed: false
+bibliography: BBMRIomics.bib
+---
+
+```{r, child="_setup.Rmd"}
+```
+
+The aim of the BIOS consortium is to generate RNA sequencing and DNA
+methylation data for 4000 individuals that have been selected for
+having array-based genotypes or whole sequencing data (GoNL) already
+available. Furthermore, the generated data should pass a set of
+quality control metrics.
+
+The following code shows how to extract the RNA sequencing and DNA
+methylation samples that pass quality control.
+
+
+```{r}
+ids <- getView("getIds", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
+
+rna <- getView("getRNASeqRuns", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
+rna <- rna[!duplicated(rna$run_id),] ##drop overlapping freezes
+rna <- subset(rna, qc == "passed") ##keep those passing qc
+rna <- subset(rna, type != "replicate") ##drop replicated
+##now we have still original, reruns and merged runs
+merged <- subset(rna, type == "merged") ##select
+merged <- subset(merged, !(run_id %in% c("BD1NYRACXX-5-27_AC1JL5ACXX-6-27", "AC1C40ACXX-6-15_BD2D5MACXX-6-15"))) ##these have were already merged in freeze one and have new merges so drop
+original <- subset(rna, !(ids %in% merged$ids) & type == "original")
+rna <- rbind(merged, original)
+
+dnam <- getView("getMethylationRuns", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
+dnam <- dnam[!duplicated(dnam$run_id),] ##drop overlapping freezes
+dnam <- subset(dnam, qc == "passed") ##keep those passing qc
+dnam <- subset(dnam, type != "replicate") ##drop replicated
+
+##small checks
+dim(ids)
+dim(rna)
+dim(dnam)
+
+sum(duplicated(ids$ids))
+sum(duplicated(rna$ids))
+sum(duplicated(dnam$ids))
+
+library(limma)
+
+df <- data.frame(rna = ids$ids %in% rna$ids,
+                 dnam = ids$ids %in% dnam$ids)
+colSums(df)
+vc <- vennCounts(df)
+vc
+vennDiagram(vc)
+```
+
+Another requirement for Freeze 2 is to have a maximal set of unrelated
+individuals for which both RNA sequencing and dna methylation data
+could be generated.
+
+
+```{r}
+relations <- getView("getRelations", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
+relations <- subset(relations, !is.na(relation_id))
+all(relations$ids %in% relations$relation_id) ##relations consistent
+length(relations$ids)
+length(unique(relations$ids))
+table(relations$relation_type)
+
+getRelation <- function(id, relations) as.character(relations$id[relations$relation_id %in% id])
+
+getFamily <- function(id, relations) {
+    fam <- id
+    id <- getRelation(id, relations)
+    while( length(setdiff(id, fam)) > 0 ) {
+        id <- setdiff(id, fam)
+        fam <- c(fam, id)
+        id <- getRelation(id, relations)
+    }
+    fam
+}
+
+relations$family_id <- NA
+famId <- 0
+for(i in 1:nrow(relations)) {
+    id <- as.character(relations$ids)[i]
+    family <- getFamily(id, relations)
+
+    if(all(is.na(relations$family_id[relations$ids %in% family]))) {
+        ##message("adding new family...")
+        famId <- famId + 1
+        relations$family_id[relations$ids %in% family] <- famId
+    }
+}
+
+max(relations$family_id)
+
+famSizes <- table(relations$family_id)
+table(famSizes)
+
+head(names(famSizes[famSizes==2]))
+subset(relations, family_id == 23)
+head(names(famSizes[famSizes==4]))
+subset(relations, family_id == 1)
+head(names(famSizes[famSizes==12]))
+subset(relations, family_id == 151)
+head(names(famSizes[famSizes==28]))
+subset(relations, family_id == 245)
+```
+
+Now we can selected the maximal unrelated individuals e.g. in case of
+GoNL trio's if all have dnam and rna chose the parents; to maximize the
+number of individuals. 
+
+The rna or dnam freeze 2 is extended with unrelated individuals having
+only rna or dnam. 
+
+
+```{r}
+reduceRelations <- function(ids, relations) {
+
+    rels <- relations[relations$ids %in% ids,]
+
+    selection <- function(fam) {
+        if(sum(fam$relation_type == "has child") >= 2) { ##both parents have rna/dnam
+            ##message("family having both parents with both rna/dnam!")
+            return( as.character(fam$ids[fam$relation_type == "has child"]) )
+        } else if( sum(grepl("twin", fam$relation_type)) >= 1 ) { ##return single twin
+            ##message("family with at least one twin with both rna/dnam!")
+            return( as.character(fam$ids[which(grepl("twin", fam$relation_type))[1]]) )
+        } else {
+            ##message("family with at least on member having both rna/dnam!")
+            return( as.character(fam$ids[1] ) ) ##return any other single family member with complete rna/dnam
+        }
+    }
+
+    selected <- c()
+    for(i in unique(rels$family_id)) {
+        fam <- subset(rels, family_id == i)
+        selected <- c(selected, selection(fam))
+    }
+
+    selected <- unique(selected) ##relations of parents having two children
+    c(setdiff(ids, rels$ids), selected)
+}
+
+##unrelated having both rna and dnam
+ovl <- intersect(rna$ids, dnam$ids)
+ovlRed <- reduceRelations(ovl, relations)
+length(ovlRed)
+length(reduceRelations(ovlRed, relations)) ##check
+
+##remove all family members in remaining rna/dnam
+ovlRel <- unlist(lapply(ovlRed, getFamily, relations))
+
+srna <- subset(rna, !(ids %in% c(ovlRed, ovlRel)))
+##and get the unrelated set
+rnaOnly <- reduceRelations(srna$ids, relations)
+rnaF2 <- subset(rna, ids %in% c(ovlRed, rnaOnly))
+dim(rnaF2)
+
+sdnam <- subset(dnam, !(ids %in% c(ovlRed, ovlRel)))
+##and get the unrelated set
+dnamOnly <- reduceRelations(sdnam$ids, relations)
+dnamF2 <- subset(dnam, ids %in% c(ovlRed, dnamOnly))
+dim(dnamF2)
+
+freeze2 <- merge(rnaF2[,c("ids", "run_id")], dnamF2[,c("ids", "run_id")], by="ids", suffixes=c("_rna","_dnam"))
+head(freeze2)
+dim(freeze2)
+
+write.table(freeze2, file=file.path(VM_BASE_ANALYSIS, "BBMRIomics/BBMRIomics/data", "freeze2_overlap_identifiers.csv"), row.names=FALSE, quote=FALSE, sep=",")
+write.table(rnaF2[, c("ids", "run_id")], file=file.path(VM_BASE_ANALYSIS, "BBMRIomics/BBMRIomics/data", "freeze2_rna_identifiers.csv"), row.names=FALSE, quote=FALSE, sep=",")
+write.table(dnamF2[, c("ids", "run_id")], file=file.path(VM_BASE_ANALYSIS, "BBMRIomics/BBMRIomics/data", "freeze2_dnam_identifiers.csv"), row.names=FALSE, quote=FALSE, sep=",")
+
+```

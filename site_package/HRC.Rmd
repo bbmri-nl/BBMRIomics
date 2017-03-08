@@ -24,7 +24,7 @@ vcfs <- dir(file.path(VM_BASE_DATA, "HRC_Imputation",
 vcfs
 ```
 
-## Inspect eQTL ##
+## Inspect eQTL single SNP using `VariantAnnotation` ##
 
 Example eQTL from Zhernakova et al. [@Zhernakova2017] (see Figure 2:
 Identification of the strongest modifiers of eQTL effects).
@@ -59,6 +59,32 @@ dim(cnts)
 NOD2 <- cnts[rownames(cnts) == "ENSG00000167207", ]
 boxplot(NOD2~rs1981760)
 ```
+
+## Inspect Multiple SNPs using `getGenotypes` ##
+
+```{r, getgenotypes}
+library(SNPlocs.Hsapiens.dbSNP142.GRCh37)
+gr <- rsidsToGRanges(c("rs9302752", "rs1981760"))
+data(rnaSeqData_ReadCounts_cleaned)
+dosages <- getGenotypes(imputation_id = counts$hrc_id, biobank="ALL", snps=gr, type="HRC", geno="DS", BASE=VM_BASE_DATA)
+dosages[1:2, 1:5]
+```
+
+```{r, linkhrcrna2}
+dim(counts)
+dim(dosages)
+head(counts$hrc_id)
+head(colnames(dosages))
+cnts <- assays(counts)$data
+library(edgeR)
+
+library(limma)
+fit <- lmFit(cnts, dosages[1,]) ##run for 1 SNP
+tstat <- fit$coef/fit$stdev.unscaled/fit$sigma
+pval <- 2 * pnorm(-abs(tstat[,1]))
+head(sort(pval, decreasing=FALSE))
+```
+
 
 ## More information ##
 
