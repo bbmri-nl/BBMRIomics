@@ -41,18 +41,24 @@ navbar:
   right:    
     - text: "Developers"
       menu:
-        - text: "Access metadatabase"
-          href: metadatabase.html
-        - text: "Determining freeze 2"
-          href: freeze2.html
+        - text: "Quality Control"
+        - text: "DNAm"
+          href: DNAm_qc.html
+        - text: "RNAseq"
+          href: RNA_qc.html          
         - text: "Creating Data Sets"
         - text: "RNAseq"
           href: create_RNA_datasets.html
         - text: "DNAm"
           href: create_DNAm_datasets.html          
         - text: "Linking RP4 with RP3"
-          href: linkingRP4_RP3.html          
-        - text: "Contribute"
+          href: linkingRP4_RP3.html
+        - text: "Determining freeze 2"
+          href: freeze2.html          
+        - text: "Miscellaneous" 
+        - text: "Accessing the metadatabase"
+          href: metadatabase.html          
+        - text: "Contributing"
           href: contribute.html	              
     - text: "About"
       href: about.html	          

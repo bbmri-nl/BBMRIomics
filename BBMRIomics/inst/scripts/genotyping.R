@@ -1,5 +1,4 @@
-
-                                        #!/usr/bin/env Rscript
+#!/usr/bin/env Rscript
 
 suppressPackageStartupMessages({
     require(optparse)
@@ -57,9 +56,8 @@ opt$cohort <- match.arg(opt$cohort, choices=c("ALL", "CODAM", "LL", "LLS", "NTR"
 
 suppressPackageStartupMessages({
     require(BBBMRIomics)
-    source(file.path(path.package("BBMRIomics"), "scripts/Genotyping_Helpers.R"), verbose=FALSE)x
+    source(file.path(path.package("BBMRIomics"), "scripts/Genotyping_Helpers.R"), verbose=FALSE)
 })
-
 
 ## typex <- "RNA"
 ## typey <- "RNA"

@@ -28,7 +28,6 @@ Reference annotation used is from ensembl:
 [](http://ftp.ensembl.org/pub/release-71/gtf/homo_sapiens/Homo_sapiens.GRCh37.71.gtf.gz")
 but only chromosomes 1-22 and X, Y (and MT) are retained.
 
-
 ## Prepare gene annotation ##
 
 For convenience we create a `TxDb`-package. For more information on
@@ -72,7 +71,7 @@ genes(txdb)
 library(BBMRIomics)
 colData <- read.table(file=file.path(VM_BASE_ANALYSIS, "BBMRIomics/BBMRIomics/data", "freeze2_rna_identifiers.csv"), header=TRUE, sep=",", as.is=TRUE)
 
-##add alignment metrics
+##add methylation samplesheet
 rdb <- getView("getStats", usrpwd=RP3_MDB_USRPWD, url=RP3_RDB)
 rdb <- do.call('cbind', rdb)
 colData <- merge(colData, rdb, by.x="run_id", by.y="ids", all.x=TRUE)

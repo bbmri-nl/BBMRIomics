@@ -67,3 +67,37 @@ relations <- getView("getRelations", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
 complrel <- relations[!is.na(relations$relation_type), ]
 setdiff(complrel$ids, complrel$relation_id)
 setdiff(complrel$relation_id, complrel$ids)
+
+
+##linking GoNL phenotypes to fast-files
+##Harmen Draisma
+##Fri Mar 10 14:12:32 2017
+ids <- getView("getIds", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
+gonl <- subset(ids, !is.na(gonl_id))
+dim(gonl)
+##[1] 694  14
+
+##use harmonized phenotypes
+source(file.path(path.package("BBMRIomics"), "scripts/Phenotype_Helpers.R"), verbose=FALSE)
+phenotypes <- cleanPhenotypes()
+gonl <- merge(gonl, phenotypes, by="ids", all.x=TRUE)
+dim(gonl)
+##[1] 694  70
+
+fastq <- getView("getFastq", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
+gonl <- merge(gonl, fastq, by="ids")
+dim(gonl) 
+##[1] 516  74
+
+##not for all gonl_id's there is RNAseq data available
+##some individuals may have multiple fastq-files!
+
+head(gonl)
+
+files <- c(gonl$R1[1], gonl$R2[1])
+srm.path <- file.path(dirname(files[1])) 
+srm.path <- gsub("srm.*nl", SRM_BASE, srm.path) ##for curl access with need slightly different url                      
+files <- basename(files)
+srm.path
+files
+SRM2VM(srm.path, files, vm.path="~", proxy=GRID_PROXY)

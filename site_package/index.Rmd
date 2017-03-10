@@ -3,31 +3,35 @@ title: "BBMRIomics"
 bibliography: BBMRIomics.bib
 ---
 
-***need editting***
+Using the R-programming language [@Rsite], the BBMRIomics-package
+makes integrated analyses, across BBMRI-omics datasets, as easy as
+possible.
 
-The BIOS consortium has generated for around 4000 individuals, across
-six biobanks, transcriptomic and epigenomic (DNA methylation)
-data. Furthermore, basic phenotypic information has been collected for
-these individuals, as well as, detailed information on the data
-generation, i.e., sequencing machine, flow-cell, array position on the
-chip, date of hybridization, etc. Apart from the data generated and
-collected by the BIOS consortium other BBMRI consortia have generated
-data that can be linked to the BIOS data collection e.g., the GoNL
-sequencing data and the brainshake metabolomics data (RP4). 
+BBMRI-Omics is a collection of whole genome sequencing (BGI, N~750),
+transcriptome (RNA seq, N~4,000), methylome (Illumina 450K, N~4,000)
+and metabolome (Nightingale Health/Brainshake, N~25,000) data sets
+generated across more than 20 human cohorts in the Netherlands
+(referentie naar toekomstige website). In addition to the generated
+data, detailed technical information on data generation is provided,
+such as sequencing machine, flow-cell, array position on the chip,
+date of hybridization. Furthermore, phenotypic data on the individual
+level such as blood measures of cholesterol, C-reactive protein, and
+blood cell count. But also lifestyle factors as smoking, alcohol use
+in addition to antropometric measures as body mass index.
 
-The aim of the `BBMRIomics`-package is to make integrated analyses,
+The aim of the **BBMRIomics**-package is to make integrated analyses,
 within the BIOS data collection or across BBMRI projects, as easy as
-possible, using the R-programming language[@Rsite].
+possible, using the R-programming language.
 
 see also our [wiki](http://wiki.bbmri.nl/wiki/BIOS_start-).
 
 ## BIOS Forum ##
 
-We will be using the Biostars forum to answer any of your questions
-concerning the BIOS datasets. When using the correct tags during
+We will be using the `Biostars` forum to answer any of your questions
+concerning the BBMRI-Omics datasets. When using the correct tags during
 creation of your post there, we can easily see it.
 
-Please keep in mind that Biostars is a public forum and that any posts
+Please keep in mind that `Biostars` is a public forum and that any posts
 you make will be visible on the main page. As such, don't post any
 large snippets of data and make sure that any IDs and paths are
 censored.
