@@ -10,8 +10,7 @@ USRPWD='usrpwd'
 R_PACKAGE_DIR=/opt/R/microsoft-r/3.3/lib64/R/library/BBMRIomics
 
 ifeq ($(shell hostname),$(HOST))
-	run=doc install init methylation rnaseq metabolomics
-##views
+	run=doc install init rp3 rp4 views
 else
 	run=stop
 endif
@@ -27,22 +26,19 @@ install:
 init:
 	mkdir -p $(R_PACKAGE_DIR)/views
 
-methylation: $(BIOBANKS) BIOS
+rp3: $(BIOBANKS) BIOS
 
 $(BIOBANKS): 
 	ln -fs $(SRC)/IlluminaHumanMethylation450k/450k/$@/methData_Betas_$@_F2_cleaned.RData $(R_PACKAGE_DIR)/data/methData_Betas_$@_F2_cleaned.RData
 	ln -fs $(SRC)/IlluminaHumanMethylation450k/450k/$@/methData_Mvalues_$@_F2_cleaned.RData $(R_PACKAGE_DIR)/data/methData_Mvalues_$@_F2_cleaned.RData
+	ln -fs $(SRC)/RNASeq/v2.1.3/gene_read/rnaSeqData_ReadCounts_$@_cleaned.RData $(R_PACKAGE_DIR)/data/rnaSeqData_ReadCounts_$@_cleaned.RData
 
 BIOS:
 	ln -fs $(SRC)/IlluminaHumanMethylation450k/450k/methData_Betas_BIOS_F2_cleaned.RData $(R_PACKAGE_DIR)/data/methData_Betas_BIOS_F2_cleaned.RData
 	ln -fs $(SRC)/IlluminaHumanMethylation450k/450k/methData_Mvalues_BIOS_F2_cleaned.RData $(R_PACKAGE_DIR)/data/methData_Mvalues_BIOS_F2_cleaned.RData
+	ln -fs $(SRC)/RNASeq/v2.1.3/gene_read/rnaSeqData_ReadCounts_BIOS_cleaned.RData $(R_PACKAGE_DIR)/data/rnaSeqData_ReadCounts_BIOS_cleaned.RData
 
-rnaseq: readcounts
-
-readcounts:
-	ln -fs $(SRC)/RNASeq/v2.1.3/gene_read/rnaSeqData_ReadCounts_cleaned.RData $(R_PACKAGE_DIR)/data/rnaSeqData_ReadCounts_cleaned.RData
-
-metabolomics:
+rp4:
 	ln -fs $(SRC)/RP4/metabolomics_RP3RP4_overlap.RData $(R_PACKAGE_DIR)/data/metabolomics_RP3RP4_overlap.RData
 
 views:

@@ -57,14 +57,14 @@ table(!(is.na(colData$imputation_id) & is.na(colData$gonl_id)))
 
 
 ```{r}
-rowData <- getPlatform(platform="HM450", genome="hg19")
 library(BiocParallel)
 library(DNAmArray)
 library(impute)
 register(MulticoreParam(6, log=TRUE))
 path450k <- file.path(VM_BASE_DATA, "IlluminaHumanMethylation450k")
 
-for(biobank in unique(colData$biobank_id)) {
+##for(biobank in unique(colData$biobank_id)) {
+    biobank <- "NTR"	
     targets <- subset(colData, biobank_id == biobank)
     targets$Basename <- with(targets,
                              file.path(path450k, "raw", Sentrix_Barcode,
@@ -86,7 +86,7 @@ for(biobank in unique(colData$biobank_id)) {
     
     mid <- match(colnames(mvalues), colData$run_id)
     colnames(mvalues) <- colData$uuid[mid]
-    
+    rowData <- getPlatform(platform="HM450", genome="hg19")    
     mvalues <- makeSE(mvalues, colData[,-1], rowData, note="No chen probe filtering, Functional normalization, knn imputed")
     save(mvalues, file=file.path(path450k, "450k", biobank, paste0("methData_Mvalues_", biobank, "_F2_cleaned.RData")))
     rm(mvalues)
@@ -104,7 +104,7 @@ for(biobank in unique(colData$biobank_id)) {
     rm(GRset)
     rm(RGset)
     gc() ##remove and clean
-}
+##}
 
 
 

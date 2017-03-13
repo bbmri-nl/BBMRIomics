@@ -38,6 +38,7 @@ write.table(rna$run_id, file="~/runids.txt", row.names=FALSE, col.names=FALSE, q
 runids <- read.table("~/runids.txt", header=FALSE)$V1
 length(runids)
 ##run on shark variantcalling-script!
+## AC43B7ACXX-5-6 no snps called????
 
 source(file.path(path.package("BBMRIomics"), "scripts/Genotyping_Helpers.R"), verbose=FALSE)
 source(file.path(VM_BASE_ANALYSIS, "BBMRIomics/BBMRIomics/inst", "scripts/Genotyping_Helpers.R"), verbose=FALSE)
