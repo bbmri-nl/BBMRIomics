@@ -12,10 +12,6 @@ bibliography: BBMRIomics.bib
 ```{r, child="_setup.Rmd"}
 ```
 
-```{r, eval=TRUE}
-knitr::opts_chunk$set(eval=FALSE) ##this vignette should only be runs once!
-```
-
 ## Sample-level quality control ##
 
 The package
@@ -51,6 +47,7 @@ samplesheets$Basename <- with(samplesheets,
 
 Now a check is performed to see if all idat-files exists or if we
 missed one on the VM.
+
 
 ```{r, eval=FALSE}
 idats <- c(paste0(samplesheets$Basename, "_Red.idat"),

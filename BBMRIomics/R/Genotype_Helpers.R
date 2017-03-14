@@ -98,20 +98,23 @@ read.dosages <- function(file,  yieldSize=NULL, colClassesInfo = c("character", 
 
 .getHRC <- function(param, files, imputation_id, genotype){
 
-    chr <- unique(as.character(seqnames(param)))    
+    chr <- unique(as.character(seqnames(param)))
     fls <- grep(paste0("chr", chr, ".filtered.dose.vcf.gz"), files, value=TRUE)
     if(length(param) == 0 | is.null(fls))
         stop("No files found or no SNPs in input!")
 
     m <- lapply(fls, function(fl) { ##optionally multiple files per chromosome
         vcf <- readVcf(TabixFile(fl), "hg19", param=param)
-        m <- geno(vcf)[[genotype]]
-        ##m <- t(matrix(as.numeric(m), nrow=nrow(m), ncol=ncol(m), dimnames=dimnames(m)))
-        ##rownames(m) <- paste(seqnames(vcf@rowRanges), start(vcf@rowRanges), sep=":")
+        if(genotype=="SM") {
+            m <- genotypeToSnpMatrix(vcf)$genotypes
+            m <- t(matrix(as.numeric(m), nrow=nrow(m), ncol=ncol(m), dimnames=dimnames(m)))
+        }
+        else
+            m <- geno(vcf)[[genotype]]
         m
     })
     m <- do.call("cbind", m)
-    m <- m[, match(imputation_id, colnames(m)), drop=FALSE] ##return in proper order   
+    m <- m[, match(imputation_id, colnames(m)), drop=FALSE] ##return in proper order
     m
 }
 
@@ -138,7 +141,7 @@ read.dosages <- function(file,  yieldSize=NULL, colClassesInfo = c("character", 
 ##' @param biobank biobank_id
 ##' @param snps GRanges with snps
 ##' @param type imputation type either "GoNL", "HRC" or "GoNLv5"
-##' @param geno extract either genotypes, dosages or genotype likelihoods
+##' @param geno extract either genotypes, dosages, genotype likelihoods or as snpMatrix
 ##' @param BASE genotype data location default e.g. VM_BASE_DATA
 ##' @param ... optional BPPARAM arguments
 ##' @return matrix with genotypes
@@ -149,7 +152,7 @@ read.dosages <- function(file,  yieldSize=NULL, colClassesInfo = c("character", 
 ##' @importFrom GenomicRanges split
 ##' @importFrom GenomeInfoDb mapSeqlevels
 ##' @export
-getGenotypes <- function(imputation_id, biobank=c("ALL", "CODAM", "LL", "LLS", "NTR", "RS", "PAN"), snps, type=c("GoNL", "HRC", "GoNLv5"), geno=c("GT", "DS", "GP"), BASE, ...){
+getGenotypes <- function(imputation_id, biobank=c("ALL", "CODAM", "LL", "LLS", "NTR", "RS", "PAN"), snps, type=c("GoNL", "HRC", "GoNLv5"), geno=c("GT", "DS", "GP", "SM"), BASE, ...){
 
     type <- match.arg(type)
     biobank <- match.arg(biobank)
@@ -160,23 +163,23 @@ getGenotypes <- function(imputation_id, biobank=c("ALL", "CODAM", "LL", "LLS", "
     snps <- split(snps, as.character(seqnames(snps)))
 
     if(type == "HRC") {
-        
+
         if(biobank == "ALL")
             vcfs <- dir(file.path(BASE, "HRC_Imputation"), pattern="filtered.dose.vcf.gz$", full.names=TRUE, recursive=TRUE)
         else
             vcfs <- dir(file.path(BASE, "HRC_Imputation", biobank), pattern="filtered.dose.vcf.gz$", full.names=TRUE, recursive=TRUE)
 
-        
+
         ##for(fl in vcfs) indexTabix(fl, format="vcf") ##if vcf are not indexed!
         ##TODO Bioconductor devel (bioc-3.4/R-3.3.0) contains `GenomicFiles` with vcfstack a nicer solution?
-        
+
         if(length(snps) > 1) {
             genotypes <- bplapply(snps, .getHRC, files=vcfs, imputation_id = as.character(imputation_id), genotype = geno, ...)
             genotypes <- do.call("rbind", genotypes)
-        } else {        
+        } else {
             genotypes <- .getHRC(snps[[1]], files=vcfs, imputation_id = as.character(imputation_id), genotype = geno, ...)
         }
-        
+
     } else if(type == "GoNL") {
         vcfs <- dir(file.path(BASE, "gonl-snv-release-5.4"), pattern=".vcf.gz$", full.names=TRUE, recursive=TRUE)
         genotypes <- bplapply(snps, .getGONL, files=vcfs, imputation_id = as.character(imputation_id), genotype = geno)

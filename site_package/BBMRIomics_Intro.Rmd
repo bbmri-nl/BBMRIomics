@@ -1,0 +1,26 @@
+---
+title: "Introduction to the **BBMRIomics** package"
+output: 
+  html_document:
+    toc: true
+bibliography: BBMRIomics.bib
+---
+
+The aim of the **BBMRIomics**-package is to make integrated analyses,
+within the BIOS data collection or across BBMRI projects, as easy as
+possible, using the `R`-programming language.
+
+
+```{r}
+library(BBMRIomics)
+```
+
+## Available datasets ##
+
+
+```{r}
+data(package="BBMRIomics")
+?metabolomics_RP3RP4_overlap
+?methData_Betas_LLS_F2_cleaned
+data(methData_Betas_LLS_F2_cleaned)
+```

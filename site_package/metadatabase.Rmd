@@ -69,13 +69,12 @@ Other relevant views are:
 
 design:      view: 
 ------------ --------------------------------------------------------------------
-EGA          freeze1RNASeq, freeze1Methylation, freeze2RNASeq, freeze2Methylation
-Files        getFastq, getIdat 
-Identifiers  getIds 
-Phenotypes   allPhenotypes, cellCounts, minimalPhenotypes 
-Runs         getGenotypes, getMethylationRuns, getRNASeqRuns 
-Samplesheets rnaseqSamplesheet,  methylationSamplesheet 
-Verification md5 
+Identifiers  Ids, Relations 
+Phenotypes   Phenotypes
+RNA          Fastq, RNARuns, RNASamplesheet 
+DNAm         Idat, DNAmRuns, DNAmSamplesheet
+DNA          Imputations
+EGA          freeze1RNA, freeze1DNAm, freeze2RNA, freeze2DNAm
 
 > Note: We can always add views if necessary; please contact Maarten van Iterson.
 
@@ -88,6 +87,19 @@ have an API for CouchDB e.g. JAVA and Python. There are several online
 tools available for transforming JSON documents to csv files. 
 
 ***UPDATE REQUIRED*** couchdb with _list-function to transform directly to csv
+
+```{r}
+head(getView("getIds", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB))
+head(getView("Phenotypes", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB))
+head(getView("Fastq", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB))
+head(getView("Idat", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB))
+head(getView("getIds", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB))
+head(getView("getIds", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB))
+head(getView("getIds", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB))
+
+
+```
+
 
 ### Access the metadatabase using R ###
 

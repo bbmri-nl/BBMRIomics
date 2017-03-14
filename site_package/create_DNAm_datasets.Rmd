@@ -1,0 +1,112 @@
+---
+title: "Create DNAm data sets"
+output:
+  html_document:
+    highlight: tango
+    toc: true
+    toc_float:
+      collapsed: false
+bibliography: BBMRIomics.bib
+---
+
+```{r, child="_setup.Rmd"}
+```
+
+## Prepare sample metadata ##
+
+***brief description***
+
+```{r}
+library(BBMRIomics)
+colData <- read.table(file=file.path(VM_BASE_ANALYSIS, "BBMRIomics/BBMRIomics/data", "freeze2_dnam_identifiers.csv"), header=TRUE, sep=",", as.is=TRUE)
+
+samplesheets <- getView("methylationSamplesheet", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
+samplesheets <- samplesheets[!duplicated(samplesheets$run_id),]
+colData <- merge(colData, samplesheets, by=c("run_id", "ids"))
+
+##harmonize phenotypes
+source(file.path(path.package("BBMRIomics"), "scripts/Phenotype_Helpers.R"), verbose=FALSE)
+phenotypes <- cleanPhenotypes()
+
+##add phenotypes
+colData <- merge(colData, phenotypes, by="ids", all.x=TRUE)
+
+##add genotype ids
+imputation <- getView("getImputations", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
+hrc <- subset(imputation, imputation_reference == "HRC")
+colData <- merge(colData, hrc[, c("ids", "imputation_id")], by="ids", all.x=TRUE)
+
+##add uuid and gonl_id
+ids <- getView("getIds", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
+colData <- merge(colData, ids[, c("ids", "gonl_id")], by="ids", all.x=TRUE)
+
+##ordering
+first <- match(c("ids", "uuid", "biobank_id", "gonl_id", "run_id"), colnames(colData))
+
+colData <- cbind(colData[, first], colData[, -first])
+rownames(colData) <- colData$uuid
+
+dim(colData)
+head(colData)
+
+table(!is.na(colData$gonl_id))
+table(!is.na(colData$imputation_id))
+table(!(is.na(colData$imputation_id) & is.na(colData$gonl_id)))
+
+```
+
+
+```{r}
+library(BiocParallel)
+library(DNAmArray)
+library(impute)
+register(MulticoreParam(6, log=TRUE))
+path450k <- file.path(VM_BASE_DATA, "IlluminaHumanMethylation450k")
+
+##for(biobank in unique(colData$biobank_id)) {
+    biobank <- "NTR"	
+    targets <- subset(colData, biobank_id == biobank)
+    targets$Basename <- with(targets,
+                             file.path(path450k, "raw", Sentrix_Barcode,
+                                       paste(Sentrix_Barcode, Sentrix_Position, sep="_")))
+    ##reading the data
+    RGset <- read.metharray.exp.par(targets, verbose=TRUE, extended=TRUE)    
+    ##normalize
+    pc <- screeplot(RGset)
+    GRset <- preprocessFunnorm.DNAmArray(RGset, nPCs=3, keepCN=FALSE)
+    rm(pc)
+    gc() #remove and clean
+    ##filter
+    RGset <- probeFiltering(RGset)
+    ##store M-values
+    mvalues <- reduce(GRset, RGset, what="M")
+    sink("/dev/null") ##to ignore impute.knn output
+    mvalues <- impute.knn(as.matrix(mvalues))$data
+    sink()
+    
+    mid <- match(colnames(mvalues), colData$run_id)
+    colnames(mvalues) <- colData$uuid[mid]
+    rowData <- getPlatform(platform="HM450", genome="hg19")    
+    mvalues <- makeSE(mvalues, colData[,-1], rowData, note="No chen probe filtering, Functional normalization, knn imputed")
+    save(mvalues, file=file.path(path450k, "450k", biobank, paste0("methData_Mvalues_", biobank, "_F2_cleaned.RData")))
+    rm(mvalues)
+    gc() #remove and clean
+    ##store beta-values
+    betas <- reduce(GRset, RGset, what="beta")
+    sink("/dev/null") ##to ignore impute.knn output
+    betas <- impute.knn(as.matrix(betas))$data
+    sink()
+    mid <- match(colnames(betas), colData$run_id)
+    colnames(betas) <- colData$uuid[mid]
+    betas <- makeSE(betas, colData[,-1], rowData, note="No chen probe filtering, Functional normalization, knn imputed")
+    save(betas, file=file.path(path450k, "450k", biobank, paste0("methData_Betas_", biobank, "_F2_cleaned.RData")))
+    rm(betas)
+    rm(GRset)
+    rm(RGset)
+    gc() ##remove and clean
+##}
+
+
+
+
+```
