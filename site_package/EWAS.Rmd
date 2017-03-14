@@ -57,6 +57,25 @@ Since, we had subsetted the whole `SummerizedExperiments`-object we
 can just extract the data without any further subsetting. Runnning the
 EWAS is now just one function-call.
 
+
+```{r, filter, eval=FALSE}
+
+files <- c("http://zwdzwd.io/InfiniumAnnotation/current/hm450/hm450.manifest.pop.rda",
+           "http://zwdzwd.io/InfiniumAnnotation/current/hm450/hm450.manifest.rda")
+tmp <- tempfile()
+download.file(files[1], tmp)
+load(tmp)
+
+hm450.manifest
+hm450.manifest.pop
+data <- assays(mvalues)$data
+
+
+```
+
+
+
+
 ```{r, ewas}
 data <- assays(mvalues)$data
 library(limma)

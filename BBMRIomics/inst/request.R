@@ -53,17 +53,16 @@ colnames(pheno) <- c("bios_id", "biobank_abbr_rp4", "sex", "age")
 pheno$biobank_abbr_rp3 <- gsub("-.*$", "", pheno$bios_id)
 
 sex <- pheno$sex
-pheno$sex[sex] <- "female"
-pheno$sex[!sex] <- "male"
+pheno$sex[sex] <- "male"
+pheno$sex[!sex] <- "female"
 
 head(pheno)
 
 write.table(pheno, file="RP4_basic_overview.csv", row.names=FALSE, quote=FALSE, sep=",")
 
-##fix these relations once mdb is running again!!!
-##Fri Mar  3 13:02:43 2017
-##M van Iterson
-relations <- getView("getRelations", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
-complrel <- relations[!is.na(relations$relation_type), ]
-setdiff(complrel$ids, complrel$relation_id)
-setdiff(complrel$relation_id, complrel$ids)
+head(view)
+head(pheno)
+
+merged <- merge(view, pheno, by="bios_id", suffixes=c(".rp3", ".rp4"))
+
+write.table(merged, file="merged_rp3rp3.csv", row.names=FALSE, quote=FALSE, sep=",")
