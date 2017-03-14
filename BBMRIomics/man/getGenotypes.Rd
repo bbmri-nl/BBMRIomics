@@ -6,7 +6,7 @@
 \usage{
 getGenotypes(imputation_id, biobank = c("ALL", "CODAM", "LL", "LLS", "NTR",
   "RS", "PAN"), snps, type = c("GoNL", "HRC", "GoNLv5"), geno = c("GT",
-  "DS", "GP"), BASE, ...)
+  "DS", "GP", "SM"), BASE, ...)
 }
 \arguments{
 \item{imputation_id}{imputation identifier}
@@ -17,7 +17,7 @@ getGenotypes(imputation_id, biobank = c("ALL", "CODAM", "LL", "LLS", "NTR",
 
 \item{type}{imputation type either "GoNL", "HRC" or "GoNLv5"}
 
-\item{geno}{extract either genotypes, dosages or genotype likelihoods}
+\item{geno}{extract either genotypes, dosages, genotype likelihoods or as snpMatrix}
 
 \item{BASE}{genotype data location default e.g. VM_BASE_DATA}
 

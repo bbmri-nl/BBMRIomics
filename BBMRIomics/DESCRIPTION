@@ -30,4 +30,5 @@ Collate:
     'Overlap_Helpers.R'
     'RP4_Helpers.R'
     'utils.R'
+    'data.R'
 RoxygenNote: 5.0.1
