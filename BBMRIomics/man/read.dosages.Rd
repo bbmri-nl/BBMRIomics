@@ -49,4 +49,3 @@ assay(chunk)[1:5, 1:5]
 \author{
 mvaniterson
 }
-

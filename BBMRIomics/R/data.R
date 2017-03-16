@@ -28,11 +28,11 @@
 #' @format An object of class \code{"SummarizedExperiment"}; see \code{\link[SummarizedExperiment]{SummarizedExperiment}}.
 #'
 #' @keywords datasets
-#'
+#' @export 
 #' @examples
 #' data(methData_Betas_CODAM_F2_cleaned)
 #' betas
-"methData_Betas_CODAM_F2_cleaned"
+methData_Betas_CODAM_F2_cleaned <- NULL
 
 #' DNA methylation data (M-values) for the CODAM cohort
 #'
@@ -64,11 +64,11 @@
 #' @format An object of class \code{"SummarizedExperiment"}; see \code{\link[SummarizedExperiment]{SummarizedExperiment}}.
 #'
 #' @keywords datasets
-#'
+#' @export 
 #' @examples
 #' data(methData_Mvalues_CODAM_F2_cleaned)
 #' mvalues
-"methData_Mvalues_CODAM_F2_cleaned"
+methData_Mvalues_CODAM_F2_cleaned <- NULL
 
 #' DNA methylation data (beta-values) for the LL cohort
 #'
@@ -100,11 +100,11 @@
 #' @format An object of class \code{"SummarizedExperiment"}; see \code{\link[SummarizedExperiment]{SummarizedExperiment}}.
 #'
 #' @keywords datasets
-#'
+#' @export 
 #' @examples
 #' data(methData_Betas_LL_F2_cleaned)
 #' betas
-"methData_Betas_LL_F2_cleaned"
+methData_Betas_LL_F2_cleaned <- NULL
 
 #' DNA methylation data (M-values) for the LL cohort
 #'
@@ -136,11 +136,11 @@
 #' @format An object of class \code{"SummarizedExperiment"}; see \code{\link[SummarizedExperiment]{SummarizedExperiment}}.
 #'
 #' @keywords datasets
-#'
+#' @export 
 #' @examples
 #' data(methData_Mvalues_LL_F2_cleaned)
 #' mvalues
-"methData_Mvalues_LL_F2_cleaned"
+methData_Mvalues_LL_F2_cleaned <- NULL
 
 #' DNA methylation data (beta-values) for the LLS cohort
 #'
@@ -172,11 +172,11 @@
 #' @format An object of class \code{"SummarizedExperiment"}; see \code{\link[SummarizedExperiment]{SummarizedExperiment}}.
 #'
 #' @keywords datasets
-#'
+#' @export 
 #' @examples
 #' data(methData_Betas_LLS_F2_cleaned)
 #' betas
-"methData_Betas_LLS_F2_cleaned"
+methData_Betas_LLS_F2_cleaned <- NULL
 
 #' DNA methylation data (M-values) for the LLS cohort
 #'
@@ -208,11 +208,11 @@
 #' @format An object of class \code{"SummarizedExperiment"}; see \code{\link[SummarizedExperiment]{SummarizedExperiment}}.
 #'
 #' @keywords datasets
-#'
+#' @export 
 #' @examples
 #' data(methData_Mvalues_LLS_F2_cleaned)
 #' mvalues
-"methData_Mvalues_LLS_F2_cleaned"
+methData_Mvalues_LLS_F2_cleaned <- NULL
 
 #' DNA methylation data (beta-values) for the NTR cohort
 #'
@@ -244,11 +244,11 @@
 #' @format An object of class \code{"SummarizedExperiment"}; see \code{\link[SummarizedExperiment]{SummarizedExperiment}}.
 #'
 #' @keywords datasets
-#'
+#' @export 
 #' @examples
 #' data(methData_Betas_NTR_F2_cleaned)
 #' betas
-"methData_Betas_NTR_F2_cleaned"
+methData_Betas_NTR_F2_cleaned <- NULL
 
 #' DNA methylation data (M-values) for the NTR cohort
 #'
@@ -280,11 +280,11 @@
 #' @format An object of class \code{"SummarizedExperiment"}; see \code{\link[SummarizedExperiment]{SummarizedExperiment}}.
 #'
 #' @keywords datasets
-#'
+#' @export 
 #' @examples
 #' data(methData_Mvalues_NTR_F2_cleaned)
 #' mvalues
-"methData_Mvalues_NTR_F2_cleaned"
+methData_Mvalues_NTR_F2_cleaned <- NULL
 
 #' DNA methylation data (beta-values) for the RS cohort
 #'
@@ -316,11 +316,11 @@
 #' @format An object of class \code{"SummarizedExperiment"}; see \code{\link[SummarizedExperiment]{SummarizedExperiment}}.
 #'
 #' @keywords datasets
-#'
+#' @export 
 #' @examples
 #' data(methData_Betas_RS_F2_cleaned)
 #' betas
-"methData_Betas_RS_F2_cleaned"
+methData_Betas_RS_F2_cleaned <- NULL
 
 #' DNA methylation data (M-values) for the RS cohort
 #'
@@ -352,11 +352,11 @@
 #' @format An object of class \code{"SummarizedExperiment"}; see \code{\link[SummarizedExperiment]{SummarizedExperiment}}.
 #'
 #' @keywords datasets
-#'
+#' @export 
 #' @examples
 #' data(methData_Mvalues_RS_F2_cleaned)
 #' mvalues
-"methData_Mvalues_RS_F2_cleaned"
+methData_Mvalues_RS_F2_cleaned <- NULL
 
 #' DNA methylation data (beta-values) for the PAN cohort
 #'
@@ -388,11 +388,11 @@
 #' @format An object of class \code{"SummarizedExperiment"}; see \code{\link[SummarizedExperiment]{SummarizedExperiment}}.
 #'
 #' @keywords datasets
-#'
+#' @export 
 #' @examples
 #' data(methData_Betas_PAN_F2_cleaned)
 #' betas
-"methData_Betas_PAN_F2_cleaned"
+methData_Betas_PAN_F2_cleaned <- NULL
 
 #' DNA methylation data (M-values) for the PAN cohort
 #'
@@ -424,11 +424,11 @@
 #' @format An object of class \code{"SummarizedExperiment"}; see \code{\link[SummarizedExperiment]{SummarizedExperiment}}.
 #'
 #' @keywords datasets
-#'
+#' @export 
 #' @examples
 #' data(methData_Mvalues_PAN_F2_cleaned)
 #' mvalues
-"methData_Mvalues_PAN_F2_cleaned"
+methData_Mvalues_PAN_F2_cleaned <- NULL
 
 #' DNA methylation data (beta-values) for BIOS
 #'
@@ -460,11 +460,11 @@
 #' @format An object of class \code{"SummarizedExperiment"}; see \code{\link[SummarizedExperiment]{SummarizedExperiment}}.
 #'
 #' @keywords datasets
-#'
+#' @export 
 #' @examples
 #' data(methData_Betas_BIOS_F2_cleaned)
 #' betas
-"methData_Betas_BIOS_F2_cleaned"
+methData_Betas_BIOS_F2_cleaned <- NULL
 
 #' DNA methylation data (M-values) for BIOS
 #'
@@ -496,11 +496,11 @@
 #' @format An object of class \code{"SummarizedExperiment"}; see \code{\link[SummarizedExperiment]{SummarizedExperiment}}.
 #'
 #' @keywords datasets
-#'
+#' @export 
 #' @examples
 #' data(methData_Mvalues_BIOS_F2_cleaned)
 #' mvalues
-"methData_Mvalues_BIOS_F2_cleaned"
+methData_Mvalues_BIOS_F2_cleaned <- NULL
 
 #' RNAseq data for the CODAM cohort 
 #'
@@ -526,11 +526,11 @@
 #' @format An object of class \code{"SummarizedExperiment"}; see \code{\link[SummarizedExperiment]{SummarizedExperiment}}.
 #'
 #' @keywords datasets
-#'
+#' @export 
 #' @examples
 #' data(rnaSeqData_ReadCounts_CODAM_cleaned)
 #' counts
-"rnaSeqData_ReadCounts_CODAM_cleaned"
+rnaSeqData_ReadCounts_CODAM_cleaned <- NULL
 
 #' RNAseq data for the LL cohort 
 #'
@@ -556,11 +556,11 @@
 #' @format An object of class \code{"SummarizedExperiment"}; see \code{\link[SummarizedExperiment]{SummarizedExperiment}}.
 #'
 #' @keywords datasets
-#'
+#' @export 
 #' @examples
 #' data(rnaSeqData_ReadCounts_LL_cleaned)
 #' counts
-"rnaSeqData_ReadCounts_LL_cleaned"
+rnaSeqData_ReadCounts_LL_cleaned <- NULL
 
 #' RNAseq data for the LLS cohort 
 #'
@@ -586,11 +586,11 @@
 #' @format An object of class \code{"SummarizedExperiment"}; see \code{\link[SummarizedExperiment]{SummarizedExperiment}}.
 #'
 #' @keywords datasets
-#'
+#' @export 
 #' @examples
 #' data(rnaSeqData_ReadCounts_LLS_cleaned)
 #' counts
-"rnaSeqData_ReadCounts_LLS_cleaned"
+rnaSeqData_ReadCounts_LLS_cleaned <- NULL
 
 #' RNAseq data for the NTR cohort 
 #'
@@ -616,11 +616,11 @@
 #' @format An object of class \code{"SummarizedExperiment"}; see \code{\link[SummarizedExperiment]{SummarizedExperiment}}.
 #'
 #' @keywords datasets
-#'
+#' @export 
 #' @examples
 #' data(rnaSeqData_ReadCounts_NTR_cleaned)
 #' counts
-"rnaSeqData_ReadCounts_NTR_cleaned"
+rnaSeqData_ReadCounts_NTR_cleaned <- NULL
 
 #' RNAseq data for the PAN cohort 
 #'
@@ -646,11 +646,11 @@
 #' @format An object of class \code{"SummarizedExperiment"}; see \code{\link[SummarizedExperiment]{SummarizedExperiment}}.
 #'
 #' @keywords datasets
-#'
+#' @export 
 #' @examples
 #' data(rnaSeqData_ReadCounts_PAN_cleaned)
 #' counts
-"rnaSeqData_ReadCounts_PAN_cleaned"
+rnaSeqData_ReadCounts_PAN_cleaned <- NULL
 
 #' RNAseq data for the RS cohort 
 #'
@@ -676,11 +676,11 @@
 #' @format An object of class \code{"SummarizedExperiment"}; see \code{\link[SummarizedExperiment]{SummarizedExperiment}}.
 #'
 #' @keywords datasets
-#'
+#' @export 
 #' @examples
 #' data(rnaSeqData_ReadCounts_RS_cleaned)
 #' counts
-"rnaSeqData_ReadCounts_RS_cleaned"
+rnaSeqData_ReadCounts_RS_cleaned <- NULL
 
 #' RNAseq data for BIOS 
 #'
@@ -706,11 +706,11 @@
 #' @format An object of class \code{"SummarizedExperiment"}; see \code{\link[SummarizedExperiment]{SummarizedExperiment}}.
 #'
 #' @keywords datasets
-#'
+#' @export 
 #' @examples
 #' data(rnaSeqData_ReadCounts_BIOS_cleaned)
 #' counts
-"rnaSeqData_ReadCounts_BIOS_cleaned"
+rnaSeqData_ReadCounts_BIOS_cleaned <- NULL
 
 #' RP4 metabolites
 #'
@@ -723,8 +723,8 @@
 #' @format An object of class \code{"SummarizedExperiment"}; see \code{\link[SummarizedExperiment]{SummarizedExperiment}}.
 #'
 #' @keywords datasets
-#'
+#' @export 
 #' @examples
 #' data(metabolomics_RP3RP4_overlap)
 #' metaboliteData
-"metabolomics_RP3RP4_overlap"
+metabolomics_RP3RP4_overlap <- NULL

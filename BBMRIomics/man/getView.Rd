@@ -66,4 +66,3 @@ g
 \author{
 mvaniterson
 }
-

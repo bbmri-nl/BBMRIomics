@@ -121,7 +121,7 @@ The rna or dnam freeze 2 is extended with unrelated individuals having
 only rna or dnam. 
 
 
-```{r}
+```{r, eval=FALSE}
 reduceRelations <- function(ids, relations) {
 
     rels <- relations[relations$ids %in% ids,]

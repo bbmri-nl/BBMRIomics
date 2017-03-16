@@ -5,7 +5,7 @@ BIOBANKS=RS PAN CODAM LLS LL NTR
 HOST=bios-vm
 MDB=https://metadatabase.bbmrirp3-lumc.surf-hosted.nl:6984/bios
 RDB=https://metadatabase.bbmrirp3-lumc.surf-hosted.nl:6984/rp3_analysis
-USRPWD='usrp:pwd'
+USRPWD=
 
 R_PACKAGE_DIR=/opt/R/microsoft-r/3.3/lib64/R/library/BBMRIomics
 
@@ -61,6 +61,7 @@ views:
 	curl -X GET $(MDB)/_design/Samplesheets/_view/methylationSamplesheet?reduce=false -u $(USRPWD)  -k -g >  $(R_PACKAGE_DIR)/views/Samplesheets_methylationSamplesheet.json
 	curl -X GET $(MDB)/_design/Verification/_view/md5sum?reduce=false -u $(USRPWD)  -k -g >  $(R_PACKAGE_DIR)/views/Verification_md5sum.json
 	curl -X GET $(RDB)/_design/stats/_view/getStats?reduce=false -u $(USRPWD)  -k -g >  $(R_PACKAGE_DIR)/views/stats_getStats.json
+	curl -X GET $(RDB)/_design/stats/_view/getBAM?reduce=false -u $(USRPWD)  -k -g >  $(R_PACKAGE_DIR)/views/stats_getBAM.json
 
 stop:
 	@echo ** [BBMRIomics] Installing without linking data and generating stored-views

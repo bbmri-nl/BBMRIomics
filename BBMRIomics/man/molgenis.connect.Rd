@@ -25,4 +25,3 @@ connect to a molgenis database using the R-API
 \author{
 mvaniterson
 }
-
