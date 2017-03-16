@@ -25,7 +25,20 @@ Utility function to copy files from SRM to VM
 \details{
 details follow
 }
+\examples{
+\dontrun{
+##get fastq
+fastq <- getView("getFastq", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
+file <- basename(fastq$R1[1])
+srm.path <- file.path(dirname(fastq$R1[1])) 
+srm.path <- gsub("srm.*nl", SRM_BASE, srm.path) ##for curl access with need slightly different url##' 
+srm.path
+files
+SRM2VM(srm.path, files, vm.path="~", proxy=GRID_PROXY)
+##get bam
+bam <- getView("getBAM", usrpwd=RP3_MDB_USRPWD, url=RP3_RDB)
+}
+}
 \author{
 mvaniterson
 }
-

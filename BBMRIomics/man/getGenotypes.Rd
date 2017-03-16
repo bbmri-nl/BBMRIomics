@@ -36,4 +36,3 @@ given selection of SNPs and samples
 \author{
 mvaniterson
 }
-

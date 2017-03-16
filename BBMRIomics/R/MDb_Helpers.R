@@ -84,7 +84,7 @@ getView <- function(view, url, usrpwd="anonymous", selection="?reduce=false", fo
                   Samplesheets = c("rnaseqSamplesheet", "methylationSamplesheet"),
                   Verification = c("md5sum"))
     
-    views[["Rundatabase"]] <- list(stats="getStats")
+    views[["Rundatabase"]] <- list(stats=c("getStats", "getBAM"))
     
     getDesign <- function(view) {
         ret <- names(which(rapply(views, function(x) x == view)))

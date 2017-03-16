@@ -88,7 +88,7 @@ tools available for transforming JSON documents to csv files.
 
 ***UPDATE REQUIRED*** couchdb with _list-function to transform directly to csv
 
-```{r}
+```{r, eval=FALSE}
 head(getView("getIds", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB))
 head(getView("Phenotypes", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB))
 head(getView("Fastq", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB))

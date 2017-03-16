@@ -16,7 +16,7 @@ bibliography: BBMRIomics.bib
 
 ***brief description***
 
-```{r}
+```{r, eval=FALSE}
 library(BBMRIomics)
 colData <- read.table(file=file.path(VM_BASE_ANALYSIS, "BBMRIomics/BBMRIomics/data", "freeze2_dnam_identifiers.csv"), header=TRUE, sep=",", as.is=TRUE)
 
@@ -56,7 +56,7 @@ table(!(is.na(colData$imputation_id) & is.na(colData$gonl_id)))
 ```
 
 
-```{r}
+```{r, eval=FALSE}
 library(BiocParallel)
 library(DNAmArray)
 library(impute)

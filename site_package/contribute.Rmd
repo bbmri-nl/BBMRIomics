@@ -22,8 +22,8 @@ how easy it is to generate a web-site using rmarkdown.
 
 Modify `_site.yml` by adding a new use-case under the use-case items, e.g. 
 
-- text:  "eqtl analysis"
-  href: eqtl.html
+ - `- text:  "eqtl analysis"`
+ - `href: eqtl.html`
   
 *beware spacing does matter!*
 

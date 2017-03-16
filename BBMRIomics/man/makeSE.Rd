@@ -28,4 +28,3 @@ the intersection of rows and columns will be used ...
 \author{
 mvaniterson
 }
-

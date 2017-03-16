@@ -79,6 +79,7 @@ setdiff(complrel$relation_id, complrel$ids)
 ##linking GoNL phenotypes to fast-files
 ##Harmen Draisma
 ##Fri Mar 10 14:12:32 2017
+library(BBMRIomics)
 ids <- getView("getIds", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
 gonl <- subset(ids, !is.na(gonl_id))
 dim(gonl)
@@ -109,3 +110,41 @@ srm.path
 files
 SRM2VM(srm.path, files, vm.path="~", proxy=GRID_PROXY)
 
+##Rick/Bas
+##NTR logitudinal samples
+##Thu Mar 16 09:03:37 2017
+library(BBMRIomics)
+
+ids <- getView("getIds", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
+ntr <- subset(ids, biobank_id == "NTR")
+
+tbl <- table(ntr$person_id)
+reps <- subset(ntr, person_id %in% names(tbl[tbl == 2]))
+reps[order(reps$bios_id),c(1,5,8,9)]
+
+dim(reps)
+
+rels <- getView("getRelations", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
+rels <- subset(rels, relation_type == "has repeated measurements")
+dim(rels)
+rels[order(rels$ids),]
+
+sort(setdiff(unique(reps$ids), rels$ids))
+
+pheno <- getView("allPhenotypes", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
+
+mid <- match(rels$ids, pheno$ids)
+rels$DNA_BloodSampling_Age <- pheno$DNA_BloodSampling_Age[mid]
+
+rels$person_id <- unlist(lapply(as.character(rels$ids), function(x) unlist(strsplit(x, "-"))[2]))
+
+dups <- rels$person_id[duplicated(rels[,c("person_id", "DNA_BloodSampling_Age")])]
+
+missing <- rels$person_id[is.na(rels$DNA_BloodSampling_Age)]
+
+subset(rels, person_id %in% dups | person_id %in% missing)
+
+
+rels[order(rels$person_id),]
+
+write.table(rels, file="NTR_longitudinal_ambiguous.csv", row.names=FALSE, quote=FALSE, sep=",")
