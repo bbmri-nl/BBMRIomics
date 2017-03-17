@@ -1,6 +1,6 @@
 ##RP3/RP4 basic metadata overviews
 ##Morris Swertz
-##Tue Feb 28 14:36:28 2017
+##Fri Mar 17 09:02:46 2017"
 
 library(BBMRIomics)
 
@@ -24,7 +24,7 @@ dim(subjects)
 head(subjects)
 
 ##adding the real bios id
-subjects <- subset(subjects, !is.na(bios_id))
+##subjects <- subset(subjects, !is.na(bios_id))
 table(subjects$biobank)
 
 subjects$real_bios_id <- ""
@@ -49,14 +49,24 @@ id <- match(subjects$subject_id, samples$subject_id)
 pheno <- cbind(subjects, samples[id,])
 
 pheno <- pheno[, c("real_bios_id", "biobank", "gender", "age_at_collection")]
-colnames(pheno) <- c("bios_id", "biobank_abbr_rp4", "sex", "age")
-pheno$biobank_abbr_rp3 <- gsub("-.*$", "", pheno$bios_id)
+colnames(pheno) <- c("bios_id", "biobank_abbrv", "sex", "age")
 
 sex <- pheno$sex
 pheno$sex[sex] <- "male"
 pheno$sex[!sex] <- "female"
 
+##Fix LLS name
+pheno$biobank_abbrv[grepl("LLS_", pheno$biobank_abbrv)] <- "LLS"
+##Fix RS name
+pheno$biobank_abbrv[grepl("ERF_ERGO", pheno$biobank_abbrv)] <- "RS"
+##Fix LL name
+pheno$biobank_abbrv[grepl("LIFELINES", pheno$biobank_abbrv)] <- "LL"
+##Fix NTRT name
+pheno$biobank_abbrv[grepl("VUNTR", pheno$biobank_abbrv)] <- "NTR"
+
 head(pheno)
+
+table(pheno$biobank_abbrv)
 
 write.table(pheno, file="RP4_basic_overview.csv", row.names=FALSE, quote=FALSE, sep=",")
 
