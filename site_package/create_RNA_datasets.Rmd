@@ -98,6 +98,9 @@ first <- match(c("ids", "uuid", "biobank_id", "gonl_id", "run_id"), colnames(col
 colData <- cbind(colData[, first], colData[, -first])
 rownames(colData) <- colData$uuid
 
+##add flowcell maybe other derived lane, index?
+colData$flowcell <- gsub("-.*$", "", colData$run_id)
+
 dim(colData)
 head(colData)
 
