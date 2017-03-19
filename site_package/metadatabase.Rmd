@@ -1,5 +1,5 @@
 ---
-title: "Accessing the BIOS metadatabase"
+title: "The BIOS metadatabase"
 output: 
   html_document:
     highlight: tango
@@ -12,79 +12,82 @@ bibliography: BBMRIomics.bib
 ```{r, child="_setup.Rmd"}
 ```
 
-The BIOS project has generated for over 4000 individuals
-RNA-sequencing and DNA methylation data. A part from these data, GoNL
-imputed genotypes were generated from existing genotypes and several
-phenotypes/demographic variables were collected for the same set of
-samples. A highly flexible sample-oriented metadatabase (MDb) was
-created in order to manage the dynamic generation of this large-scale
-multiple-omic data set.
+The BIOS project has generated for over 4,000 individuals RNA-sequencing (RNAseq)
+and DNA methylation data. Apart from these data, GoNL-imputed genotype data were
+generated from existing genotype data and several phenotypes / demographic variables
+were collected for the same set of samples (~individuals). A highly flexible,
+sample-oriented metadatabase (MDb) was created in order to manage the dynamic
+generation of this large-scale multiple-omic data set.
 
-The MDb is a non-relation database (http://couchdb.apache.org/) that
-uses JSON to store records and JavaScript for querying. Furthermore,
-it has an HTTP API suitable to programmatically access the database
-from the GRID, e.g, the bios alignment pipeline.
+The MDb is a non-relation database (http://couchdb.apache.org/) that uses JavaScript
+Object Notation (JSON) to store records and JavaScript for querying. Furthermore,
+it has a HyperText Transfer protocol (HTTP) Application Programming Interface
+(API) suitable to programmatically access the database from the GRID, *e.g.*, the
+BIOS alignment pipeline.
+<!-- REM HD dd 2017-03-19 22:15 : I don't understand the phrase "*e.g.*, the BIOS 
+alignment pipeline" above -->
 
-Each record or document is a sample (individual) within the BIOS
-project and has a unique identifier. 
+Each record or document is a sample (individual) within the BIOS project and has
+a unique identifier. 
 
-***UPDATE REQUIRED*** Each document has a predefined structure
-according to our database schema
-(https://git.lumc.nl/rp3/bios-schema). Custom Python scripts are use
-to update or modify the database (https://git.lumc.nl/rp3/bios-mdb).
+***UPDATE REQUIRED*** Each document has a predefined structure that follows [our
+database schema](https://git.lumc.nl/rp3/bios-schema). Custom Python scripts are
+used to update or modify the database (https://git.lumc.nl/rp3/bios-mdb).
 
-Access to the metadatabase (MDb) is restricted; please contact (Leon
-Mei or Maarten van Iterson).
+Access to the MDb is restricted; please contact Leon Mei or Maarten van Iterson.
+
 
 ## Description of MDb content ##
 
-The MDb contains as much as meta-information as possible from all
-samples and datatypes: location of (raw) data on srm, md5 checksum
-verification, quality control information, links between the different
-identifiers used (person_id, dna_id, etc) and phenotype information.
+The MDb contains as much as meta-information as possible from all samples and
+datatypes: location of (raw) data on the Storage Resource Management-managed
+storage area network (SRM); MD5 checksum verification; quality control information;
+links among the different identifiers used (`person_id`; `dna_id`; *etc.*); and
+phenotype information.
 
-Every sample's meta information is encoded in a CouchDB document. Each
-document has a unique identifier (the bios_id) which is biobankname
-(CODAM, LL, LLS, NTR, RS and PAN) concatenated with person_id
-separated by a "-", e.g. CODAM-2001. This unique bios_id is not
-suitable for use in the public domain, e.g., EGA upload, therefore a
-unique non-identifiable identifier has been created for each
-individual; the uuid.
+Every sample's meta-information is encoded in a CouchDB document. Each document
+has a unique identifier (the `bios_id`), which is biobank name (CODAM; LL; LLS;
+NTR; RS; or PAN) concatenated with `person_id` separated by a "-" (*e.g.*,
+`CODAM-2001`). This unique `bios_id` is not suitable for use in the public domain,
+*e.g.* for upload to the European Genome-phenome Archive (EGA). Therefore, for
+that purpose a unique, non-identifiable identifier has been created for each
+individual: the `uuid`.
 
-Every update of a sample in the database is recorded by increasing a
-revision number. Therefore it is always possible to undo wrong
-updates.
+Every update of a sample in the database is recorded by increasing a revision 
+number. Thereby it is always possible to undo wrong updates.
 
-## Description available views ##
 
-Views are the way to extract information from the couchDb. Views are
-organized into designs; each design contains a number of views related
-to a particular kind of information that can be extracted from the
-MDb. For example, there is a design `EGA` which contains currently two
-views 1) `freeze1RNASeq` to extract those samples for which RNAseq
-data has been uploaded to EGA and 2) `freeze1Methylation` for the DNA
-methylation data. 
+## Description of available "Views" ##
 
-Other relevant views are: 
+"Views"" are the way to extract information from the CouchDb. Views are organized
+into "Designs": each Design contains a number of Views related to a particular
+kind of information that can be extracted from the MDb. For example, there is a
+Design named `EGA` that currently contains two views: 1) `freeze1RNA`, <!--Updated to reflect View names as in table below--> to extract those samples for which RNAseq data have been uploaded to EGA;
+and 2) `freeze1DNAm`, <!--Updated to reflect View names as in table below--> for
+the DNA methylation data. 
 
-design:      view: 
+The other main Views are: 
+
+Design:      View: 
 ------------ --------------------------------------------------------------------
-Identifiers  Ids, Relations 
-Phenotypes   Phenotypes
-RNA          Fastq, RNARuns, RNASamplesheet 
-DNAm         Idat, DNAmRuns, DNAmSamplesheet
-DNA          Imputations
-EGA          freeze1RNA, freeze1DNAm, freeze2RNA, freeze2DNAm
+`Identifiers`  `Ids` and `Relations`
+`Phenotypes`   `Phenotypes`
+`RNA`          `Fastq`; `RNARuns`; and `RNASamplesheet`
+`DNAm`         `Idat`; `DNAmRuns`; and `DNAmSamplesheet`
+`DNA`          `Imputations`
+`EGA`          `freeze1RNA`; `freeze1DNAm`; `freeze2RNA`; and `freeze2DNAm`
 
-> Note: We can always add views if necessary; please contact Maarten van Iterson.
+> Note: We can always add Views if necessary; please contact Maarten van Iterson.
+
 
 ## Accessing the MDb ##
 
-Views can be downloaded as JSON documents by making a GET
-request. Most programming languages have utilities for making GET
-requests and to transform JSON documents. Some programming languages
-have an API for CouchDB e.g. JAVA and Python. There are several online
-tools available for transforming JSON documents to csv files. 
+Views can be downloaded as JSON documents by making a `GET` request. Most programming
+languages have utilities for making `GET` requests and for transforming JSON
+documents. Some programming languages (*e.g.*, JAVA and Python) have an API for
+CouchDB. Several online tools are available for transforming JSON documents to
+Comma-Separated Values (CSV) files.
+
 
 ***UPDATE REQUIRED*** couchdb with _list-function to transform directly to csv
 
@@ -101,15 +104,14 @@ head(getView("getIds", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB))
 ```
 
 
-### Access the metadatabase using R ###
+### Access the metadatabase using <R> ###
 
-BBMRIomics uses a configuration file to read in your MDb username and
-password, so that you do not have to type it every time you use the
-MDb.
+The \<R\> package `BBMRIomics` uses a configuration file to read in your MDb username
+and password, so that you don't have to enter it every time you would like to
+access the MDb.
 
-Create a file called `.bbmriomics` (`.biosrutils` is also a valid name)
-and stored it in your home directory on the VM (/home/username) and
-add e.g.:
+Create this configuration file called `.bbmriomics` or `.biosrutils` and store it
+in your home directory on the VM (/home/username) and append to it *e.g.*:
 
 ```{bash, eval=FALSE}
 usrpwdrp3: 'rp3_username:password' 
@@ -117,21 +119,25 @@ usrpwdrp4: 'rp4_username:password'
 proxy:  /tmp/your_proxy
 ```
 
-The first line contains your username and password for the RP3
-database. The latter two can be optionally for accessing the RP4
-database and accessing data from SRM using the function `SRM2VM`.
+The first line contains your username and password for the RP3 database. The latter
+two lines are optional, and usable respectively for accessing the RP4 database
+and for accessing data from the SRM using the function `BBMRIomics::SRM2VM()`.
 
-On loading the **BBMRIomics** library your username and password will
-be set in the variable `RP3_MDB_USRPWD`. The `getView`-function can
-now be used like this:
+On the BIOS VM, start \<R\> by entering at the Ubuntu command prompt the following command:
+```{bash}
+$ R
+```
+
+Upon loading of the `BBMRIomics` library, your username and password will be stored
+in the \<R\> global environment variable `RP3_MDB_USRPWD`. The `BBMRIomics::getView()`
+function can then be used like so:
 
 ```{r}
 ids <- getView("getIds", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
 ```
 
-Also, access to the RNAseq run database (if you requested an account)
-is possible through the `getView`-function.
-
+Access to the RNAseq-run database (if you requested an account) is possible through
+the `BBMRIomics::getView()` function, too:
 
 ```{r}
 stats <- getView("getStats", usrpwd=RP3_MDB_USRPWD, url=RP3_RDB)
@@ -146,3 +152,5 @@ Currently, the are R and python scripts available, however, I'm
 looking into [couchdbapp](https://github.com/couchapp/couchapp) a
 python interface that is specifically design to update/views etc.
 
+
+<!-- END OF FILE. -->
