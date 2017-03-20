@@ -15,10 +15,27 @@ output:
 
 
 ## Collect data ##
+<!-- START Code copy--pasted from "./EWAS.Rmd" dd 2017-03-20 18:36 (HD). -->
+<!-- Execution of chunk below leads to (an) error(s) dd 2017-03-20 16:08, hence set "eval=FALSE" (HD) -->
+<!-- ```{r, selectdata} -->
+```{r, selectdata, eval=FALSE}
 
-```{r, selectdata}
+#Load 'BBMRIomics' library
 library(BBMRIomics)
-data(rnaSeqData_ReadCounts_cleaned)
+
+#Load 'rnaSeqData_ReadCounts_cleaned' data set
+#
+# utils::data(rnaSeqData_ReadCounts_cleaned)
+#
+errmessage <- try(utils::data(rnaSeqData_ReadCounts_cleaned))
+#
+if (errmessage == "rnaSeqData_ReadCounts_cleaned") {
+  stop("data set 'rnaSeqData_ReadCounts_cleaned' not found")
+}
+# 
+#END Code copy--pasted from "./EWAS.Rmd" dd 2017-03-20 18:36 (HD).
+
+
 covariates <- c("Sex", "Smoking", "biobank_id")
 phenotype <- "Sampling_Age"
 nas <- apply(as.data.frame(colData(counts))[,c(phenotype, covariates)], 1, anyNA)
@@ -28,7 +45,8 @@ counts <- counts[, !nas]
 
 ## Create design ##
 
-```{r, coldata2design}
+<!-- ```{r, coldata2design} -->
+```{r, coldata2design, eval=FALSE}
 design <- as.data.frame(colData(counts))[,c(phenotype, covariates)]
 str(design)
 design$Smoking <- factor(design$Smoking)
@@ -39,7 +57,8 @@ str(design)
 
 ## Run TWAS ##
 
-```{r, twasprepro}
+<!-- ```{r, twasprepro} -->
+```{r, twasprepro, eval=FALSE}
 data <- assays(counts)$data
 library(edgeR)
 y <- DGEList(data)
@@ -51,21 +70,24 @@ y <- calcNormFactors(y) ##takes some time
 data <- cpm(y, log=TRUE)
 ```
 
-```{r, twas}
+<!-- ```{r, twas} -->
+```{r, twas, eval=FALSE}
 library(limma)
 fit <- lmFit(data, design)
 ```
 
 ## Inspect results ##
 
-```{r, twasstats}
+<!-- ```{r, twasstats} -->
+```{r, twasstats, eval=FALSE}
 tstat <- fit$coef/fit$stdev.unscaled/fit$sigma
 pval <- 2 * pnorm(-abs(tstat[, 2]))
 padj <- p.adjust(sort(pval, decreasing = FALSE), method = "bonf")
 head(padj[padj < 0.05])
 ```
 
-```{r, qqplottwas}
+<!-- ```{r, qqplottwas} -->
+```{r, qqplottwas, eval=FALSE}
 gp <- ggplot(data.frame(pval=pval), aes(sample=-log10(pval)))
 gp <- gp + stat_qq(distribution=stats::qexp, dparams=list(rate=1/log10(exp(1))))
 gp <- gp + xlab(expression(paste("Expected -log"[10], plain(P))))
@@ -74,7 +96,8 @@ gp <- gp + geom_abline(slope=1, intercept=0)
 gp
 ```
 
-```{r, manplottwas}
+<!-- ```{r, manplottwas} -->
+```{r, manplottwas, eval=FALSE}
 rowRanges(counts)
 head(pval)
 tail(pval)
@@ -97,7 +120,8 @@ manhattan(pdata, chr="seqnames", bp="start", p="pval")
 
 The famous CpG near the ELOVL2 gene.
 
-```{r, tophittwas}
+<!-- ```{r, tophittwas} -->
+```{r, tophittwas, eval=FALSE}
 top <- which.min(rData$pval)
 y <- data[top, ]
 x <- design[, 2]
@@ -105,3 +129,6 @@ plot(x, y, main = paste("Pearson cor.:", signif(cor(x, y), 3)), xlab = "Age (in 
      ylab = paste(rownames(data)[top], "Expression (TMM norm. log cpm)"))
 abline(lm(y ~ x), col = 2)
 ```
+
+
+<!-- END OF FILE. -->

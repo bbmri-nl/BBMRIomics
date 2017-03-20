@@ -86,8 +86,19 @@ The overlapping metabolite data is stored with in the `colData` the
 DNAm data. The data set can be loaded using `data(metabolomicData)`.
 
 
-```{r metabolomic}
+<!-- Dd 2017-03-20 18:21 evaluation of the chunk below yields: -->
+<!-- -- -->
+<!-- Error in colData(metabolomicData) : object 'metabolomicData' not found -->
+<!-- Calls: <Anonymous> ... withCallingHandlers -> withVisible -> eval -> eval -> head -> colData -->
+<!-- Execution halted -->
+<!-- -- -->
+<!-- ==> Set "eval=FALSE" for this chunk (HD). -->
+<!-- ```{r metabolomic} -->
+```{r metabolomic, eval=FALSE}
 data(metabolomics_RP3RP4_overlap)
 head(colData(metabolomicData))
 head(assays(metabolomicData)$measurements)
 ```
+
+
+<!-- END OF FILE. -->

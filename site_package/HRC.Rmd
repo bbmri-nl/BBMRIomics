@@ -36,19 +36,25 @@ library(SNPlocs.Hsapiens.dbSNP142.GRCh37)
 gr <- rsidsToGRanges("rs1981760")
 ```
 
-```{r, readvcf}
+<!--  ```{r, readvcf} -->
+<!-- Set "eval=FALSE" for chunk below, as execution of statement "zipped <- bgzip([file=]from, [dest=]to)" yields "Error:" (HD dd 2017-03-20 18:09). -->
+```{r, readvcf, eval=FALSE}
 seqlevels(gr) <- gsub("ch", "", seqlevels(gr))
 genome(gr) <- "hg19"
 from <- vcfs[grepl("chr16", vcfs)]
 to <- tempfile()
 library(VariantAnnotation)
-zipped <- bgzip(from, to)
+
+# zipped <- bgzip(from, to)
+zipped <- bgzip(file=from, dest=to)
+
 fl <- indexTabix(zipped, format="vcf")
 vcf <- readVcf(fl, genome="hg19", param=gr)
 rs1981760 <- geno(vcf)$GT[1,]
 ```
 
-```{r, linkhrcrna}
+<!-- ```{r, linkhrcrna} -->
+```{r, linkhrcrna, eval=FALSE}
 data(rnaSeqData_ReadCounts_cleaned)
 hrc <- intersect(names(rs1981760), counts$hrc_id)
 counts <- counts[,counts$hrc_id %in% hrc]
@@ -62,15 +68,27 @@ boxplot(NOD2~rs1981760)
 
 ## Inspect Multiple SNPs using `getGenotypes` ##
 
-```{r, getgenotypes}
+<!-- Dd 2017-03-20 18:13 leads to ("Knit"[-ting]) error: -->
+<!-- -- -->
+<!-- "Error in counts$hrc_id : object of type 'closure' is not subsettable -->
+<!-- Calls: <Anonymous> ... withVisible -> eval -> eval -> getGenotypes -> .getHRC -> match -->
+<!-- Execution halted" -->
+<!-- -- -->
+<!-- ==> set "eval=FALSE" for this chunk (HD). -->
+<!-- ```{r, getgenotypes} -->
+#
+```{r, getgenotypes, eval=FALSE}
 library(SNPlocs.Hsapiens.dbSNP142.GRCh37)
 gr <- rsidsToGRanges(c("rs9302752", "rs1981760"))
 data(rnaSeqData_ReadCounts_cleaned)
-dosages <- getGenotypes(imputation_id = counts$hrc_id, biobank="ALL", snps=gr, type="HRC", geno="DS", BASE=VM_BASE_DATA)
+
+dosages <- BBMRIomics::getGenotypes(imputation_id = counts$hrc_id, biobank="ALL", snps=gr, type="HRC", geno="DS", BASE=VM_BASE_DATA)
+
 dosages[1:2, 1:5]
 ```
 
-```{r, linkhrcrna2}
+<!-- ```{r, linkhrcrna2} -->
+```{r, linkhrcrna2, eval=FALSE}
 dim(counts)
 dim(dosages)
 head(counts$hrc_id)
@@ -102,3 +120,6 @@ head(loc, 6)
 ```
 
 ## References ##
+
+
+<!-- END OF FILE. -->

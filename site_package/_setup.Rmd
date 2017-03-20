@@ -94,6 +94,7 @@ suppressPackageStartupMessages({ ##to get rid of annoying startup messages (like
   #-"BSgenome.Hsapiens.UCSC.hg19"
   #-"edgeR"
   #-"limma"
+  #-"SNPlocs.Hsapiens.dbSNP142.GRCh37"
   #
   biocPckgs <- c("SummarizedExperiment",
                  "BiocParallel",
@@ -108,7 +109,8 @@ suppressPackageStartupMessages({ ##to get rid of annoying startup messages (like
                  "AnnotationHub",
                  "BSgenome.Hsapiens.UCSC.hg19",
                  "edgeR",
-                 "limma")
+                 "limma",
+                 "SNPlocs.Hsapiens.dbSNP142.GRCh37")
   #
   for (bioc.pckg in biocPckgs) {
     

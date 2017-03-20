@@ -8,3 +8,6 @@ Questions, typo's, bugs please contact: m.van_iterson@lumc.nl
 
 ```{r, child="_sessioninfo.Rmd"}
 ```
+
+
+<!-- END OF FILE. -->

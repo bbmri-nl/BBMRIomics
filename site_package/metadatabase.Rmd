@@ -21,7 +21,7 @@ generation of this large-scale multiple-omic data set.
 
 The MDb is a non-relation database (http://couchdb.apache.org/) that uses JavaScript
 Object Notation (JSON) to store records and JavaScript for querying. Furthermore,
-it has a HyperText Transfer protocol (HTTP) Application Programming Interface
+it has a HyperText Transfer Protocol (HTTP) Application Programming Interface
 (API) suitable to programmatically access the database from the GRID, *e.g.*, the
 BIOS alignment pipeline.
 <!-- REM HD dd 2017-03-19 22:15 : I don't understand the phrase "*e.g.*, the BIOS 
@@ -62,7 +62,7 @@ number. Thereby it is always possible to undo wrong updates.
 "Views" are the way to extract information from the CouchDb. Views are organized
 into "Designs": each Design contains a number of Views related to a particular
 kind of information that can be extracted from the MDb. For example, there is a
-Design named `EGA` that currently contains two views: 1) `freeze1RNA`, <!--Updated to reflect View names as in table below--> to extract those samples for which RNAseq data have been uploaded to EGA;
+Design named `EGA` that currently contains two Views: 1) `freeze1RNA`, <!--Updated to reflect View names as in table below--> to extract those samples for which RNAseq data have been uploaded to EGA;
 and 2) `freeze1DNAm`, <!--Updated to reflect View names as in table below--> for
 the DNA methylation data. 
 
@@ -110,8 +110,8 @@ The \<R\> package `BBMRIomics` uses a configuration file to read in your MDb use
 and password, so that you don't have to enter it every time you would like to
 access the MDb.
 
-Create this configuration file called `.bbmriomics` or `.biosrutils` and store it
-in your home directory on the VM (/home/username) and append to it *e.g.*:
+Create this configuration file called `.bbmriomics` or `.biosrutils`, store it
+in your home directory on the VM (/home/username), and append to it *e.g.*:
 
 ```{bash, eval=FALSE}
 usrpwdrp3: 'rp3_username:password' 
@@ -124,7 +124,7 @@ two lines are optional, and usable respectively for accessing the RP4 database
 and for accessing data from the SRM using the function `BBMRIomics::SRM2VM()`.
 
 On the BIOS VM, start \<R\> by entering at the Ubuntu command prompt the following command:
-```{bash}
+```{bash, eval=FALSE}
 $ R
 ```
 
@@ -132,11 +132,27 @@ Upon loading of the `BBMRIomics` library, your username and password will be sto
 in the \<R\> global environment variable `RP3_MDB_USRPWD`. The `BBMRIomics::getView()`
 function can then be used like so:
 
-```{r}
+<!-- # ```{r} -->
+<!-- HD dd 2017-03-17 17:58 : Set "eval=FALSE" as otherwise upon "Knit"ting this *.Rmd file, R Markdown will issue: -->
+<!-- ==== -->
+<!-- Error: lexical error: invalid char in json text. -->
+<!--                                       /home/hhmdraisma/R/x86_64-pc-lin -->
+<!--                      (right here) ------^ -->
+<!-- Execution halted -->
+<!-- ==== -->
+<!-- ... and in the <R> console, running this chunk will yield: -->
+<!-- ==== -->
+<!-- > ids <- getView("getIds", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB) -->
+<!-- No username and password provided for the MDB use stored views! -->
+<!-- Error: lexical error: invalid char in json text. -->
+<!--                                       /home/hhmdraisma/R/x86_64-pc-lin -->
+<!--                      (right here) ------^ -->
+<!-- ==== -->
+```{r, eval=FALSE}
 ids <- getView("getIds", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
 ```
 
-Access to the RNAseq-run database (if you requested an account) is possible through
+Provided you requested an account, you can access the RNAseq-run database through
 the `BBMRIomics::getView()` function, too:
 
 

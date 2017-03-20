@@ -38,21 +38,35 @@ ErasmusMC, the Netherlands.
 
 ## Loading the data ##
 
-Load a specific data set with `data(name_dataset)`. The **BBMRIomics**
-global variable `DATASETS` lists all available data sets. Once loaded
-check the name of the loaded data with `ls()` and view its content by
-just typing the name of the dataset in the console this will
-automatically call the buildin `show`-method and summarizes the
-content of the loaded dataset.
+Load a specific data set with `data(name_dataset)`. The **BBMRIomics** global
+variable `DATASETS` lists all available data sets. Once loaded, check the name of
+the loaded data with `ls()` and view its content by just typing the name of the
+data set in the console -- this will automatically call the built-in `show()`
+method, which then summarizes the content of the loaded data set.
 
 ```{r, datasets}
 library(BBMRIomics)
 data(package="BBMRIomics")
 ```
 
-```{r, loading}
-data(methData_Betas_CODAM_F2_cleaned)
+<!-- Execution of chunk below leads to (an) error(s) dd 2017-03-20 16:08, hence set "eval=FALSE" (HD) -->
+<!-- ```{r, loading} -->
+```{r, loading, eval=FALSE}
+# data(methData_Betas_CODAM_F2_cleaned)
+#
+#Not sure whether implementation as below is optimal, but *seems* to 'do the job' in current situation on my machine i.e. where:
+#--
+#> errmessage <- try(utils::data(methData_Betas_CODAM_F2_cleaned))
+#--
+#... apparently doesn't yield an error message to be returned (i.e., '> class(errmessage) != "try-error"'), but apparently a call to "> utils::data(methData_Betas_CODAM_F2_cleaned)" isn't successful either... (HD dd 2017-03-20 16:00LT)
+errmessage <- try(utils::data(methData_Betas_CODAM_F2_cleaned))
+#
+if (errmessage == "methData_Betas_CODAM_F2_cleaned") {
+  stop("data set 'methData_Betas_CODAM_F2_cleaned' not found")
+}
+
 ls()
+
 betas
 ```
 
@@ -91,6 +105,4 @@ See for more information on the **SummarizedExperiment** datastructure:
 3. [Paper](http://www.nature.com/nmeth/journal/v12/n2/full/nmeth.3252.html)
 
 
-
-
-
+<!-- END OF FILE. -->

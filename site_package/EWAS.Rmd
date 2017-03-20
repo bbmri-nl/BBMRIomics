@@ -25,13 +25,34 @@ phenotype of interest from the
 data for which the covariates and phenotype are complete, i.e. do not
 contain missing -values.
 
-```{r, selectdata}
+
+<!-- START Code copy--pasted from "./data.Rmd" dd 2017-03-20 17:23 (HD). -->
+<!-- Execution of chunk below leads to (an) error(s) dd 2017-03-20 16:08, hence set "eval=FALSE" (HD) -->
+<!-- ```{r, selectdata} -->
+```{r, selectdata, eval=FALSE}
+
+#Load 'BBMRIomics' library
 library(BBMRIomics)
-data(methData_Mvalues_CODAM_F2_cleaned)
+
+#Load 'methData_Mvalues_CODAM_F2_cleaned' data set
+#
+# utils::data(methData_Mvalues_CODAM_F2_cleaned)
+#
+errmessage <- try(utils::data(methData_Mvalues_CODAM_F2_cleaned))
+#
+if (errmessage == "methData_Mvalues_CODAM_F2_cleaned") {
+  stop("data set 'methData_Mvalues_CODAM_F2_cleaned' not found")
+}
+# 
+#END Code copy--pasted from "./data.Rmd" dd 2017-03-20 17:23 (HD).
+
+
 covariates <- c("Sex", "Smoking", "Sentrix_Position")
 phenotype <- "Sampling_Age"
 nas <- apply(as.data.frame(colData(mvalues))[,c(phenotype, covariates)], 1, anyNA)
+#
 table(nas)
+
 mvalues <- mvalues[, !nas]
 ```
 
@@ -41,7 +62,8 @@ Now we can create a design matrix appropriate for use in with
 `limma`'s `lmFit`-function. Both `Smoking` and `Sentrix_Position` are
 considered categorical variables.
 
-```{r, coldata2design}
+<!-- ```{r, coldata2design} -->
+```{r, coldata2design, eval=FALSE}
 design <- as.data.frame(colData(mvalues))[,c(phenotype, covariates)]
 str(design)
 design$Smoking <- factor(design$Smoking)
@@ -76,7 +98,8 @@ data <- assays(mvalues)$data
 
 
 
-```{r, ewas}
+<!-- ```{r, ewas} -->
+```{r, ewas, eval=FALSE}
 data <- assays(mvalues)$data
 library(limma)
 fit <- lmFit(data, design)
@@ -89,7 +112,8 @@ regularized test-statistics using the function `eBayes`. The ordinary
 t-statistics can be extracted as follows (as described in the vignette
 of **limma**):
 
-```{r, ewasstats}
+<!-- ```{r, ewasstats} -->
+```{r, ewasstats, eval=FALSE}
 tstat <- fit$coef/fit$stdev.unscaled/fit$sigma
 pval <- 2 * pnorm(-abs(tstat[, 2]))
 padj <- p.adjust(sort(pval, decreasing = FALSE), method = "bonf")
@@ -99,7 +123,8 @@ head(padj[padj < 0.05])
 After preforming multiple-testing correction using Bonferroni's method
 we can inspect the results.
 
-```{r, qqplotewas}
+<!-- ```{r, qqplotewas} -->
+```{r, qqplotewas, eval=FALSE}
 gp <- ggplot(data.frame(pval=pval), aes(sample=-log10(pval)))
 gp <- gp + stat_qq(distribution=stats::qexp, dparams=list(rate=1/log10(exp(1))))
 gp <- gp + xlab(expression(paste("Expected -log"[10], plain(P))))
@@ -108,7 +133,8 @@ gp <- gp + geom_abline(slope=1, intercept=0)
 gp
 ```
 
-```{r, manplotewas}
+<!-- ```{r, manplotewas} -->
+```{r, manplotewas, eval=FALSE}
 rowRanges(mvalues)
 head(pval)
 tail(pval)
@@ -129,7 +155,8 @@ manhattan(pdata, chr="seqnames", bp="start", p="pval")
 
 The famous CpG near the ELOVL2 gene.
 
-```{r, tophitewas}
+<!-- ```{r, tophitewas} -->
+```{r, tophitewas, eval=FALSE}
 top <- which.min(rData$pval)
 y <- data[top, ]
 x <- design[, 2]
@@ -137,3 +164,6 @@ plot(x, y, main = paste("Pearson cor.:", signif(cor(x, y), 3)), xlab = "Age (in 
      ylab = paste(rownames(data)[top], "Methylation (on M-value scale)"))
 abline(lm(y ~ x), col = 2)
 ```
+
+
+<!-- END OF FILE. -->
