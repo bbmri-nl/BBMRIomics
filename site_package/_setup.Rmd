@@ -8,25 +8,120 @@ knitr::opts_chunk$set(cache=TRUE, eval=TRUE)
 rm(list=ls()) ##clear work space
 
 suppressPackageStartupMessages({ ##to get rid of annoying startup messages (like ours ;)!)
-    library(BBMRIomics)
-
-    library(ggplot2)
-    library(qqman)
-    library(MethylAid)
-    library(DNAmArray)
-    library(BiocParallel)
-    library(shiny)
-    library(AnnotationHub)
-    library(rtracklayer)
-    library(GenomeInfoDb)
-    library(BSgenome.Hsapiens.UCSC.hg19)
-    library(Rsamtools)
-    library(Biostrings)
-    library(edgeR)
-    library(limma)
-    library(irlba)
-    library(qqman)
-
+  
+  #NOTE: might require:
+  #--
+  #$ sudo apt-get update
+  #$ sudo apt-get install libxml2-dev
+  #--
+  #... [REF "http://stackoverflow.com/questions/7765429/unable-to-install-r-package-in-ubuntu-11-04"], and:
+  #--
+  #> install.packages('devtools')
+  #> library(devtools)
+  #> install_github("molepi/DNAmArray")
+  #--
+  #... [REF "https://github.com/molepi/DNAmArray"]
+  
+  
+  # library(BBMRIomics)
+  # 
+  # library(ggplot2)
+  # library(qqman)
+  # library(MethylAid)
+  # library(DNAmArray)
+  # library(BiocParallel)
+  # library(shiny)
+  # library(AnnotationHub)
+  # library(rtracklayer)
+  # library(GenomeInfoDb)
+  # library(BSgenome.Hsapiens.UCSC.hg19)
+  # library(Rsamtools)
+  # library(Biostrings)
+  # library(edgeR)
+  # library(limma)
+  # library(irlba)
+  # library(qqman)
+  
+  
+  Rpackages <- c("BBMRIomics",
+                 "ggplot2",
+                 "qqman",
+                 "DNAmArray",
+                 "BiocParallel",
+                 "shiny",
+                 "rtracklayer",
+                 "GenomeInfoDb",
+                 "Rsamtools",
+                 "Biostrings",
+                 "irlba",
+                 "qqman")
+  #
+  for (r.pckg in Rpackages) {  
+    errmessageReRpckg <- try(library(package=r.pckg, character.only = T))
+    #
+    if (class(errmessageReRpckg) == "try-error") {  #Then (attempt to) install current 'r.pckg' after all
+      #
+      #Dd 2017-03-08 19:51 :
+      #--
+      # > getOption("repos")
+      # CRAN 
+      # "https://cran.rstudio.com/" 
+      # attr(,"RStudio")
+      # [1] TRUE    
+      #--
+      #-->:
+      install.packages(pkgs=r.pckg, repos="https://cran.rstudio.com/")  #... though "repos='https://cran.rstudio.com/src/contrib'" *might* be preferred??? ('still' HD dd 2017-03-08 19:56)
+      #
+      library(package=r.pckg, character.only = T)
+    }
+  }
+  #
+  #
+  #Note: the following packages are from Bioconductor [REFs
+  #"https://bioconductor.org/packages/release/BiocViews.html#___Software" and "https://bioconductor.org/packages/release/BiocViews.html#___AnnotationData"]:
+  
+  #-'SummarizedExperiment'
+  #-'BiocParallel'
+  #-'GenomicRanges'
+  #-'IRanges'
+  #-'Rsamtools'
+  #-'S4Vectors'
+  #-'VariantAnnotation'
+  #-'MethylAid'
+  #-"FDb.InfiniumMethylation.hg19"
+  #-"org.Hs.eg.db"
+  #-"AnnotationHub"
+  #-"BSgenome.Hsapiens.UCSC.hg19"
+  #-"edgeR"
+  #-"limma"
+  #
+  biocPckgs <- c("SummarizedExperiment",
+                 "BiocParallel",
+                 "GenomicRanges",
+                 "IRanges",
+                 "Rsamtools",
+                 "S4Vectors",
+                 "VariantAnnotation",
+                 "MethylAid",
+                 "FDb.InfiniumMethylation.hg19",
+                 "org.Hs.eg.db",
+                 "AnnotationHub",
+                 "BSgenome.Hsapiens.UCSC.hg19",
+                 "edgeR",
+                 "limma")
+  #
+  for (bioc.pckg in biocPckgs) {
+    
+    errmessage <- try(library(package=bioc.pckg, character.only = T))
+    #
+    if (class(errmessage) == "try-error") {
+      source("http://bioconductor.org/biocLite.R")
+      biocLite(bioc.pckg, dependencies=T)  #REM HD dd 2016-10-18 15:33 : specification of "dependencies=T" appears to resolve otherwise occurring error when 'S4Vectors' package is not installed.
+    }
+  }
 })
 
 ```
+
+
+<!-- #END OF FILE. -->
