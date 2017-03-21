@@ -62,6 +62,8 @@ boxplot(NOD2~rs1981760)
 
 ## Inspect Multiple SNPs using `getGenotypes` ##
 
+> Replace this with the `MatrixeQTL` example from Rick/Joost?
+
 ```{r, getgenotypes}
 library(SNPlocs.Hsapiens.dbSNP142.GRCh37)
 gr <- rsidsToGRanges(c("rs9302752", "rs1981760"))

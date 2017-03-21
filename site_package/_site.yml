@@ -45,7 +45,7 @@ navbar:
         - text: "DNAm"
           href: DNAm_qc.html
         - text: "RNAseq"
-          href: RNA_qc.html          
+          # href: RNA_qc.html          
         - text: "Creating Data Sets"
         - text: "RNAseq"
           href: create_RNA_datasets.html

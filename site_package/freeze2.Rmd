@@ -18,6 +18,7 @@ having array-based genotypes or whole sequencing data (GoNL) already
 available. Furthermore, the generated data should pass a set of
 quality control metrics.
 
+
 The following code shows how to extract the RNA sequencing and DNA
 methylation samples that pass quality control.
 

@@ -11,8 +11,8 @@ output:
 ```{r, child="_setup.Rmd"}
 ```
 
-**intro**
-
+A transcriptomewide association study can be run using the same
+approach as an EWAS.
 
 ## Collect data ##
 
@@ -93,9 +93,6 @@ pdata$seqnames <- as.integer(pdata$seqnames)
 library(qqman)
 manhattan(pdata, chr="seqnames", bp="start", p="pval")
 ```
-
-
-The famous CpG near the ELOVL2 gene.
 
 ```{r, tophittwas}
 top <- which.min(rData$pval)
