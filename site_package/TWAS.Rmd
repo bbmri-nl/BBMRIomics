@@ -17,8 +17,8 @@ output:
 ## Collect data ##
 <!-- START Code copy--pasted from "./EWAS.Rmd" dd 2017-03-20 18:36 (HD). -->
 <!-- Execution of chunk below leads to (an) error(s) dd 2017-03-20 16:08, hence set "eval=FALSE" (HD) -->
-<!-- ```{r, selectdata} -->
-```{r, selectdata, eval=FALSE}
+```{r, selectdata}
+# ```{r, selectdata, eval=FALSE}
 
 #Load 'BBMRIomics' library
 library(BBMRIomics)
@@ -45,8 +45,8 @@ counts <- counts[, !nas]
 
 ## Create design ##
 
-<!-- ```{r, coldata2design} -->
-```{r, coldata2design, eval=FALSE}
+```{r, coldata2design}
+# ```{r, coldata2design, eval=FALSE}
 design <- as.data.frame(colData(counts))[,c(phenotype, covariates)]
 str(design)
 design$Smoking <- factor(design$Smoking)
@@ -57,8 +57,8 @@ str(design)
 
 ## Run TWAS ##
 
-<!-- ```{r, twasprepro} -->
-```{r, twasprepro, eval=FALSE}
+```{r, twasprepro}
+# ```{r, twasprepro, eval=FALSE}
 data <- assays(counts)$data
 library(edgeR)
 y <- DGEList(data)
@@ -70,24 +70,24 @@ y <- calcNormFactors(y) ##takes some time
 data <- cpm(y, log=TRUE)
 ```
 
-<!-- ```{r, twas} -->
-```{r, twas, eval=FALSE}
+```{r, twas}
+# ```{r, twas, eval=FALSE}
 library(limma)
 fit <- lmFit(data, design)
 ```
 
 ## Inspect results ##
 
-<!-- ```{r, twasstats} -->
-```{r, twasstats, eval=FALSE}
+```{r, twasstats}
+# ```{r, twasstats, eval=FALSE}
 tstat <- fit$coef/fit$stdev.unscaled/fit$sigma
 pval <- 2 * pnorm(-abs(tstat[, 2]))
 padj <- p.adjust(sort(pval, decreasing = FALSE), method = "bonf")
 head(padj[padj < 0.05])
 ```
 
-<!-- ```{r, qqplottwas} -->
-```{r, qqplottwas, eval=FALSE}
+```{r, qqplottwas}
+# ```{r, qqplottwas, eval=FALSE}
 gp <- ggplot(data.frame(pval=pval), aes(sample=-log10(pval)))
 gp <- gp + stat_qq(distribution=stats::qexp, dparams=list(rate=1/log10(exp(1))))
 gp <- gp + xlab(expression(paste("Expected -log"[10], plain(P))))
@@ -96,8 +96,8 @@ gp <- gp + geom_abline(slope=1, intercept=0)
 gp
 ```
 
-<!-- ```{r, manplottwas} -->
-```{r, manplottwas, eval=FALSE}
+```{r, manplottwas}
+# ```{r, manplottwas, eval=FALSE}
 rowRanges(counts)
 head(pval)
 tail(pval)
@@ -120,8 +120,8 @@ manhattan(pdata, chr="seqnames", bp="start", p="pval")
 
 The famous CpG near the ELOVL2 gene.
 
-<!-- ```{r, tophittwas} -->
-```{r, tophittwas, eval=FALSE}
+```{r, tophittwas}
+# ```{r, tophittwas, eval=FALSE}
 top <- which.min(rData$pval)
 y <- data[top, ]
 x <- design[, 2]

@@ -34,8 +34,8 @@ bibliography: BBMRIomics.bib
 <!-- Error: lexical error: invalid char in json text. /home/hhmdraisma/R/x86_64-pc-lin (right here) ------^ -->
 <!-- -- -->
 <!-- ==> Set "eval=FALSE" for this chunk (HD). -->
-<!-- ```{r} -->
-```{r, eval=FALSE}
+```{r}
+# ```{r, eval=FALSE}
 library(BBMRIomics)
 rna <- getView("getRNASeqRuns", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
 rna <- rna[!duplicated(rna$run_id),] ##drop overlapping freezes
@@ -65,8 +65,8 @@ setdiff(runids, colnames(rnaCalls)) ##why are these missing bad quality?
 ```
 
 
-<!-- ```{r} -->
-```{r, eval=FALSE}
+```{r}
+# ```{r, eval=FALSE}
 
 RNAFile <- file.path(VM_BASE_ANALYSIS, "rnasnp", "RNAsnps50.vcf")
 

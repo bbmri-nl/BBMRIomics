@@ -50,8 +50,8 @@ data(package="BBMRIomics")
 ```
 
 <!-- Execution of chunk below leads to (an) error(s) dd 2017-03-20 16:08, hence set "eval=FALSE" (HD) -->
-<!-- ```{r, loading} -->
-```{r, loading, eval=FALSE}
+```{r, loading}
+# ```{r, loading, eval=FALSE}
 # data(methData_Betas_CODAM_F2_cleaned)
 #
 #Not sure whether implementation as below is optimal, but *seems* to 'do the job' in current situation on my machine i.e. where:

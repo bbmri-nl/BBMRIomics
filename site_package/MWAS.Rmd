@@ -29,8 +29,8 @@ database using its
 <!-- Error in gsub("'", "", usrpwd) : object 'RP4_DB_USRPWD' not found -->
 <!-- -- -->
 <!-- ==> Set "eval=FALSE" for this chunk (HD). -->
-<!-- ```{r, rp4connect} -->
-```{r, rp4connect, eval=FALSE}
+```{r, rp4connect}
+# ```{r, rp4connect, eval=FALSE}
 library(BBMRIomics)
 RP4_DB
 molgenis.connect(usrpwd=RP4_DB_USRPWD, url=RP4_DB)
@@ -42,16 +42,16 @@ ls()
 If a `molgenis.token` is available in the global environment you are ready to
 extract the data.
 
-<!-- ```{r, getall} -->
-```{r, getall, eval=FALSE}
+```{r, getall}
+# ```{r, getall, eval=FALSE}
 biobanks <- molgenis.get.all("biobanks", verbose = FALSE)
 biobanks$abbreviation
 table(biobanks$use_of_beta_blockers)
 biobanks$abbreviation[biobanks$use_of_beta_blockers]
 ```
 
-<!-- ```{r, laclevels} -->
-```{r, laclevels, eval=FALSE}
+```{r, laclevels}
+# ```{r, laclevels, eval=FALSE}
 measurements <- molgenis.get.all("measurements")
 measurements$biobank <- gsub("-.*$", "", measurements$sample_id)
 biobank_ordered <- with(measurements, reorder(biobank, lac, median, na.rm = TRUE))

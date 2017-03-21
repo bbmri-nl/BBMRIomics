@@ -132,7 +132,6 @@ Upon loading of the `BBMRIomics` library, your username and password will be sto
 in the \<R\> global environment variable `RP3_MDB_USRPWD`. The `BBMRIomics::getView()`
 function can then be used like so:
 
-<!-- # ```{r} -->
 <!-- HD dd 2017-03-17 17:58 : Set "eval=FALSE" as otherwise upon "Knit"ting this *.Rmd file, R Markdown will issue: -->
 <!-- ==== -->
 <!-- Error: lexical error: invalid char in json text. -->
@@ -148,16 +147,14 @@ function can then be used like so:
 <!--                                       /home/hhmdraisma/R/x86_64-pc-lin -->
 <!--                      (right here) ------^ -->
 <!-- ==== -->
-```{r, eval=FALSE}
+```{r}
+# ```{r, eval=FALSE}
 ids <- getView("getIds", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
 ```
 
 Provided you requested an account, you can access the RNAseq-run database through
 the `BBMRIomics::getView()` function, too:
 
-
-<!-- ```{r} -->
-<!-- # ```{r} -->
 <!-- HD dd 2017-03-17 18:02 : Set "eval=FALSE" as otherwise upon "Knit"ting this *.Rmd file, R Markdown will issue: -->
 <!-- ==== -->
 <!-- Error: lexical error: invalid char in json text. -->
@@ -173,7 +170,8 @@ the `BBMRIomics::getView()` function, too:
 <!--                                       /home/hhmdraisma/R/x86_64-pc-lin -->
 <!--                      (right here) ------^ -->
 <!-- ==== -->
-```{r, eval=FALSE}
+```{r}
+# ```{r, eval=FALSE}
 stats <- getView("getStats", usrpwd=RP3_MDB_USRPWD, url=RP3_RDB)
 ```
 

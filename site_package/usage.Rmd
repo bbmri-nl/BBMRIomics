@@ -32,8 +32,8 @@ DNA methylation data, `Hydridization_Data`, `Stain_Date`, etc.
 <!-- ==> Set "eval=FALSE" for this chunk (HD). -->
 <!-- START Code amended from "./EWAS.Rmd" dd 2017-03-20 18:47 (HD). -->
 <!-- Execution of chunk below leads to (an) error(s) dd 2017-03-20 16:08, hence set "eval=FALSE" (HD) -->
-<!-- ```{r, coldata} -->
-```{r, coldata, eval=FALSE}
+```{r, coldata}
+# ```{r, coldata, eval=FALSE}
 
 #Load 'BBMRIomics' library
 library(BBMRIomics)
@@ -57,16 +57,16 @@ cData[1:5, 1:5]
 
 Tabulation can be used for inspection of the distribution of categorical variables.
 
-<!-- ```{r, tabulatecoldata} -->
-```{r, tabulatecoldata, eval=FALSE}
+```{r, tabulatecoldata}
+# ```{r, tabulatecoldata, eval=FALSE}
 xtabs(~Sex+Smoking, data=as.data.frame(cData))
 ```
 
 Use plots for example, a histogram for inspection of the `Sampling_Age`
 distribution.
 
-<!-- ```{r, plotcoldata} -->
-```{r, plotcoldata, eval=FALSE}
+```{r, plotcoldata}
+# ```{r, plotcoldata, eval=FALSE}
 library(ggplot2)
 qplot(Sampling_Age, data=as.data.frame(cData), geom="histogram")
 summary(cData$Sampling_Age)
@@ -75,8 +75,8 @@ summary(cData$Sampling_Age)
 Optionally stratify by `Sex`.
 
 
-<!-- ```{r, plotcoldatastratified} -->
-```{r, plotcoldatastratified, eval=FALSE}
+```{r, plotcoldatastratified}
+# ```{r, plotcoldatastratified, eval=FALSE}
 gp <- ggplot(as.data.frame(cData), aes(x=Sampling_Age))
 gp <- gp + geom_histogram()
 gp + facet_grid(Sex~.)
@@ -91,21 +91,21 @@ Bioconductor annotation package. This package contains the same
 information as the Illumina Human DNA methylation 450k manifest file
 but in a convenient format, as `GRanges`-object.
 
-<!-- ```{r, rowdata} -->
-```{r, rowdata, eval=FALSE}
+```{r, rowdata}
+# ```{r, rowdata, eval=FALSE}
 rowRanges(betas)
 ```
 
 ### features ###
 
-<!-- ```{r, assaydata} -->
-```{r, assaydata, eval=FALSE}
+```{r, assaydata}
+# ```{r, assaydata, eval=FALSE}
 data <- assays(betas)$data
 data[1:5, 1:5]
 ```
 
-<!-- ```{r} -->
-```{r, eval=FALSE}
+```{r}
+# ```{r, eval=FALSE}
 hist(data[1,], xlim=c(0, 1), main=paste("beta-value distribution for probe:", rownames(data)[1]))
 ```
 
@@ -113,8 +113,8 @@ hist(data[1,], xlim=c(0, 1), main=paste("beta-value distribution for probe:", ro
 
 See [**irlba**](https://cran.r-project.org/web/packages/irlba/vignettes/irlba.pdf)
 
-<!-- ```{r, pca} -->
-```{r, pca, eval=FALSE}
+```{r, pca}
+# ```{r, pca, eval=FALSE}
 library(irlba)
 
 # data(rnaSeqData_ReadCounts_cleaned)
@@ -135,8 +135,8 @@ summary(pc)
 plot(pc$x, col=ifelse(colData(counts)$Sex == "Female", 1, 2))
 ```
 
-<!-- ```{r, pcabiobank} -->
-```{r, pcabiobank, eval=FALSE}
+```{r, pcabiobank}
+# ```{r, pcabiobank, eval=FALSE}
 biobank <- factor(colData(counts)$biobank_id)
 plot(pc$x, col=adjustcolor(as.integer(biobank), alpha.f = 0.3), pch=16)
 legend("topleft", levels(biobank), col=adjustcolor(1:nlevels(biobank), alpha.f = 0.3), pch=16, bty="n")     

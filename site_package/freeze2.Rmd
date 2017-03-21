@@ -12,18 +12,17 @@ bibliography: BBMRIomics.bib
 ```{r, child="_setup.Rmd"}
 ```
 
-The aim of the BIOS consortium is to generate RNA sequencing and DNA
-methylation data for 4000 individuals that have been selected for
-having array-based genotypes or whole sequencing data (GoNL) already
-available. Furthermore, the generated data should pass a set of
-quality control metrics.
+The aim of the BIOS consortium is to generate RNA-sequencing and DNA methylation
+data for 4,000 individuals that have been selected for having array-based genotypes
+or whole-genome sequencing data (GoNL) already available. Furthermore, the generated
+data should pass a set of quality control metrics.
 
-The following code shows how to extract the RNA sequencing and DNA
-methylation samples that pass quality control.
+The following code shows how to extract the RNA-sequencing and DNA methylation
+samples that pass quality control.
 
 
-<!-- ```{r} -->
-```{r, eval=FALSE}
+```{r}
+# ```{r, eval=FALSE}
 ids <- getView("getIds", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
 
 rna <- getView("getRNASeqRuns", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
@@ -65,8 +64,8 @@ individuals for which both RNA sequencing and dna methylation data
 could be generated.
 
 
-<!-- ```{r} -->
-```{r, eval=FALSE}
+```{r}
+# ```{r, eval=FALSE}
 relations <- getView("getRelations", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
 relations <- subset(relations, !is.na(relation_id))
 all(relations$ids %in% relations$relation_id) ##relations consistent

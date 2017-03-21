@@ -75,8 +75,15 @@ suppressPackageStartupMessages({ ##to get rid of annoying startup messages (like
       library(package=r.pckg, character.only = T)
     }
   }
-  #
-  #
+  
+  #REF email from Maarten van Iterson dated 2017-03-21 14:59:36 (REM HD dd 2017-03-21 16:16 : This is for the purpose of running "$ make render" from the Ubuntu command prompt on in "/virdir/Scratch/~" 'the BIOS VM' [REF "http://bios-vm.bbmrirp3-lumc.surf-hosted.nl/BBMRIomics/contribute.html"]):
+  #====
+  #add in _setup.Rmd after library(BBMRIomics)
+  #RP3_MDB_USRPWD <- "anonymous"
+  #====
+  RP3_MDB_USRPWD <- "anonymous"
+  
+  
   #Note: the following packages are from Bioconductor [REFs
   #"https://bioconductor.org/packages/release/BiocViews.html#___Software" and "https://bioconductor.org/packages/release/BiocViews.html#___AnnotationData"]:
   

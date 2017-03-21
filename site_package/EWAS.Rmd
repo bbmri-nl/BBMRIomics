@@ -28,8 +28,8 @@ contain missing -values.
 
 <!-- START Code copy--pasted from "./data.Rmd" dd 2017-03-20 17:23 (HD). -->
 <!-- Execution of chunk below leads to (an) error(s) dd 2017-03-20 16:08, hence set "eval=FALSE" (HD) -->
-<!-- ```{r, selectdata} -->
-```{r, selectdata, eval=FALSE}
+```{r, selectdata}
+# ```{r, selectdata, eval=FALSE}
 
 #Load 'BBMRIomics' library
 library(BBMRIomics)
@@ -62,8 +62,8 @@ Now we can create a design matrix appropriate for use in with
 `limma`'s `lmFit`-function. Both `Smoking` and `Sentrix_Position` are
 considered categorical variables.
 
-<!-- ```{r, coldata2design} -->
-```{r, coldata2design, eval=FALSE}
+```{r, coldata2design}
+# ```{r, coldata2design, eval=FALSE}
 design <- as.data.frame(colData(mvalues))[,c(phenotype, covariates)]
 str(design)
 design$Smoking <- factor(design$Smoking)
@@ -98,8 +98,8 @@ data <- assays(mvalues)$data
 
 
 
-<!-- ```{r, ewas} -->
-```{r, ewas, eval=FALSE}
+```{r, ewas}
+# ```{r, ewas, eval=FALSE}
 data <- assays(mvalues)$data
 library(limma)
 fit <- lmFit(data, design)
@@ -112,19 +112,19 @@ regularized test-statistics using the function `eBayes`. The ordinary
 t-statistics can be extracted as follows (as described in the vignette
 of **limma**):
 
-<!-- ```{r, ewasstats} -->
-```{r, ewasstats, eval=FALSE}
+```{r, ewasstats}
+# ```{r, ewasstats, eval=FALSE}
 tstat <- fit$coef/fit$stdev.unscaled/fit$sigma
 pval <- 2 * pnorm(-abs(tstat[, 2]))
 padj <- p.adjust(sort(pval, decreasing = FALSE), method = "bonf")
 head(padj[padj < 0.05])
 ```
 
-After preforming multiple-testing correction using Bonferroni's method
+After performing multiple-testing correction using Bonferroni's method
 we can inspect the results.
 
-<!-- ```{r, qqplotewas} -->
-```{r, qqplotewas, eval=FALSE}
+```{r, qqplotewas}
+# ```{r, qqplotewas, eval=FALSE}
 gp <- ggplot(data.frame(pval=pval), aes(sample=-log10(pval)))
 gp <- gp + stat_qq(distribution=stats::qexp, dparams=list(rate=1/log10(exp(1))))
 gp <- gp + xlab(expression(paste("Expected -log"[10], plain(P))))
@@ -133,8 +133,8 @@ gp <- gp + geom_abline(slope=1, intercept=0)
 gp
 ```
 
-<!-- ```{r, manplotewas} -->
-```{r, manplotewas, eval=FALSE}
+```{r, manplotewas}
+# ```{r, manplotewas, eval=FALSE}
 rowRanges(mvalues)
 head(pval)
 tail(pval)
@@ -153,10 +153,11 @@ library(qqman)
 manhattan(pdata, chr="seqnames", bp="start", p="pval")
 ```
 
+
 The famous CpG near the ELOVL2 gene.
 
-<!-- ```{r, tophitewas} -->
-```{r, tophitewas, eval=FALSE}
+```{r, tophitewas}
+# ```{r, tophitewas, eval=FALSE}
 top <- which.min(rData$pval)
 y <- data[top, ]
 x <- design[, 2]

@@ -36,9 +36,10 @@ library(SNPlocs.Hsapiens.dbSNP142.GRCh37)
 gr <- rsidsToGRanges("rs1981760")
 ```
 
-<!--  ```{r, readvcf} -->
+
 <!-- Set "eval=FALSE" for chunk below, as execution of statement "zipped <- bgzip([file=]from, [dest=]to)" yields "Error:" (HD dd 2017-03-20 18:09). -->
-```{r, readvcf, eval=FALSE}
+```{r, readvcf}
+# ```{r, readvcf, eval=FALSE}
 seqlevels(gr) <- gsub("ch", "", seqlevels(gr))
 genome(gr) <- "hg19"
 from <- vcfs[grepl("chr16", vcfs)]
@@ -53,8 +54,8 @@ vcf <- readVcf(fl, genome="hg19", param=gr)
 rs1981760 <- geno(vcf)$GT[1,]
 ```
 
-<!-- ```{r, linkhrcrna} -->
-```{r, linkhrcrna, eval=FALSE}
+```{r, linkhrcrna}
+# ```{r, linkhrcrna, eval=FALSE}
 data(rnaSeqData_ReadCounts_cleaned)
 hrc <- intersect(names(rs1981760), counts$hrc_id)
 counts <- counts[,counts$hrc_id %in% hrc]
@@ -75,9 +76,8 @@ boxplot(NOD2~rs1981760)
 <!-- Execution halted" -->
 <!-- -- -->
 <!-- ==> set "eval=FALSE" for this chunk (HD). -->
-<!-- ```{r, getgenotypes} -->
-#
-```{r, getgenotypes, eval=FALSE}
+```{r, getgenotypes}
+# ```{r, getgenotypes, eval=FALSE}
 library(SNPlocs.Hsapiens.dbSNP142.GRCh37)
 gr <- rsidsToGRanges(c("rs9302752", "rs1981760"))
 data(rnaSeqData_ReadCounts_cleaned)
@@ -87,8 +87,8 @@ dosages <- BBMRIomics::getGenotypes(imputation_id = counts$hrc_id, biobank="ALL"
 dosages[1:2, 1:5]
 ```
 
-<!-- ```{r, linkhrcrna2} -->
-```{r, linkhrcrna2, eval=FALSE}
+```{r, linkhrcrna2}
+# ```{r, linkhrcrna2, eval=FALSE}
 dim(counts)
 dim(dosages)
 head(counts$hrc_id)

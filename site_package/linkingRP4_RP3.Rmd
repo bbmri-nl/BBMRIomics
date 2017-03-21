@@ -93,8 +93,8 @@ DNAm data. The data set can be loaded using `data(metabolomicData)`.
 <!-- Execution halted -->
 <!-- -- -->
 <!-- ==> Set "eval=FALSE" for this chunk (HD). -->
-<!-- ```{r metabolomic} -->
-```{r metabolomic, eval=FALSE}
+```{r metabolomic}
+# ```{r metabolomic, eval=FALSE}
 data(metabolomics_RP3RP4_overlap)
 head(colData(metabolomicData))
 head(assays(metabolomicData)$measurements)
