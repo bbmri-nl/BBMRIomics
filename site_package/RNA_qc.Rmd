@@ -12,10 +12,11 @@ bibliography: BBMRIomics.bib
 ```{r, child="_setup.Rmd"}
 ```
 
-## Header 2 ##
+> IN PROGRESS
 
-***brief description***
+## Quality control ##
 
+***add description***
 
 ```{r}
 "some code"
@@ -24,7 +25,7 @@ bibliography: BBMRIomics.bib
 
 ## Sample swap detection ##
 
-***brief description***
+***add description***
 
 
 ```{r}
@@ -61,9 +62,9 @@ setdiff(runids, colnames(rnaCalls)) ##why are these missing bad quality?
 
 RNAFile <- file.path(VM_BASE_ANALYSIS, "rnasnp", "RNAsnps50.vcf")
 
-genotyping(typex="RNA", typey="RNA",  filex=RNAFile, filey=NULL, cohort="ALL", out=NULL, verbose=TRUE)
+genotyping(typex="RNA", typey="RNA",  filex=RNAFile, filey=NULL, cohort="ALL", out=NULL, verbose=FALSE)
 
-genotyping(typex="RNA", typey="HRC",  filex=RNAFile, filey=NULL, cohort="ALL", out=NULL, verbose=TRUE)
+genotyping(typex="RNA", typey="HRC",  filex=RNAFile, filey=NULL, cohort="ALL", out=NULL, verbose=FALSE)
 
 
 ```

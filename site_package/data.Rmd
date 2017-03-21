@@ -34,16 +34,22 @@ ErasmusMC, the Netherlands.
 
 ## Available datasets ##
 
-***brief description***
+Currently, RNA-sequencing, DNA methylation data sets containing
+unrelated individuals with measurements that pass quality control have
+been made available per biobank and combined. An metabolimic dataset
+is created containing the overlapping individuals for which
+RNA-sequencing or DNA methylation data is available. Furthermore,
+**BBMRIomics** provides a convenient function to import the whole
+genome sequencing or imputed genotypes.
 
 ## Loading the data ##
 
-Load a specific data set with `data(name_dataset)`. The **BBMRIomics**
-global variable `DATASETS` lists all available data sets. Once loaded
-check the name of the loaded data with `ls()` and view its content by
-just typing the name of the dataset in the console this will
-automatically call the buildin `show`-method and summarizes the
-content of the loaded dataset.
+Load a specific data set with `data(name_dataset)`. Use
+`data(package="BBMRIomics")` to inspect the current available
+datasets. Once loaded check the name of the loaded data with `ls()` and
+view its content by just typing the name of the dataset in the console
+this will automatically call the buildin `show`-method and summarizes
+the content of the loaded dataset.
 
 ```{r, datasets}
 library(BBMRIomics)

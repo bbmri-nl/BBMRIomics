@@ -54,4 +54,4 @@ gp
 
 ## Run MWAS ##
 
-**TODO** erik?
+> **TODO** Erik/Jurriaan example script?
