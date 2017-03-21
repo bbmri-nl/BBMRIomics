@@ -40,15 +40,26 @@ library(BBMRIomics)
 
 #Load 'methData_Betas_CODAM_F2_cleaned' data set
 #
-# utils::data(methData_Betas_CODAM_F2_cleaned)
+utils::data("methData_Betas_CODAM_F2_cleaned")
 #
-errmessage <- try(utils::data(methData_Betas_CODAM_F2_cleaned))
 #
-if (errmessage == "methData_Betas_CODAM_F2_cleaned") {
-  stop("data set 'methData_Betas_CODAM_F2_cleaned' not found")
+### START Code commented dd 2017-03-21 17:18 (HD) -- commented as apparently successful loading of data set "methData_Betas_CODAM_F2_cleaned" yields "errmessage == 'methData_Betas_CODAM_F2_cleaned'", too.
+# #
+# errmessage <- try(utils::data(methData_Betas_CODAM_F2_cleaned))
+# #
+# if (errmessage == "methData_Betas_CODAM_F2_cleaned") {
+#   stop("data set 'methData_Betas_CODAM_F2_cleaned' not found")
+# }
+# # 
+# #END Code amended from "./EWAS.Rmd" dd 2017-03-20 18:47 (HD).
+# #
+### END Code commented dd 2017-03-21 17:18 (HD).
+
+culprit <- "methData_Betas_CODAM_F2_cleaned"
+#
+if (exists('last.warning') && last.warning$`d`==paste0("data(", culprit, ")")){
+  stop("data set '", culprit, "' not found")
 }
-# 
-#END Code amended from "./EWAS.Rmd" dd 2017-03-20 18:47 (HD).
 
 
 cData <- colData(betas)
@@ -93,7 +104,7 @@ but in a convenient format, as `GRanges`-object.
 
 ```{r, rowdata}
 # ```{r, rowdata, eval=FALSE}
-rowRanges(betas)
+SummarizedExperiment::rowRanges(betas)
 ```
 
 ### features ###
@@ -117,12 +128,18 @@ See [**irlba**](https://cran.r-project.org/web/packages/irlba/vignettes/irlba.pd
 # ```{r, pca, eval=FALSE}
 library(irlba)
 
-# data(rnaSeqData_ReadCounts_cleaned)
+utils::data(rnaSeqData_ReadCounts_cleaned)
 #
-errmessage <- try(utils::data(rnaSeqData_ReadCounts_cleaned))
+# errmessage <- try(utils::data(rnaSeqData_ReadCounts_cleaned))
+# #
+# if (errmessage == "rnaSeqData_ReadCounts_cleaned") {
+#   stop("data set 'rnaSeqData_ReadCounts_cleaned' not found")
+# }
 #
-if (errmessage == "rnaSeqData_ReadCounts_cleaned") {
-  stop("data set 'rnaSeqData_ReadCounts_cleaned' not found")
+culprit <- "rnaSeqData_ReadCounts_cleaned"
+#
+if (exists('last.warning') && last.warning$`d`==paste0("data(", culprit, ")")){
+  stop("data set '", culprit, "' not found")
 }
 
 

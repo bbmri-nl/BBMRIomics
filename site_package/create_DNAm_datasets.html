@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Create DNAm data sets</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; background-color: #f8f8f8; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+pre, code { background-color: #f8f8f8; }
+code > span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code > span.dt { color: #204a87; } /* DataType */
+code > span.dv { color: #0000cf; } /* DecVal */
+code > span.bn { color: #0000cf; } /* BaseN */
+code > span.fl { color: #0000cf; } /* Float */
+code > span.ch { color: #4e9a06; } /* Char */
+code > span.st { color: #4e9a06; } /* String */
+code > span.co { color: #8f5902; font-style: italic; } /* Comment */
+code > span.ot { color: #8f5902; } /* Other */
+code > span.al { color: #ef2929; } /* Alert */
+code > span.fu { color: #000000; } /* Function */
+code > span.er { color: #a40000; font-weight: bold; } /* Error */
+code > span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #000000; } /* Constant */
+code > span.sc { color: #000000; } /* SpecialChar */
+code > span.vs { color: #4e9a06; } /* VerbatimString */
+code > span.ss { color: #4e9a06; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #000000; } /* Variable */
+code > span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code > span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code > span.ex { } /* Extension */
+code > span.at { color: #c4a000; } /* Attribute */
+code > span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code > span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">BBMRIomics</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="data.html">Data</a>
+</li>
+<li>
+  <a href="usage.html">Basic Usage</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Use cases
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li class="dropdown-header">DNA methylation</li>
+    <li>
+      <a href="EWAS.html">EWAS</a>
+    </li>
+    <li class="dropdown-header">RNA seq</li>
+    <li>
+      <a href="TWAS.html">TWAS</a>
+    </li>
+    <li class="dropdown-header">Metabolites</li>
+    <li>
+      <a href="MWAS.html">MWAS</a>
+    </li>
+    <li class="dropdown-header">Genotypes</li>
+    <li>
+      <a href="HRC.html">imputed genotypes</a>
+    </li>
+    <li>
+      <a href="GoNL.html">GoNL</a>
+    </li>
+    <li class="dropdown-header">Integrated analyses</li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Apps
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="http://bios-vm.bbmrirp3-lumc.surf-hosted.nl:8008/BBMRIomics/DNAm/CODAM">DNam qc CODAM</a>
+    </li>
+    <li>
+      <a href="http://bios-vm.bbmrirp3-lumc.surf-hosted.nl:8008/BBMRIomics/DNAm/LL">DNam qc LL</a>
+    </li>
+    <li>
+      <a href="http://bios-vm.bbmrirp3-lumc.surf-hosted.nl:8008/BBMRIomics/DNAm/LLS">DNam qc LLS</a>
+    </li>
+    <li>
+      <a href="http://bios-vm.bbmrirp3-lumc.surf-hosted.nl:8008/BBMRIomics/DNAm/NTR">DNam qc NTR</a>
+    </li>
+    <li>
+      <a href="http://bios-vm.bbmrirp3-lumc.surf-hosted.nl:8008/BBMRIomics/DNAm/RS">DNam qc RS</a>
+    </li>
+    <li>
+      <a href="http://bios-vm.bbmrirp3-lumc.surf-hosted.nl:8008/BBMRIomics/DNAm/PAN">DNam qc PAN</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Developers
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li class="dropdown-header">Quality Control</li>
+    <li>
+      <a href="DNAm_qc.html">DNAm</a>
+    </li>
+    <li>
+      <a href="RNA_qc.html">RNAseq</a>
+    </li>
+    <li class="dropdown-header">Creating Data Sets</li>
+    <li>
+      <a href="create_RNA_datasets.html">RNAseq</a>
+    </li>
+    <li>
+      <a href="create_DNAm_datasets.html">DNAm</a>
+    </li>
+    <li>
+      <a href="linkingRP4_RP3.html">Linking RP4 with RP3</a>
+    </li>
+    <li>
+      <a href="freeze2.html">Determining freeze 2</a>
+    </li>
+    <li class="dropdown-header">Miscellaneous</li>
+    <li>
+      <a href="metadatabase.html">Accessing the metadatabase</a>
+    </li>
+    <li>
+      <a href="contribute.html">Contributing</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Create DNAm data sets</h1>
+
+</div>
+
+
+<!-- #END OF FILE. -->
+<div id="prepare-sample-metadata" class="section level2">
+<h2>Prepare sample metadata</h2>
+<p><strong><em>brief description</em></strong></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(BBMRIomics)
+colData &lt;-<span class="st"> </span><span class="kw">read.table</span>(<span class="dt">file=</span><span class="kw">file.path</span>(VM_BASE_ANALYSIS, <span class="st">&quot;BBMRIomics/BBMRIomics/data&quot;</span>, <span class="st">&quot;freeze2_dnam_identifiers.csv&quot;</span>), <span class="dt">header=</span><span class="ot">TRUE</span>, <span class="dt">sep=</span><span class="st">&quot;,&quot;</span>, <span class="dt">as.is=</span><span class="ot">TRUE</span>)
+
+samplesheets &lt;-<span class="st"> </span><span class="kw">getView</span>(<span class="st">&quot;methylationSamplesheet&quot;</span>, <span class="dt">usrpwd=</span>RP3_MDB_USRPWD, <span class="dt">url=</span>RP3_MDB)
+samplesheets &lt;-<span class="st"> </span>samplesheets[!<span class="kw">duplicated</span>(samplesheets$run_id),]
+colData &lt;-<span class="st"> </span><span class="kw">merge</span>(colData, samplesheets, <span class="dt">by=</span><span class="kw">c</span>(<span class="st">&quot;run_id&quot;</span>, <span class="st">&quot;ids&quot;</span>))
+
+##harmonize phenotypes
+<span class="kw">source</span>(<span class="kw">file.path</span>(<span class="kw">path.package</span>(<span class="st">&quot;BBMRIomics&quot;</span>), <span class="st">&quot;scripts/Phenotype_Helpers.R&quot;</span>), <span class="dt">verbose=</span><span class="ot">FALSE</span>)
+phenotypes &lt;-<span class="st"> </span><span class="kw">cleanPhenotypes</span>()
+
+##add phenotypes
+colData &lt;-<span class="st"> </span><span class="kw">merge</span>(colData, phenotypes, <span class="dt">by=</span><span class="st">&quot;ids&quot;</span>, <span class="dt">all.x=</span><span class="ot">TRUE</span>)
+
+##add genotype ids
+imputation &lt;-<span class="st"> </span><span class="kw">getView</span>(<span class="st">&quot;getImputations&quot;</span>, <span class="dt">usrpwd=</span>RP3_MDB_USRPWD, <span class="dt">url=</span>RP3_MDB)
+hrc &lt;-<span class="st"> </span><span class="kw">subset</span>(imputation, imputation_reference ==<span class="st"> &quot;HRC&quot;</span>)
+colData &lt;-<span class="st"> </span><span class="kw">merge</span>(colData, hrc[, <span class="kw">c</span>(<span class="st">&quot;ids&quot;</span>, <span class="st">&quot;imputation_id&quot;</span>)], <span class="dt">by=</span><span class="st">&quot;ids&quot;</span>, <span class="dt">all.x=</span><span class="ot">TRUE</span>)
+
+##add uuid and gonl_id
+ids &lt;-<span class="st"> </span><span class="kw">getView</span>(<span class="st">&quot;getIds&quot;</span>, <span class="dt">usrpwd=</span>RP3_MDB_USRPWD, <span class="dt">url=</span>RP3_MDB)
+colData &lt;-<span class="st"> </span><span class="kw">merge</span>(colData, ids[, <span class="kw">c</span>(<span class="st">&quot;ids&quot;</span>, <span class="st">&quot;gonl_id&quot;</span>)], <span class="dt">by=</span><span class="st">&quot;ids&quot;</span>, <span class="dt">all.x=</span><span class="ot">TRUE</span>)
+
+##ordering
+first &lt;-<span class="st"> </span><span class="kw">match</span>(<span class="kw">c</span>(<span class="st">&quot;ids&quot;</span>, <span class="st">&quot;uuid&quot;</span>, <span class="st">&quot;biobank_id&quot;</span>, <span class="st">&quot;gonl_id&quot;</span>, <span class="st">&quot;run_id&quot;</span>), <span class="kw">colnames</span>(colData))
+
+colData &lt;-<span class="st"> </span><span class="kw">cbind</span>(colData[, first], colData[, -first])
+<span class="kw">rownames</span>(colData) &lt;-<span class="st"> </span>colData$uuid
+
+<span class="kw">dim</span>(colData)
+<span class="kw">head</span>(colData)
+
+<span class="kw">table</span>(!<span class="kw">is.na</span>(colData$gonl_id))
+<span class="kw">table</span>(!<span class="kw">is.na</span>(colData$imputation_id))
+<span class="kw">table</span>(!(<span class="kw">is.na</span>(colData$imputation_id) &amp;<span class="st"> </span><span class="kw">is.na</span>(colData$gonl_id)))</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(BiocParallel)
+<span class="kw">library</span>(DNAmArray)
+<span class="kw">library</span>(impute)
+<span class="kw">register</span>(<span class="kw">MulticoreParam</span>(<span class="dv">6</span>, <span class="dt">log=</span><span class="ot">TRUE</span>))
+path450k &lt;-<span class="st"> </span><span class="kw">file.path</span>(VM_BASE_DATA, <span class="st">&quot;IlluminaHumanMethylation450k&quot;</span>)
+
+##for(biobank in unique(colData$biobank_id)) {
+    biobank &lt;-<span class="st"> &quot;NTR&quot;</span>    
+    targets &lt;-<span class="st"> </span><span class="kw">subset</span>(colData, biobank_id ==<span class="st"> </span>biobank)
+    targets$Basename &lt;-<span class="st"> </span><span class="kw">with</span>(targets,
+                             <span class="kw">file.path</span>(path450k, <span class="st">&quot;raw&quot;</span>, Sentrix_Barcode,
+                                       <span class="kw">paste</span>(Sentrix_Barcode, Sentrix_Position, <span class="dt">sep=</span><span class="st">&quot;_&quot;</span>)))
+    ##reading the data
+    RGset &lt;-<span class="st"> </span><span class="kw">read.metharray.exp.par</span>(targets, <span class="dt">verbose=</span><span class="ot">TRUE</span>, <span class="dt">extended=</span><span class="ot">TRUE</span>)    
+    ##normalize
+    pc &lt;-<span class="st"> </span><span class="kw">screeplot</span>(RGset)
+    GRset &lt;-<span class="st"> </span><span class="kw">preprocessFunnorm.DNAmArray</span>(RGset, <span class="dt">nPCs=</span><span class="dv">3</span>, <span class="dt">keepCN=</span><span class="ot">FALSE</span>)
+    <span class="kw">rm</span>(pc)
+    <span class="kw">gc</span>() <span class="co">#remove and clean</span>
+    ##filter
+    RGset &lt;-<span class="st"> </span><span class="kw">probeFiltering</span>(RGset)
+    ##store M-values
+    mvalues &lt;-<span class="st"> </span><span class="kw">reduce</span>(GRset, RGset, <span class="dt">what=</span><span class="st">&quot;M&quot;</span>)
+    <span class="kw">sink</span>(<span class="st">&quot;/dev/null&quot;</span>) ##to ignore impute.knn output
+    mvalues &lt;-<span class="st"> </span><span class="kw">impute.knn</span>(<span class="kw">as.matrix</span>(mvalues))$data
+    <span class="kw">sink</span>()
+    
+    mid &lt;-<span class="st"> </span><span class="kw">match</span>(<span class="kw">colnames</span>(mvalues), colData$run_id)
+    <span class="kw">colnames</span>(mvalues) &lt;-<span class="st"> </span>colData$uuid[mid]
+    rowData &lt;-<span class="st"> </span><span class="kw">getPlatform</span>(<span class="dt">platform=</span><span class="st">&quot;HM450&quot;</span>, <span class="dt">genome=</span><span class="st">&quot;hg19&quot;</span>)    
+    mvalues &lt;-<span class="st"> </span><span class="kw">makeSE</span>(mvalues, colData[,-<span class="dv">1</span>], rowData, <span class="dt">note=</span><span class="st">&quot;No chen probe filtering, Functional normalization, knn imputed&quot;</span>)
+    <span class="kw">save</span>(mvalues, <span class="dt">file=</span><span class="kw">file.path</span>(path450k, <span class="st">&quot;450k&quot;</span>, biobank, <span class="kw">paste0</span>(<span class="st">&quot;methData_Mvalues_&quot;</span>, biobank, <span class="st">&quot;_F2_cleaned.RData&quot;</span>)))
+    <span class="kw">rm</span>(mvalues)
+    <span class="kw">gc</span>() <span class="co">#remove and clean</span>
+    ##store beta-values
+    betas &lt;-<span class="st"> </span><span class="kw">reduce</span>(GRset, RGset, <span class="dt">what=</span><span class="st">&quot;beta&quot;</span>)
+    <span class="kw">sink</span>(<span class="st">&quot;/dev/null&quot;</span>) ##to ignore impute.knn output
+    betas &lt;-<span class="st"> </span><span class="kw">impute.knn</span>(<span class="kw">as.matrix</span>(betas))$data
+    <span class="kw">sink</span>()
+    mid &lt;-<span class="st"> </span><span class="kw">match</span>(<span class="kw">colnames</span>(betas), colData$run_id)
+    <span class="kw">colnames</span>(betas) &lt;-<span class="st"> </span>colData$uuid[mid]
+    betas &lt;-<span class="st"> </span><span class="kw">makeSE</span>(betas, colData[,-<span class="dv">1</span>], rowData, <span class="dt">note=</span><span class="st">&quot;No chen probe filtering, Functional normalization, knn imputed&quot;</span>)
+    <span class="kw">save</span>(betas, <span class="dt">file=</span><span class="kw">file.path</span>(path450k, <span class="st">&quot;450k&quot;</span>, biobank, <span class="kw">paste0</span>(<span class="st">&quot;methData_Betas_&quot;</span>, biobank, <span class="st">&quot;_F2_cleaned.RData&quot;</span>)))
+    <span class="kw">rm</span>(betas)
+    <span class="kw">rm</span>(GRset)
+    <span class="kw">rm</span>(RGset)
+    <span class="kw">gc</span>() ##remove and clean
+##}</code></pre></div>
+<!-- END OF FILE. -->
+<div id="refs" class="references">
+
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

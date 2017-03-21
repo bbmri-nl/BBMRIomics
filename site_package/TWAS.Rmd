@@ -15,8 +15,6 @@ output:
 
 
 ## Collect data ##
-<!-- START Code copy--pasted from "./EWAS.Rmd" dd 2017-03-20 18:36 (HD). -->
-<!-- Execution of chunk below leads to (an) error(s) dd 2017-03-20 16:08, hence set "eval=FALSE" (HD) -->
 ```{r, selectdata}
 # ```{r, selectdata, eval=FALSE}
 
@@ -25,15 +23,13 @@ library(BBMRIomics)
 
 #Load 'rnaSeqData_ReadCounts_cleaned' data set
 #
-# utils::data(rnaSeqData_ReadCounts_cleaned)
+utils::data(rnaSeqData_ReadCounts_cleaned)
 #
-errmessage <- try(utils::data(rnaSeqData_ReadCounts_cleaned))
+culprit <- "rnaSeqData_ReadCounts_cleaned"
 #
-if (errmessage == "rnaSeqData_ReadCounts_cleaned") {
-  stop("data set 'rnaSeqData_ReadCounts_cleaned' not found")
+if (exists('last.warning') && last.warning$`d`==paste0("data(", culprit, ")")){
+  stop("data set '", culprit, "' not found")
 }
-# 
-#END Code copy--pasted from "./EWAS.Rmd" dd 2017-03-20 18:36 (HD).
 
 
 covariates <- c("Sex", "Smoking", "biobank_id")
