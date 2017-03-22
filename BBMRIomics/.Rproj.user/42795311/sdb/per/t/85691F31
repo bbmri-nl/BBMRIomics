@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "---\ntitle: \"Setup\"\n---\n\n```{r setup, include=FALSE}\nknitr::opts_chunk$set(cache=TRUE, eval=TRUE)\n\nrm(list=ls()) ##clear work space\n\nsuppressPackageStartupMessages({ ##to get rid of annoying startup messages (like ours ;)!)\n  \n  #NOTE: might require:\n  #--\n  #$ sudo apt-get update\n  #$ sudo apt-get install libxml2-dev\n  #--\n  #... [REF \"http://stackoverflow.com/questions/7765429/unable-to-install-r-package-in-ubuntu-11-04\"], and:\n  #--\n  #> install.packages('devtools')\n  #> library(devtools)\n  #> install_github(\"molepi/DNAmArray\")\n  #--\n  #... [REF \"https://github.com/molepi/DNAmArray\"]\n  \n  \n  # library(BBMRIomics)\n  # \n  # library(ggplot2)\n  # library(qqman)\n  # library(MethylAid)\n  # library(DNAmArray)\n  # library(BiocParallel)\n  # library(shiny)\n  # library(AnnotationHub)\n  # library(rtracklayer)\n  # library(GenomeInfoDb)\n  # library(BSgenome.Hsapiens.UCSC.hg19)\n  # library(Rsamtools)\n  # library(Biostrings)\n  # library(edgeR)\n  # library(limma)\n  # library(irlba)\n  # library(qqman)\n  \n  \n  Rpackages <- c(\"BBMRIomics\",\n                 \"ggplot2\",\n                 \"qqman\",\n                 \"DNAmArray\",\n                 \"BiocParallel\",\n                 \"shiny\",\n                 \"rtracklayer\",\n                 \"GenomeInfoDb\",\n                 \"Rsamtools\",\n                 \"Biostrings\",\n                 \"irlba\",\n                 \"qqman\")\n  #\n  for (r.pckg in Rpackages) {  \n    errmessageReRpckg <- try(library(package=r.pckg, character.only = T))\n    #\n    if (class(errmessageReRpckg) == \"try-error\") {  #Then (attempt to) install current 'r.pckg' after all\n      #\n      #Dd 2017-03-08 19:51 :\n      #--\n      # > getOption(\"repos\")\n      # CRAN \n      # \"https://cran.rstudio.com/\" \n      # attr(,\"RStudio\")\n      # [1] TRUE    \n      #--\n      #-->:\n      install.packages(pkgs=r.pckg, repos=\"https://cran.rstudio.com/\")  #... though \"repos='https://cran.rstudio.com/src/contrib'\" *might* be preferred??? ('still' HD dd 2017-03-08 19:56)\n      #\n      library(package=r.pckg, character.only = T)\n    }\n  }\n  #\n  #\n  #Note: the following packages are from Bioconductor [REFs\n  #\"https://bioconductor.org/packages/release/BiocViews.html#___Software\" and \"https://bioconductor.org/packages/release/BiocViews.html#___AnnotationData\"]:\n  \n  #-'SummarizedExperiment'\n  #-'BiocParallel'\n  #-'GenomicRanges'\n  #-'IRanges'\n  #-'Rsamtools'\n  #-'S4Vectors'\n  #-'VariantAnnotation'\n  #-'MethylAid'\n  #-\"FDb.InfiniumMethylation.hg19\"\n  #-\"org.Hs.eg.db\"\n  #-\"AnnotationHub\"\n  #-\"BSgenome.Hsapiens.UCSC.hg19\"\n  #-\"edgeR\"\n  #-\"limma\"\n  #\n  biocPckgs <- c(\"SummarizedExperiment\",\n                 \"BiocParallel\",\n                 \"GenomicRanges\",\n                 \"IRanges\",\n                 \"Rsamtools\",\n                 \"S4Vectors\",\n                 \"VariantAnnotation\",\n                 \"MethylAid\",\n                 \"FDb.InfiniumMethylation.hg19\",\n                 \"org.Hs.eg.db\",\n                 \"AnnotationHub\",\n                 \"BSgenome.Hsapiens.UCSC.hg19\",\n                 \"edgeR\",\n                 \"limma\")\n  #\n  for (bioc.pckg in biocPckgs) {\n    \n    errmessage <- try(library(package=bioc.pckg, character.only = T))\n    #\n    if (class(errmessage) == \"try-error\") {\n      source(\"http://bioconductor.org/biocLite.R\")\n      biocLite(bioc.pckg, dependencies=T)  #REM HD dd 2016-10-18 15:33 : specification of \"dependencies=T\" appears to resolve otherwise occurring error when 'S4Vectors' package is not installed.\n    }\n  }\n})\n\n```\n\n\n<!-- #END OF FILE. -->\n",
+    "created" : 1489765342395.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "4168050035",
+    "id" : "85691F31",
+    "lastKnownWriteTime" : 1489769173,
+    "last_content_update" : 1489769173068,
+    "path" : "~/HumGen/I/lab-j/hhmdraisma/Projects/BBMRIomics/site_package/_setup.Rmd",
+    "project_path" : null,
+    "properties" : {
+        "last_setup_crc32" : "91771A6270847974"
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

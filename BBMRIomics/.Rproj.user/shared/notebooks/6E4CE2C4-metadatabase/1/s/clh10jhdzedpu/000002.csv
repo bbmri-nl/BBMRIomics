@@ -1,0 +1,8 @@
+"0","stats <- getView(""getStats"", usrpwd=RP3_MDB_USRPWD, url=RP3_RDB)
+"
+"2","No username and password provided for the MDB use stored views!
+"
+"2","Error: lexical error: invalid char in json text.
+                                      /home/hhmdraisma/R/x86_64-pc-lin
+                     (right here) ------^
+"

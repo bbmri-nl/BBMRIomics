@@ -23,4 +23,9 @@
 .couchapprc
 
 data/*
-.Rproj.user
+
+./BBMRIomics/.Rproj.user/*
+
+
+#END OF FILE.
+

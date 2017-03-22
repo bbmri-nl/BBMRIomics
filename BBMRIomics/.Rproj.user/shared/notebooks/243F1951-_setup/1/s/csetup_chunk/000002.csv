@@ -1,0 +1,29 @@
+"0","install_github(""molepi/DNAmArray"")
+"
+"2","Downloading GitHub repo molepi/DNAmArray@master
+from URL https://api.github.com/repos/molepi/DNAmArray/zipball/master
+"
+"2","Installing DNAmArray
+"
+"2","'/usr/lib/R/bin/R' --no-site-file --no-environ --no-save --no-restore --quiet CMD INSTALL  \
+  '/tmp/RtmpOAJoEk/devtoolse6d14b2f6e4/molepi-DNAmArray-3e35ea6'  \
+  --library='/home/hhmdraisma/R/x86_64-pc-linux-gnu-library/3.3' --install-tests 
+"
+"2","
+"
+"2","* installing *source* package ‘DNAmArray’ ...
+"
+"2","** R
+"
+"2","** preparing package for lazy loading
+"
+"2","** help
+"
+"2","*** installing help indices
+"
+"2","** building package indices
+"
+"2","** testing if installed package can be loaded
+"
+"2","* DONE (DNAmArray)
+"
