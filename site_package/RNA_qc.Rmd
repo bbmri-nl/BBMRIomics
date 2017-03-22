@@ -28,43 +28,7 @@ bibliography: BBMRIomics.bib
 ***add description***
 
 
-<<<<<<< HEAD
-<!-- Dd 2017-03-20 18:31 attempting to run the chunk below yields: -->
-<!-- -- -->
-<!-- No username and password provided for the MDB use stored views! -->
-<!--  Show Traceback -->
-<!-- Error: lexical error: invalid char in json text. /home/hhmdraisma/R/x86_64-pc-lin (right here) ------^ -->
-<!-- -- -->
-<!-- ==> Set "eval=FALSE" for this chunk (HD). -->
-<!-- Dd 2017-03-21 18:36 attempting to run the chunk below yields: -->
-<!-- -- -->
-<!--   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current -->
-<!--                                  Dload  Upload   Total   Spent    Left  Speed -->
-<!-- 100 1387k    0 1387k    0     0  2246k      0 --:--:-- --:--:-- --:--:-- 2245k -->
-<!-- [1] 4839    9 -->
-<!-- [1] 4839 -->
-<!-- Loading required package: Rsamtools -->
-<!-- Loading required package: Biostrings -->
-<!-- Loading required package: XVector -->
-
-<!-- Attaching package: ‘VariantAnnotation’ -->
-
-<!-- The following object is masked from ‘package:base’: -->
-
-<!--     tabulate -->
-
-<!-- open: Permission denied -->
-<!-- open: Permission denied -->
-<!-- open: Permission denied -->
-<!-- open: Permission denied -->
-
-<!-- Error: scanVcf: failed to open file path: /mnt/virdir/Backup/RP3_analysis/rnasnp/RNAsnps2600.vcf -->
-<!-- -- -->
-```{r}
-# ```{r, eval=FALSE}
-=======
 ```{r, eval=FALSE}
->>>>>>> 9b12544409e1154a7edd4b3c2d41652c74e47a38
 library(BBMRIomics)
 rna <- getView("getRNASeqRuns", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
 rna <- rna[!duplicated(rna$run_id),] ##drop overlapping freezes
@@ -94,12 +58,7 @@ setdiff(runids, colnames(rnaCalls)) ##why are these missing bad quality?
 ```
 
 
-<<<<<<< HEAD
-```{r}
-# ```{r, eval=FALSE}
-=======
 ```{r, eval=FALSE}
->>>>>>> 9b12544409e1154a7edd4b3c2d41652c74e47a38
 
 RNAFile <- file.path(VM_BASE_ANALYSIS, "rnasnp", "RNAsnps50.vcf")
 

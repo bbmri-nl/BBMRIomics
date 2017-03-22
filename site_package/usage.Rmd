@@ -40,21 +40,9 @@ library(BBMRIomics)
 
 #Load 'methData_Betas_CODAM_F2_cleaned' data set
 #
-utils::data("methData_Betas_CODAM_F2_cleaned")
+utils::data(methData_Betas_CODAM_F2_cleaned)
 #
 #
-### START Code commented dd 2017-03-21 17:18 (HD) -- commented as apparently successful loading of data set "methData_Betas_CODAM_F2_cleaned" yields "errmessage == 'methData_Betas_CODAM_F2_cleaned'", too.
-# #
-# errmessage <- try(utils::data(methData_Betas_CODAM_F2_cleaned))
-# #
-# if (errmessage == "methData_Betas_CODAM_F2_cleaned") {
-#   stop("data set 'methData_Betas_CODAM_F2_cleaned' not found")
-# }
-# # 
-# #END Code amended from "./EWAS.Rmd" dd 2017-03-20 18:47 (HD).
-# #
-### END Code commented dd 2017-03-21 17:18 (HD).
-
 culprit <- "methData_Betas_CODAM_F2_cleaned"
 #
 if (exists('last.warning') && last.warning$`d`==paste0("data(", culprit, ")")){
@@ -127,26 +115,17 @@ See [**irlba**](https://cran.r-project.org/web/packages/irlba/vignettes/irlba.pd
 ```{r, pca}
 # ```{r, pca, eval=FALSE}
 library(irlba)
-<<<<<<< HEAD
 
-utils::data(rnaSeqData_ReadCounts_cleaned)
+utils::data(rnaSeqData_ReadCounts_BIOS_cleaned)
 #
-# errmessage <- try(utils::data(rnaSeqData_ReadCounts_cleaned))
-# #
-# if (errmessage == "rnaSeqData_ReadCounts_cleaned") {
-#   stop("data set 'rnaSeqData_ReadCounts_cleaned' not found")
-# }
 #
-culprit <- "rnaSeqData_ReadCounts_cleaned"
+culprit <- "rnaSeqData_ReadCounts_BIOS_cleaned"
 #
 if (exists('last.warning') && last.warning$`d`==paste0("data(", culprit, ")")){
   stop("data set '", culprit, "' not found")
 }
 
 
-=======
-data(rnaSeqData_ReadCounts_BIOS_cleaned)
->>>>>>> 9b12544409e1154a7edd4b3c2d41652c74e47a38
 library(edgeR)
 y <- DGEList(assays(counts)$data, remove.zeros=TRUE)
 y <- calcNormFactors(y)

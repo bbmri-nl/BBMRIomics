@@ -11,8 +11,8 @@ output:
 ```{r, child="_setup.Rmd"}
 ```
 
-A transcriptomewide association study can be run using the same
-approach as an EWAS.
+A transcriptome-wide association study can be run using the same
+approach as for an EWAS.
 
 ## Collect data ##
 ```{r, selectdata}
@@ -20,22 +20,18 @@ approach as an EWAS.
 
 #Load 'BBMRIomics' library
 library(BBMRIomics)
-<<<<<<< HEAD
 
 #Load 'rnaSeqData_ReadCounts_cleaned' data set
 #
-utils::data(rnaSeqData_ReadCounts_cleaned)
+utils::data(rnaSeqData_ReadCounts_BIOS_cleaned)
 #
-culprit <- "rnaSeqData_ReadCounts_cleaned"
+culprit <- "rnaSeqData_ReadCounts_BIOS_cleaned"
 #
 if (exists('last.warning') && last.warning$`d`==paste0("data(", culprit, ")")){
   stop("data set '", culprit, "' not found")
 }
 
 
-=======
-data(rnaSeqData_ReadCounts_BIOS_cleaned)
->>>>>>> 9b12544409e1154a7edd4b3c2d41652c74e47a38
 covariates <- c("Sex", "Smoking", "biobank_id")
 phenotype <- "Sampling_Age"
 nas <- apply(as.data.frame(colData(counts))[,c(phenotype, covariates)], 1, anyNA)

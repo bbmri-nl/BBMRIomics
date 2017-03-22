@@ -17,21 +17,12 @@ data for 4,000 individuals that have been selected for having array-based genoty
 or whole-genome sequencing data (GoNL) already available. Furthermore, the generated
 data should pass a set of quality control metrics.
 
-<<<<<<< HEAD
 The following code shows how to extract the RNA-sequencing and DNA methylation
 samples that pass quality control.
 
 
-```{r}
-# ```{r, eval=FALSE}
-=======
-
-The following code shows how to extract the RNA sequencing and DNA
-methylation samples that pass quality control.
-
 
 ```{r, eval=FALSE}
->>>>>>> 9b12544409e1154a7edd4b3c2d41652c74e47a38
 ids <- getView("getIds", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
 
 rna <- getView("getRNASeqRuns", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
@@ -73,12 +64,7 @@ individuals for which both RNA sequencing and dna methylation data
 could be generated.
 
 
-<<<<<<< HEAD
-```{r}
-# ```{r, eval=FALSE}
-=======
 ```{r, eval=FALSE}
->>>>>>> 9b12544409e1154a7edd4b3c2d41652c74e47a38
 relations <- getView("getRelations", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
 relations <- subset(relations, !is.na(relation_id))
 all(relations$ids %in% relations$relation_id) ##relations consistent

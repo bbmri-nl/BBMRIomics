@@ -42,6 +42,11 @@ ls()
 If a `molgenis.token` is available in the global environment you are ready to
 extract the data.
 
+<!-- Set "eval=FALSE" for chunk below as execution dd 2017-03-22 18:12 yielded: -->
+<!-- -- -->
+<!-- > biobanks <- molgenis.get.all("biobanks", verbose = FALSE) -->
+<!-- Error in value[[jvseq[[jjj]]]] : subscript out of bounds -->
+<!-- -- -->
 ```{r, getall}
 # ```{r, getall, eval=FALSE}
 biobanks <- molgenis.get.all("biobanks", verbose = FALSE)
@@ -50,8 +55,14 @@ table(biobanks$use_of_beta_blockers)
 biobanks$abbreviation[biobanks$use_of_beta_blockers]
 ```
 
-```{r, laclevels}
-# ```{r, laclevels, eval=FALSE}
+<!-- Set "eval=FALSE" for chunk below as execution dd 2017-03-22 18:16 yielded: -->
+<!-- -- -->
+<!-- Error in value[[jvseq[[jjj]]]] : subscript out of bounds -->
+<!-- Calls: <Anonymous> ... eval -> eval -> molgenis.get.all -> [<- -> [<-.data.frame -->
+<!-- Execution halted -->
+<!-- -- -->
+<!-- ```{r, laclevels} -->
+```{r, laclevels, eval=FALSE}
 measurements <- molgenis.get.all("measurements")
 measurements$biobank <- gsub("-.*$", "", measurements$sample_id)
 biobank_ordered <- with(measurements, reorder(biobank, lac, median, na.rm = TRUE))
