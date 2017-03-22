@@ -46,13 +46,14 @@ zipped <- bgzip(from, to)
 fl <- indexTabix(zipped, format="vcf")
 vcf <- readVcf(fl, genome="hg19", param=gr)
 rs1981760 <- geno(vcf)$GT[1,]
+
 ```
 
 ```{r, linkhrcrna}
-data(rnaSeqData_ReadCounts_cleaned)
-hrc <- intersect(names(rs1981760), counts$hrc_id)
-counts <- counts[,counts$hrc_id %in% hrc]
-mid <- match(counts$hrc_id, names(rs1981760))
+data(rnaSeqData_ReadCounts_CODAM_cleaned)
+hrc <- intersect(names(rs1981760), counts$imputation_id)
+counts <- counts[,counts$imputation_id %in% hrc]
+mid <- match(counts$imputation_id, names(rs1981760))
 rs1981760 <- rs1981760[mid]
 cnts <- assays(counts)$data
 dim(cnts)
@@ -68,14 +69,14 @@ boxplot(NOD2~rs1981760)
 library(SNPlocs.Hsapiens.dbSNP142.GRCh37)
 gr <- rsidsToGRanges(c("rs9302752", "rs1981760"))
 data(rnaSeqData_ReadCounts_cleaned)
-dosages <- getGenotypes(imputation_id = counts$hrc_id, biobank="ALL", snps=gr, type="HRC", geno="DS", BASE=VM_BASE_DATA)
+dosages <- getGenotypes(imputation_id = counts$imputation_id, biobank="ALL", snps=gr, type="HRC", geno="DS", BASE=VM_BASE_DATA)
 dosages[1:2, 1:5]
 ```
 
 ```{r, linkhrcrna2}
 dim(counts)
 dim(dosages)
-head(counts$hrc_id)
+head(counts$imputation_id)
 head(colnames(dosages))
 cnts <- assays(counts)$data
 library(edgeR)

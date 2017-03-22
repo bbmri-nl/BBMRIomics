@@ -28,7 +28,7 @@ bibliography: BBMRIomics.bib
 ***add description***
 
 
-```{r}
+```{r, eval=FALSE}
 library(BBMRIomics)
 rna <- getView("getRNASeqRuns", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
 rna <- rna[!duplicated(rna$run_id),] ##drop overlapping freezes
@@ -58,7 +58,7 @@ setdiff(runids, colnames(rnaCalls)) ##why are these missing bad quality?
 ```
 
 
-```{r}
+```{r, eval=FALSE}
 
 RNAFile <- file.path(VM_BASE_ANALYSIS, "rnasnp", "RNAsnps50.vcf")
 

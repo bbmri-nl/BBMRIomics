@@ -23,7 +23,7 @@ The following code shows how to extract the RNA sequencing and DNA
 methylation samples that pass quality control.
 
 
-```{r}
+```{r, eval=FALSE}
 ids <- getView("getIds", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
 
 rna <- getView("getRNASeqRuns", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
@@ -65,7 +65,7 @@ individuals for which both RNA sequencing and dna methylation data
 could be generated.
 
 
-```{r}
+```{r, eval=FALSE}
 relations <- getView("getRelations", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
 relations <- subset(relations, !is.na(relation_id))
 all(relations$ids %in% relations$relation_id) ##relations consistent

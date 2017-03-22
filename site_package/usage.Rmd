@@ -85,7 +85,7 @@ See [**irlba**](https://cran.r-project.org/web/packages/irlba/vignettes/irlba.pd
 
 ```{r, pca}
 library(irlba)
-data(rnaSeqData_ReadCounts_cleaned)
+data(rnaSeqData_ReadCounts_BIOS_cleaned)
 library(edgeR)
 y <- DGEList(assays(counts)$data, remove.zeros=TRUE)
 y <- calcNormFactors(y)

@@ -9,6 +9,7 @@ rm(list=ls()) ##clear work space
 
 suppressPackageStartupMessages({ ##to get rid of annoying startup messages (like ours ;)!)
     library(BBMRIomics)
+    RP3_USRPWD_MBD <- RP3_USRPWD_RDB <- "anonymous" 
 
     library(ggplot2)
     library(qqman)
