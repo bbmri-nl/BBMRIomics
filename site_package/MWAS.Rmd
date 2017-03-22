@@ -63,7 +63,11 @@ gp
 
 ## Run MWAS ##
 
+<<<<<<< HEAD
 **TODO** erik?
 
 
 <!-- END OF FILE. -->
+=======
+> **TODO** Erik/Jurriaan example script?
+>>>>>>> 9b12544409e1154a7edd4b3c2d41652c74e47a38

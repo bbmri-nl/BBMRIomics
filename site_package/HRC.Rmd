@@ -52,14 +52,22 @@ zipped <- bgzip(file=from, dest=to)
 fl <- indexTabix(zipped, format="vcf")
 vcf <- readVcf(fl, genome="hg19", param=gr)
 rs1981760 <- geno(vcf)$GT[1,]
+
 ```
 
 ```{r, linkhrcrna}
+<<<<<<< HEAD
 # ```{r, linkhrcrna, eval=FALSE}
 data(rnaSeqData_ReadCounts_cleaned)
 hrc <- intersect(names(rs1981760), counts$hrc_id)
 counts <- counts[,counts$hrc_id %in% hrc]
 mid <- match(counts$hrc_id, names(rs1981760))
+=======
+data(rnaSeqData_ReadCounts_CODAM_cleaned)
+hrc <- intersect(names(rs1981760), counts$imputation_id)
+counts <- counts[,counts$imputation_id %in% hrc]
+mid <- match(counts$imputation_id, names(rs1981760))
+>>>>>>> 9b12544409e1154a7edd4b3c2d41652c74e47a38
 rs1981760 <- rs1981760[mid]
 cnts <- assays(counts)$data
 dim(cnts)
@@ -69,6 +77,7 @@ boxplot(NOD2~rs1981760)
 
 ## Inspect Multiple SNPs using `getGenotypes` ##
 
+<<<<<<< HEAD
 <!-- Dd 2017-03-20 18:13 leads to ("Knit"[-ting]) error: -->
 <!-- -- -->
 <!-- "Error in counts$hrc_id : object of type 'closure' is not subsettable -->
@@ -76,14 +85,22 @@ boxplot(NOD2~rs1981760)
 <!-- Execution halted" -->
 <!-- -- -->
 <!-- ==> set "eval=FALSE" for this chunk (HD). -->
+=======
+> Replace this with the `MatrixeQTL` example from Rick/Joost?
+
+>>>>>>> 9b12544409e1154a7edd4b3c2d41652c74e47a38
 ```{r, getgenotypes}
 # ```{r, getgenotypes, eval=FALSE}
 library(SNPlocs.Hsapiens.dbSNP142.GRCh37)
 gr <- rsidsToGRanges(c("rs9302752", "rs1981760"))
 data(rnaSeqData_ReadCounts_cleaned)
+<<<<<<< HEAD
 
 dosages <- BBMRIomics::getGenotypes(imputation_id = counts$hrc_id, biobank="ALL", snps=gr, type="HRC", geno="DS", BASE=VM_BASE_DATA)
 
+=======
+dosages <- getGenotypes(imputation_id = counts$imputation_id, biobank="ALL", snps=gr, type="HRC", geno="DS", BASE=VM_BASE_DATA)
+>>>>>>> 9b12544409e1154a7edd4b3c2d41652c74e47a38
 dosages[1:2, 1:5]
 ```
 
@@ -91,7 +108,7 @@ dosages[1:2, 1:5]
 # ```{r, linkhrcrna2, eval=FALSE}
 dim(counts)
 dim(dosages)
-head(counts$hrc_id)
+head(counts$imputation_id)
 head(colnames(dosages))
 cnts <- assays(counts)$data
 library(edgeR)

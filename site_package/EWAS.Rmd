@@ -11,15 +11,16 @@ output:
 ```{r, child="_setup.Rmd"}
 ```
 
-**intro**
+There exist several approaches to run an epigenomewide association study, for example:
 
-several work flows:
-1. [f1000](https://f1000research.com/articles/5-1281/v1)
-2. [Leiden450K](https://git.lumc.nl/molepi/Leiden450K)
+ 1. [missMethyl](https://f1000research.com/articles/5-1281/v1)
+ 2. [coherent approach](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-015-0600-x)
+ 
+We have implemented our own approach [DNAmArray](https://git.lumc.nl/molepi/DNAmArray_workflow)
 
 ## Collect data ##
 
-The follwoing code shows how to extract some covariates and the
+The following code shows how to extract some covariates and the
 phenotype of interest from the
 `SummerizedExperiments`-object. Furthermore, we select a subset of the
 data for which the covariates and phenotype are complete, i.e. do not
@@ -79,6 +80,7 @@ Since, we had subsetted the whole `SummerizedExperiments`-object we
 can just extract the data without any further subsetting. Runnning the
 EWAS is now just one function-call.
 
+> TODO: remove cross-hyb. probes and probe containing SNPS
 
 ```{r, filter, eval=FALSE}
 
@@ -94,9 +96,6 @@ data <- assays(mvalues)$data
 
 
 ```
-
-
-
 
 ```{r, ewas}
 # ```{r, ewas, eval=FALSE}

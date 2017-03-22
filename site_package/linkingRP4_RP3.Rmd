@@ -12,10 +12,12 @@ bibliography: BBMRIomics.bib
 ```{r, child="_setup.Rmd"}
 ```
 
-**brief description**
+For around 4000 individuals both metabolomics data and RNAseq/DNAm is
+available. Here we describe how we constructed a
+`SummarizedExperiment`-object containing metabolomics data for the
+overlapping individuals.
 
-
-Extract data from database.
+# Extract data from database #
 
 ```{r, loadthedata, eval=FALSE}
 molgenis.connect(usrpwd=RP4_DB_USRPWD, url=RP4_DB)
@@ -32,6 +34,8 @@ measurements <- molgenis.get.all("measurements", verbose=FALSE)
 dim(measurements)
 head(measurements)
 ```
+
+# Matching identifiers #
 
 In order to map the RP4 metabolite data to the RP3 bios data a little
 processing of the metabolite `bios_id` is required.
@@ -54,6 +58,8 @@ subjects$real_bios_id[ntr] <- ids$bios_id[ids$biobank_id == "NTR"][id]
 dim(subjects)
 head(subjects$real_bios_id)
 ```
+
+# Construct `SummarizedExperiment`-object #
 
 Now we can select the overlapping individuals and create a 
 `SummarizedExperiment`-object.
@@ -85,6 +91,7 @@ The overlapping metabolite data is stored with in the `colData` the
 `real_bios_id` which can be used to link the data bios RP3 RNAseq or
 DNAm data. The data set can be loaded using `data(metabolomicData)`.
 
+# Basic usages #
 
 <!-- Dd 2017-03-20 18:21 evaluation of the chunk below yields: -->
 <!-- -- -->

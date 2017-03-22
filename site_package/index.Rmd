@@ -8,16 +8,17 @@ makes integrated analyses, across BBMRI-omics datasets, as easy as
 possible.
 
 BBMRI-Omics is a collection of whole genome sequencing (BGI, N~750),
-transcriptome (RNA seq, N~4,000), methylome (Illumina 450K, N~4,000)
+transcriptome (RNA seq, N~4,000), methylome (Illumina 450K, N~4,000),
 and metabolome (Nightingale Health/Brainshake, N~25,000) data sets
 generated across more than 20 human cohorts in the Netherlands
 (referentie naar toekomstige website). In addition to the generated
-data, detailed technical information on data generation is provided,
-such as sequencing machine, flow-cell, array position on the chip,
-date of hybridization. Furthermore, phenotypic data on the individual
-level such as blood measures of cholesterol, C-reactive protein, and
-blood cell count. But also lifestyle factors as smoking, alcohol use
-in addition to antropometric measures as body mass index.
+data, imputed genotypes are available as well as detailed technical
+information on data generation is provided, such as sequencing
+machine, flow-cell, array position on the chip, date of
+hybridization. Furthermore, phenotypic data on the individual level
+such as blood measures of cholesterol, C-reactive protein, and blood
+cell count. But also lifestyle factors as smoking, alcohol use in
+addition to antropometric measures as body mass index.
 
 The aim of the **BBMRIomics**-package is to make integrated analyses,
 within the BIOS data collection or across BBMRI projects, as easy as

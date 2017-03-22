@@ -11,8 +11,8 @@ output:
 ```{r, child="_setup.Rmd"}
 ```
 
-**intro**
-
+A transcriptomewide association study can be run using the same
+approach as an EWAS.
 
 ## Collect data ##
 ```{r, selectdata}
@@ -20,6 +20,7 @@ output:
 
 #Load 'BBMRIomics' library
 library(BBMRIomics)
+<<<<<<< HEAD
 
 #Load 'rnaSeqData_ReadCounts_cleaned' data set
 #
@@ -32,6 +33,9 @@ if (exists('last.warning') && last.warning$`d`==paste0("data(", culprit, ")")){
 }
 
 
+=======
+data(rnaSeqData_ReadCounts_BIOS_cleaned)
+>>>>>>> 9b12544409e1154a7edd4b3c2d41652c74e47a38
 covariates <- c("Sex", "Smoking", "biobank_id")
 phenotype <- "Sampling_Age"
 nas <- apply(as.data.frame(colData(counts))[,c(phenotype, covariates)], 1, anyNA)
@@ -112,9 +116,6 @@ pdata$seqnames <- as.integer(pdata$seqnames)
 library(qqman)
 manhattan(pdata, chr="seqnames", bp="start", p="pval")
 ```
-
-
-The famous CpG near the ELOVL2 gene.
 
 ```{r, tophittwas}
 # ```{r, tophittwas, eval=FALSE}

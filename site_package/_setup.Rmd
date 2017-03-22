@@ -8,6 +8,7 @@ knitr::opts_chunk$set(cache=TRUE, eval=TRUE)
 rm(list=ls()) ##clear work space
 
 suppressPackageStartupMessages({ ##to get rid of annoying startup messages (like ours ;)!)
+<<<<<<< HEAD
   
   #NOTE: might require:
   #--
@@ -128,6 +129,28 @@ suppressPackageStartupMessages({ ##to get rid of annoying startup messages (like
       biocLite(bioc.pckg, dependencies=T)  #REM HD dd 2016-10-18 15:33 : specification of "dependencies=T" appears to resolve otherwise occurring error when 'S4Vectors' package is not installed.
     }
   }
+=======
+    library(BBMRIomics)
+    RP3_USRPWD_MBD <- RP3_USRPWD_RDB <- "anonymous" 
+
+    library(ggplot2)
+    library(qqman)
+    library(MethylAid)
+    library(DNAmArray)
+    library(BiocParallel)
+    library(shiny)
+    library(AnnotationHub)
+    library(rtracklayer)
+    library(GenomeInfoDb)
+    library(BSgenome.Hsapiens.UCSC.hg19)
+    library(Rsamtools)
+    library(Biostrings)
+    library(edgeR)
+    library(limma)
+    library(irlba)
+    library(qqman)
+
+>>>>>>> 9b12544409e1154a7edd4b3c2d41652c74e47a38
 })
 
 ```

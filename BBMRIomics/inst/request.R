@@ -15,7 +15,10 @@ dim(view)
 summary(view)
 table(view$sex, useNA="always")
 
-write.table(view, file="RP3_basic_overview.csv", row.names=FALSE, quote=FALSE, sep=",")
+colnames(view)[1] <- "rp3_id"
+colnames(view)[5] <- "rp2_id"
+
+##write.table(view, file="RP3_basic_overview.csv", row.names=FALSE, quote=FALSE, sep=",")
 
 ##RP4
 molgenis.connect(usrpwd=RP4_DB_USRPWD, url=RP4_DB)
@@ -48,8 +51,8 @@ colnames(samples)[3] <- "sample_id"
 id <- match(subjects$subject_id, samples$subject_id)
 pheno <- cbind(subjects, samples[id,])
 
-pheno <- pheno[, c("real_bios_id", "biobank", "gender", "age_at_collection")]
-colnames(pheno) <- c("bios_id", "biobank_abbrv", "sex", "age")
+pheno <- pheno[, c("real_bios_id", "biobank", "gender", "age_at_collection", "subject_id")]
+colnames(pheno) <- c("rp3_id", "biobank_abbrv", "sex", "age", "rp4_id")
 
 sex <- pheno$sex
 pheno$sex[sex] <- "male"
@@ -65,17 +68,45 @@ pheno$biobank_abbrv[grepl("LIFELINES", pheno$biobank_abbrv)] <- "LL"
 pheno$biobank_abbrv[grepl("VUNTR", pheno$biobank_abbrv)] <- "NTR"
 
 head(pheno)
+pheno$metabolite <- TRUE
 
 table(pheno$biobank_abbrv)
 
-write.table(pheno, file="RP4_basic_overview.csv", row.names=FALSE, quote=FALSE, sep=",")
+##write.table(pheno, file="RP4_basic_overview.csv", row.names=FALSE, quote=FALSE, sep=",")
 
-head(view)
-head(pheno)
+view[1:10,]
 
-merged <- merge(view, pheno, by="bios_id", suffixes=c(".rp3", ".rp4"))
 
-write.table(merged, file="merged_rp3rp3.csv", row.names=FALSE, quote=FALSE, sep=",")
+pheno[1:10,]
+
+merged <- merge(view, pheno, by=c("rp3_id", "biobank_abbrv"), suffixes=c("_rp3", "_rp4"), all=TRUE)
+merged$metabolite[is.na(merged$metabolite)] <- FALSE
+merged[1:10,]
+dim(merged)
+
+colnames(merged)[9] <- "smoking"
+colnames(merged)[10] <- "wbcc"
+
+age <- (merged$age_rp3 + merged$age_rp4)/2 ##just take the average for now!!!!
+sex <- merged$sex_rp4
+sex[is.na(sex)] <- merged$sex_rp3[is.na(sex)]
+
+merged$sex <- sex
+merged$age <- age
+
+merged$GoNL <- !is.na(merged$rp2_id)
+
+merged <- merged[order(merged$biobank_abbrv),]
+merged$uuid <- paste0("BBMRI_", 1:nrow(merged))
+
+order <- c("uuid", "rp2_id", "rp3_id", "rp4_id", "biobank_abbrv", "GoNL", "DNA", "DNAm", "rnaseq", "metabolite", "sex", "age", "smoking", "wbcc")
+merged <- merged[, order]
+
+merged[1:10,]
+
+summary(merged)
+
+write.table(merged, file="merged_rp4rp3.csv", row.names=FALSE, quote=FALSE, sep=",")
 
 ##fix these relations once mdb is running again!!!
 ##Fri Mar  3 13:02:43 2017

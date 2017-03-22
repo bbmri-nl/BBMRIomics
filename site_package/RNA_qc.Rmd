@@ -12,10 +12,11 @@ bibliography: BBMRIomics.bib
 ```{r, child="_setup.Rmd"}
 ```
 
-## Header 2 ##
+> IN PROGRESS
 
-***brief description***
+## Quality control ##
 
+***add description***
 
 ```{r}
 "some code"
@@ -24,9 +25,10 @@ bibliography: BBMRIomics.bib
 
 ## Sample swap detection ##
 
-***brief description***
+***add description***
 
 
+<<<<<<< HEAD
 <!-- Dd 2017-03-20 18:31 attempting to run the chunk below yields: -->
 <!-- -- -->
 <!-- No username and password provided for the MDB use stored views! -->
@@ -60,6 +62,9 @@ bibliography: BBMRIomics.bib
 <!-- -- -->
 ```{r}
 # ```{r, eval=FALSE}
+=======
+```{r, eval=FALSE}
+>>>>>>> 9b12544409e1154a7edd4b3c2d41652c74e47a38
 library(BBMRIomics)
 rna <- getView("getRNASeqRuns", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
 rna <- rna[!duplicated(rna$run_id),] ##drop overlapping freezes
@@ -89,14 +94,18 @@ setdiff(runids, colnames(rnaCalls)) ##why are these missing bad quality?
 ```
 
 
+<<<<<<< HEAD
 ```{r}
 # ```{r, eval=FALSE}
+=======
+```{r, eval=FALSE}
+>>>>>>> 9b12544409e1154a7edd4b3c2d41652c74e47a38
 
 RNAFile <- file.path(VM_BASE_ANALYSIS, "rnasnp", "RNAsnps50.vcf")
 
-genotyping(typex="RNA", typey="RNA",  filex=RNAFile, filey=NULL, cohort="ALL", out=NULL, verbose=TRUE)
+genotyping(typex="RNA", typey="RNA",  filex=RNAFile, filey=NULL, cohort="ALL", out=NULL, verbose=FALSE)
 
-genotyping(typex="RNA", typey="HRC",  filex=RNAFile, filey=NULL, cohort="ALL", out=NULL, verbose=TRUE)
+genotyping(typex="RNA", typey="HRC",  filex=RNAFile, filey=NULL, cohort="ALL", out=NULL, verbose=FALSE)
 
 
 ```

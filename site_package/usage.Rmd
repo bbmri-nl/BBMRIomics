@@ -127,6 +127,7 @@ See [**irlba**](https://cran.r-project.org/web/packages/irlba/vignettes/irlba.pd
 ```{r, pca}
 # ```{r, pca, eval=FALSE}
 library(irlba)
+<<<<<<< HEAD
 
 utils::data(rnaSeqData_ReadCounts_cleaned)
 #
@@ -143,6 +144,9 @@ if (exists('last.warning') && last.warning$`d`==paste0("data(", culprit, ")")){
 }
 
 
+=======
+data(rnaSeqData_ReadCounts_BIOS_cleaned)
+>>>>>>> 9b12544409e1154a7edd4b3c2d41652c74e47a38
 library(edgeR)
 y <- DGEList(assays(counts)$data, remove.zeros=TRUE)
 y <- calcNormFactors(y)

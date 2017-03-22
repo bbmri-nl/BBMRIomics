@@ -12,9 +12,9 @@ bibliography: BBMRIomics.bib
 ```{r, child="_setup.Rmd"}
 ```
 
-## Prepare sample metadata ##
+# Prepare sample metadata #
 
-***brief description***
+Preprocess metadata including phenotype harmonization.
 
 ```{r, eval=FALSE}
 library(BBMRIomics)
@@ -55,6 +55,11 @@ table(!(is.na(colData$imputation_id) & is.na(colData$gonl_id)))
 
 ```
 
+# Creating the `SummarizedExperiments` #
+
+Here we follow the approach described at
+[DNAmArray](https://molepi.github.io/DNAmArray_workflow/) for
+preprocessing and quality control.
 
 ```{r, eval=FALSE}
 library(BiocParallel)
