@@ -1,6 +1,6 @@
 ##RP3/RP4 basic metadata overviews
 ##Morris Swertz
-##Fri Mar 17 09:02:46 2017"
+##Tue Mar 28 09:36:50 2017
 
 library(BBMRIomics)
 
@@ -9,6 +9,7 @@ url <- "https://metadatabase.bbmrirp3-lumc.surf-hosted.nl:6984/bios/_design/over
 usrpwd <- RP3_MDB_USRPWD
 request <- paste0("curl -X GET ", url, " -u ",  usrpwd, " -k -g")
 response <- system(request, intern = TRUE)
+
 view <- jsonlite::fromJSON(response)$rows$value
 head(view)
 dim(view)
@@ -76,18 +77,19 @@ table(pheno$biobank_abbrv)
 
 view[1:10,]
 
-
 pheno[1:10,]
 
-merged <- merge(view, pheno, by=c("rp3_id", "biobank_abbrv"), suffixes=c("_rp3", "_rp4"), all=TRUE)
+merged <- merge(view, pheno, by=c("rp3_id", "biobank_abbrv"), all=TRUE, suffixes=c("_rp3", "_rp4"))
+
 merged$metabolite[is.na(merged$metabolite)] <- FALSE
 merged[1:10,]
 dim(merged)
 
-colnames(merged)[9] <- "smoking"
-colnames(merged)[10] <- "wbcc"
+summary(merged)
 
-age <- (merged$age_rp3 + merged$age_rp4)/2 ##just take the average for now!!!!
+age <- merged$age_rp3
+age[is.na(age)] <- merged$age_rp4[is.na(age)]
+
 sex <- merged$sex_rp4
 sex[is.na(sex)] <- merged$sex_rp3[is.na(sex)]
 
@@ -104,7 +106,17 @@ merged <- merged[, order]
 
 merged[1:10,]
 
-summary(merged)
+merged$GoNL[is.na(merged$GoNL)] <- FALSE
+merged$DNA[is.na(merged$DNA)] <- FALSE
+merged$DNAm[is.na(merged$DNAm)] <- FALSE
+merged$rnaseq[is.na(merged$rnaseq)] <- FALSE
+merged$sex[is.na(merged$sex)] <- FALSE
+merged$smoking[is.na(merged$smoking)] <- FALSE
+merged$wbcc[is.na(merged$wbcc)] <- FALSE
+
+merged$rp3_id <- NA
+merged$rp4_id <- NA
+merged[1:20,]
 
 write.table(merged, file="merged_rp4rp3.csv", row.names=FALSE, quote=FALSE, sep=",")
 

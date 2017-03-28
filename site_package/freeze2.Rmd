@@ -23,7 +23,7 @@ The following code shows how to extract the RNA sequencing and DNA
 methylation samples that pass quality control.
 
 
-```{r, eval=FALSE}
+```{r}
 ids <- getView("getIds", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
 
 rna <- getView("getRNASeqRuns", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
@@ -65,7 +65,7 @@ individuals for which both RNA sequencing and dna methylation data
 could be generated.
 
 
-```{r, eval=FALSE}
+```{r}
 relations <- getView("getRelations", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
 relations <- subset(relations, !is.na(relation_id))
 all(relations$ids %in% relations$relation_id) ##relations consistent
@@ -122,7 +122,7 @@ The rna or dnam freeze 2 is extended with unrelated individuals having
 only rna or dnam. 
 
 
-```{r, eval=FALSE}
+```{r}
 reduceRelations <- function(ids, relations) {
 
     rels <- relations[relations$ids %in% ids,]
@@ -179,4 +179,10 @@ write.table(freeze2, file=file.path(VM_BASE_ANALYSIS, "BBMRIomics/BBMRIomics/dat
 write.table(rnaF2[, c("ids", "run_id")], file=file.path(VM_BASE_ANALYSIS, "BBMRIomics/BBMRIomics/data", "freeze2_rna_identifiers.csv"), row.names=FALSE, quote=FALSE, sep=",")
 write.table(dnamF2[, c("ids", "run_id")], file=file.path(VM_BASE_ANALYSIS, "BBMRIomics/BBMRIomics/data", "freeze2_dnam_identifiers.csv"), row.names=FALSE, quote=FALSE, sep=",")
 
+```
+
+```{r, eval=FALSE}
+write.table(freeze2, file=file.path(VM_BASE_ANALYSIS, "BBMRIomics/BBMRIomics/data", "freeze2_overlap_identifiers.csv"), row.names=FALSE, quote=FALSE, sep=",")
+write.table(rnaF2[, c("ids", "run_id")], file=file.path(VM_BASE_ANALYSIS, "BBMRIomics/BBMRIomics/data", "freeze2_rna_identifiers.csv"), row.names=FALSE, quote=FALSE, sep=",")
+write.table(dnamF2[, c("ids", "run_id")], file=file.path(VM_BASE_ANALYSIS, "BBMRIomics/BBMRIomics/data", "freeze2_dnam_identifiers.csv"), row.names=FALSE, quote=FALSE, sep=",")
 ```

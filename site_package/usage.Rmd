@@ -92,7 +92,7 @@ y <- calcNormFactors(y)
 y <- cpm(y, log=TRUE)
 pc <- prcomp_irlba(t(y))
 summary(pc)
-plot(pc$x, col=ifelse(colData(counts)$Sex == "Female", 1, 2))
+plot(pc$x[,c(1,3)], col=ifelse(colData(counts)$Sex == "Female", 1, 2))
 ```
 
 ```{r, pcabiobank}

@@ -1,0 +1,403 @@
+---
+title: "Phenotyping using RNAseq data"
+output:
+  html_document:
+    highlight: tango
+    toc: true
+    toc_float:
+      collapsed: false
+bibliography: BBMRIomics.bib
+---
+
+```{r, child="_setup.Rmd"}
+```
+
+# Intro #
+
+This document describes how we try to impute some missing phenotypes,
+specifically, sex, age, smoking status and white blood cell
+composition.
+
+These phenotypes have missing values for ten to a few hundred
+individuals, a few percentages of the whole data, leaving enough
+individuals to build accurate predictors for these phenotypes.
+
+The [**omicsPrint**](https://github.com/molepi/omicsPrin) packages is
+developed to ease the construction of predictive models using
+high-dimensional data. It provides convenient interfaces to the
+[**glmnet**](https://cran.r-project.org/web/packages/glmnet/index.html),
+[**pls**](https://cran.r-project.org/web/packages/pls/index.html) and
+[**gbm**] packages (potentially more can be added in the future),
+i.e. in a unified framework.
+
+
+Different response types can be handle by all algorithms; categorical
+(Sex/Smoking Status) and continuous (Age, white blood cell
+composition).
+
+The currently available algorithms are:
+
+ 1. ridge, lasso and elastic net (**glmnet**)
+ 2. partial-least squares (**pls**)
+ 3. gradient boosting (**gbm**)
+
+
+$\alpha = 0$ ridge, $\alpha = 1$ lasso, $\alpha = 0.5$ elastic-net 
+
+ridge- or lasso-penalty is optimized using interal cross-validation
+
+continuous is linear regression (family=gaussian)
+
+categorical repsonse use logistic regression (with family binomial or multinomial)
+
+
+detect wrongly labeled samples
+
+
+
+Here we define a few helper functions:
+
+```{r}
+library(omicsPrint)
+
+preprocess <- function(sumExp) {
+    require(SummarizedExperiment)
+    require(edgeR)
+
+    y <- DGEList(assays(sumExp)$data)
+
+    message("[preprocess] drop features not expressed")
+    ##https://www.bioconductor.org/packages/devel/bioc/vignettes/limma/inst/doc/usersguide.pdf
+    A <- rowSums(y$counts)
+    isexpr <- A > 50
+    y <- y[isexpr,]
+
+    message("[preprocess] normalize")
+    y <- calcNormFactors(y) ##normalize takes some time
+
+    message("[preprocess] calculate log counts per million")
+    y <- cpm(y, log=TRUE)
+
+    sumExp <- sumExp[isexpr,]
+    assays(sumExp)$data <- y ##replace data with filtered subset
+    sumExp
+}
+
+validate <- function(phenotype, features, train.frac = 2/3, methods = c("ridge", "elastic-net", "partial-least-squares", "lasso", "gradient-boosting"), ntop = c(50, 100, 250, 500, 1000, 2500, 5000), nrep = 25, verbose=TRUE) {
+    require(omicsPrint)
+    require(reshape2)
+    require(BiocParallel)
+    validations <- c()
+    for(ntopi in ntop) {
+        reps <- bplapply(1:nrep, function(x) phenotyping(phenotype, features, train.frac=train.frac, methods = methods, ntop=ntopi, verbose=verbose)$validation)
+        reps <- do.call('rbind', reps)
+        validation <- melt(reps, varnames=c("method", "measure"))
+        validation$ntop <- ntopi
+        validations <- rbind(validations, validation)
+        gc()
+    }
+    validations
+}
+
+
+```
+
+# Predicting Sex #
+
+## Model selection and Validation ##
+
+First we need to find out which algorithm and which number of features
+to use. 
+
+
+```{r}
+data(rnaSeqData_ReadCounts_BIOS_cleaned)
+metadata(counts)$formula <- ~0+Sex
+
+dim(counts)
+cnts <- preprocess(counts)
+dim(cnts)
+
+phenotype <- unlist(get_all_vars(metadata(cnts)$formula, data=colData(cnts)))
+features <- assays(cnts)$data
+table(phenotype, useNA="always")
+
+library(BiocParallel)
+register(MulticoreParam(5))
+validation <- validate(phenotype, features, methods = c("ridge", "elastic-net", "lasso"), ntop = c(5, 10, 25, 50, 100), nrep = 25, verbose=FALSE)
+
+library(ggplot2)
+library(ggsci)
+gp <- ggplot(subset(validation, measure %in% c("accuracy (Overall)", "f1 (Male)", "f1 (Female)")),
+             aes(x=as.factor(ntop), y=value, col=method))
+gp <- gp + geom_boxplot()
+gp <- gp + facet_wrap(~measure, scales="free", nrow=3, ncol=1)
+gp <- gp + xlab("Number of features") + ylab("") + ggtitle("Validation of predictors for `Sex`")
+gp + theme_bw() + scale_color_npg() + theme(legend.position = "bottom", legend.direction = "horizontal")
+
+```
+
+
+## Predict missing ##
+
+```{r}
+phenotyped <- phenotyping(phenotype, features, methods = "lasso", ntop=50, verbose=TRUE)
+phenotyped$validation
+predicted <- phenotyped$predicted
+names(predicted) <- colnames(features)
+
+write.table(predicted, file="/virdir/Scratch/RP3_analysis/imputed_phenotypes/Sex_RNAseq.csv",
+            sep=",", quote=FALSE)
+
+```
+
+> TODO add diagnostic plots!
+
+## Inspect selected features ##
+
+It could be interesting to see which genes are the top genes selected
+for predicting Age.
+
+> this does not include e.g., the lasso selection
+
+```{r}
+library(org.Hs.eg.db)
+map <- select(org.Hs.eg.db, keys = names(phenotyped$top), keytype="ENSEMBL", columns="SYMBOL")
+top <- merge(map, phenotyped$top, by.x="ENSEMBL", by.y="row.names")
+top <- top[order(abs(top$y), decreasing=TRUE),]
+top
+
+mid <- match(top$ENSEMBL, rownames(features))
+y <- features[mid,]
+rownames(y) <- top$SYMBOL
+rownames(y)[is.na(top$SYMBOL)] <- top$ENSEMBL[is.na(top$SYMBOL)]
+colnames(y) <- NULL
+
+library(ComplexHeatmap)
+sex <- colData(cnts)$Sex
+sex[is.na(sex)] <- "Unknown"
+ha <- HeatmapAnnotation(df = data.frame(Sex = factor(sex)), col = list(Sex = c("Male" =  "blue", "Female" = "pink", "Unknown" = "grey")))
+Heatmap(y, top_annotation = ha, name="log CPM", row_names_gp = gpar(fontsize = 8))
+```
+
+
+## Detect outliers ##
+
+Outlier or missclassified sample could potentially be wrongly labeled.
+
+Since, we use a subset for training it could be accidentally be
+missclassified. Therefore, we run multiple models and collected the
+number and frequencies of missclassified samples.
+
+
+```{r}
+library(BiocParallel)
+register(MulticoreParam(10))
+nrep <- 25
+predicted <- bplapply(1:nrep, function(x) phenotyping(phenotype, features, methods = "ridge", ntop=50, verbose=FALSE)$predicted)
+predicted <- do.call('cbind', predicted)
+
+missclassified <- (predicted != phenotype)[!is.na(phenotype), ]
+rownames(missclassified) <- colnames(features)[!is.na(phenotype)]
+missclassified <- missclassified[rowSums(missclassified) > 0,]
+100*rowSums(missclassified)/nrep
+
+```
+
+# Predicting Age #
+
+## Model selection and Validation ##
+
+First we need to find out which algorithm and which number of features
+to use:
+
+```{r, eval=FALSE}
+
+metadata(cnts)$formula <- ~0+Sampling_Age
+
+phenotype <- unlist(get_all_vars(metadata(cnts)$formula, data=colData(cnts)))
+features <- assays(cnts)$data
+summary(phenotype)
+
+library(BiocParallel)
+register(MulticoreParam(5))
+validation <- validate(phenotype, features, methods = c("ridge", "elastic-net", "lasso", "gradient-boosting", "partial-least-squares"),
+                       ntop = c(100, 250, 500, 1000, 2500, 5000), nrep = 25, verbose=FALSE)
+
+library(ggplot2)
+library(ggsci)
+gp <- ggplot(validation, aes(x=as.factor(ntop), y=value, col=method))
+gp <- gp + geom_boxplot()
+gp <- gp + facet_wrap(~measure, scales="free", nrow=3, ncol=1)
+gp <- gp + xlab("Number of features") + ylab("") + ggtitle("Validation of predictors for `Age`")
+gp + theme_bw() + scale_color_npg() + theme(legend.position = "bottom", legend.direction = "horizontal")
+
+```
+
+some diagnostic plots:
+
+```{r, eval=FALSE}
+phenotyped <- phenotyping(phenotype, features, methods = "lasso", ntop=5000, verbose=TRUE)
+predicted <- phenotyped$predicted
+names(predicted) <- colnames(features)
+
+plot(predicted, phenotype, xlab="predicted (Age)", ylab="reported (Age)",
+     xlim=c(0, 100), ylim=c(0, 100),
+     pch=16, col = adjustcolor(1, alpha.f = 0.3))
+abline(0, 1, col=2)
+grid(col=1)
+
+residuals <- predicted-phenotype
+plot(predicted[!is.na(phenotype)], residuals[!is.na(phenotype)],
+     xlab="fitted", ylab="residual", pch=16, col = adjustcolor(1, alpha.f = 0.3))
+grid(col=1)
+
+qqnorm(residuals)
+qqline(residuals)
+
+```
+
+## Predict missing ##
+
+```{r, eval=FALSE}
+phenotyped <- phenotyping(phenotype, features, methods = "lasso", ntop=5000, verbose=TRUE)
+predicted <- phenotyped$predicted
+names(predicted) <- colnames(features)
+predicted[is.na(phenotype)]
+
+```
+
+## Inspect selected features ##
+
+
+```{r, eval=FALSE}
+library(org.Hs.eg.db)
+map <- select(org.Hs.eg.db, keys = names(phenotyped$top), keytype="ENSEMBL", columns="SYMBOL")
+top <- merge(map, phenotyped$top, by.x="ENSEMBL", by.y="row.names")
+head(top[order(abs(top$y), decreasing=TRUE),])
+
+library(irlba)
+y <- features[rownames(features) %in% names(phenotyped$top),]
+pc <- prcomp_irlba(t(y))
+summary(pc)
+
+cols <- rainbow(10)[cut(phenotype, breaks=10)]
+plot(pc$x, col=adjustcolor(cols, alpha.f=0.3), pch=16)
+
+```
+
+
+## Detect outliers ##
+
+```{r, eval=FALSE}
+
+library(BiocParallel)
+register(MulticoreParam(10))
+nrep <- 100
+predicted <- bplapply(1:nrep, function(x) phenotyping(phenotype, features, methods = "lasso", ntop=5000, verbose=FALSE)$predicted)
+predicted <- do.call('cbind', predicted)
+
+residuals <- predicted - phenotype
+
+popo <- which(rowSums(abs(residuals) > mean(residuals, na.rm=TRUE) + 3*sd(residuals, na.rm=TRUE)) > 10)
+
+library(matrixStats)
+mns <- rowMeans(predicted)
+sds <- rowSds(predicted)
+col <- rep(1, length(mns))
+col[popo] <- 2
+plot(phenotype, mns, pch=16, cex=sds, col=adjustcolor(col, alpha.f=0.3), bty="n")
+abline(0, 1, col=4, lwd=2, lty=2)
+grid(col=1)
+
+
+```
+
+
+# Predict white blood cell composition #
+
+
+## Model fitting and model selection ##
+
+```{r, wbccfit}
+library(BBMRIomics)
+data(rnaSeqData_ReadCounts_BIOS_cleaned)
+
+metadata(counts)$formula <- ~0 + Lymph_Perc + Mono_Perc + Eos_Perc + Neut_Perc
+
+dim(counts)
+cnts <- preprocess(counts)
+dim(cnts)
+
+phenotypes <- get_all_vars(metadata(cnts)$formula, data=colData(cnts))
+features <- assays(cnts)$data
+
+complete <- apply(phenotypes, 1, function(x) all(!is.na(x)))
+table(complete)
+
+head(phenotypes[complete,])
+
+trainId <- sample(which(complete), size = (2/3)*sum(complete))
+testId <- setdiff(which(complete), trainId)
+
+library(pls)
+pls.options(parallel = 5)
+predictor <- plsr(phenotypes~data, ncomp = 50, data = list(phenotypes = as.matrix(phenotypes[trainId,]), data=t(features[, trainId])), validation = "CV", keep.model = TRUE)
+
+str(predictor)
+summary(predictor)
+cumsum(explvar(predictor))
+barplot(cumsum(explvar(predictor)), las = 2, ylab = "Cumulative Variance Explained")
+
+validationplot(predictor, val.type = "R2", ncomp = 1:50)
+validationplot(predictor, val.type = "RMSEP", ncomp = 1:50)
+
+```
+
+
+## Evaluate predictions ##
+
+```{r, wbcceval}
+
+predicted <- predict(predictor, newdata = list(data=t(features[, testId])) , ncomp = 20)
+
+library(reshape2)
+data <- cbind(melt(phenotypes[testId,], value.name="measured"),
+              predicted=melt(predicted[,,1])[,3])
+
+##correlation plot
+library(ggplot2)
+library(ggsci)
+gp <- ggplot(data, aes(x=measured, y=predicted))
+gp <- gp + geom_point() + geom_abline(intercept=0, slope=1, col=2)
+gp <- gp + facet_wrap(~variable, scales="free")
+gp + theme_bw() + scale_color_npg(alpha=0.3)
+
+##bland altman plot
+tdata <- data
+tdata[,2] <- rowMeans(data[,-1])
+tdata[,3] <- data[,2] - data[,3]
+colnames(tdata)[2:3] <- c("Average", "Difference")
+
+gp <- ggplot(tdata, aes(x=Average, y=Difference))
+gp <- gp + geom_point(alpha=0.1) + geom_hline(yintercept=0, col=2)
+gp <- gp + facet_wrap(~variable, scales="free")
+gp + theme_bw() + scale_color_npg()
+
+```
+
+
+
+```{r, wbccpred}
+
+predicted <- predict(predictor, newdata = list(data=t(features)), ncomp = 20)[,,1]
+hist(rowSums(predicted))
+dim(predicted)
+rownames(predicted) <- colnames(features)
+head(predicted)
+
+write.table(predicted, file="/virdir/Scratch/RP3_analysis/imputed_phenotypes/WBCC_RNAseq.csv",
+            sep=",", quote=FALSE)
+
+
+```

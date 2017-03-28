@@ -57,7 +57,10 @@ navbar:
           href: freeze2.html          
         - text: "Miscellaneous" 
         - text: "Accessing the metadatabase"
-          href: metadatabase.html          
+          href: metadatabase.html
+        - text: "Phenotyping"
+        - text: "Using RNAseq"
+          href: phenotyping_rnaseq.html
         - text: "Contributing"
           href: contribute.html	              
     - text: "About"

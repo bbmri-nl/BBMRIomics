@@ -3,30 +3,34 @@ title: "Setup"
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(cache=TRUE, eval=TRUE)
+knitr::opts_chunk$set(cache=TRUE, eval=TRUE, cache.lazy = FALSE)
 
 rm(list=ls()) ##clear work space
 
 suppressPackageStartupMessages({ ##to get rid of annoying startup messages (like ours ;)!)
-    library(BBMRIomics)
-    RP3_USRPWD_MBD <- RP3_USRPWD_RDB <- "anonymous" 
+    library(BBMRIomics) #from gitlab
+    RP3_MDB_USRPWD <- "anonymous" 
 
-    library(ggplot2)
-    library(qqman)
+    library(DNAmArray) #from github
+    library(omicsPrint) #from github
+    
     library(MethylAid)
-    library(DNAmArray)
     library(BiocParallel)
-    library(shiny)
-    library(AnnotationHub)
+    library(shiny)    
     library(rtracklayer)
     library(GenomeInfoDb)
+    library(AnnotationHub)
     library(BSgenome.Hsapiens.UCSC.hg19)
+    library(org.Hs.eg.db)    
     library(Rsamtools)
     library(Biostrings)
     library(edgeR)
     library(limma)
     library(irlba)
-    library(qqman)
+    library(ggplot2)
+    library(qqman)    
+    library(ComplexHeatmap)
+    
 
 })
 
