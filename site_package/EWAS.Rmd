@@ -58,7 +58,20 @@ Since, we had subsetted the whole `SummerizedExperiments`-object we
 can just extract the data without any further subsetting. Runnning the
 EWAS is now just one function-call.
 
-> TODO: remove cross-hyb. probes and probe containing SNPS
+Often probes on the X and Y chromosome are removed as well as
+cross-hybdridizing probes and probes with frequent SNPs.
+
+```{r, snpprobes}
+##drop X and Y
+mvalues <- mvalues[!(seqnames(mvalues) %in% c("chrX", "chrY")),]
+data(hm450.manifest.pop.GoNL) ##From DNAmArray
+hm450.manifest.pop.GoNL
+hm450.manifest.pop.GoNL <- hm450.manifest.pop.GoNL[!is.na(hm450.manifest.pop.GoNL$MASK.general.GoNL) &
+                                                   hm450.manifest.pop.GoNL$MASK.general.GoNL == TRUE, ]
+
+mvalues <- mvalues[!(names(mvalues) %in% names(hm450.manifest.pop.GoNL)),]         
+```
+
 
 ```{r, ewas}
 data <- assays(mvalues)$data
@@ -91,6 +104,8 @@ gp <- gp + ylab(expression(paste("Observed -log"[10], plain(P))))
 gp <- gp + geom_abline(slope=1, intercept=0)
 gp
 ```
+
+Or make an manhattan plot:
 
 ```{r, manplotewas}
 rowRanges(mvalues)
