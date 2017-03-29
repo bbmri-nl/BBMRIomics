@@ -102,6 +102,20 @@ validate <- function(phenotype, features, train.frac = 2/3, methods = c("ridge",
 
 ```
 
+# Inspect missing data #
+
+```{r}
+library(BBMRIomics)
+data(rnaSeqData_ReadCounts_BIOS_cleaned)
+covariates <- as.data.frame(colData(counts)[, c("Sex", "Sampling_Age", "Smoking", "Lymph_Perc","Mono_Perc", "Eos_Perc", "Neut_Perc")])
+##missing covariate summary
+missingCov <- apply(covariates, 2, function(x) round(100*table(is.na(x))/length(x),2))
+missingCov
+##missing sample summary
+missingSam <- apply(covariates, 1, function(x) round(100*sum(is.na(x))/length(x),2))
+table(missingSam)
+```
+
 # Predicting Sex #
 
 ## Model selection and Validation ##
