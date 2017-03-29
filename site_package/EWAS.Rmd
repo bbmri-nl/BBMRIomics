@@ -62,7 +62,6 @@ Often probes on the X and Y chromosome are removed as well as
 cross-hybdridizing probes and probes with frequent SNPs.
 
 ```{r, snpprobes}
-##drop X and Y
 mvalues <- mvalues[!(seqnames(mvalues) %in% c("chrX", "chrY")),]
 data(hm450.manifest.pop.GoNL) ##From DNAmArray
 hm450.manifest.pop.GoNL

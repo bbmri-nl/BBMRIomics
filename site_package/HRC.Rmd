@@ -68,9 +68,9 @@ boxplot(NOD2~rs1981760)
 ```{r, getgenotypes}
 library(SNPlocs.Hsapiens.dbSNP142.GRCh37)
 gr <- rsidsToGRanges(c("rs9302752", "rs1981760"))
-data(rnaSeqData_ReadCounts_cleaned)
+data(rnaSeqData_ReadCounts_BIOS_cleaned)
 library(BiocParallel)
-register(MulticoreParam(1))
+register(MulticoreParam(2, log=TRUE))
 dosages <- getGenotypes(imputation_id = counts$imputation_id, biobank="ALL", snps=gr, type="HRC", geno="DS", BASE=VM_BASE_DATA)
 dosages[1:2, 1:5]
 ```
