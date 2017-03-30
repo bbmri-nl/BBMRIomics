@@ -1,4 +1,3 @@
-
 ########################################################################
 This README describes additional configuration and installation of
 RStudio server/shiny server and R packages on the surfSARA HPC Virtual
@@ -37,13 +36,14 @@ overwrite default R library path:
 add to /etc/rstudio/rsession.conf
 r-libs-user=/opt/R/microsoft-r/3.3/lib64/R/library
 
-add to /etc/profile
+add to R.home() /etc/Rprofile.site
 export R_LIBS_SITE=/opt/R/microsoft-r/3.3/lib64/R/library
-
 
 .First <- function() {
 cat("\n   setting MKL threads to 2!\n\n")
 RevoUtilsMath::setMKLthreads(2)
+##optionally set user memory limit
+ulimit::memory_limit(10240) ##in MiB = 10Gb
 }
 
 ##do not ask for saving and prevent load .RData/.Rhistory
@@ -58,8 +58,7 @@ utils::assignInNamespace("quit",
      .Internal(quit(save, status, runLast))
    }, "base")
 
-##optionally set user memory limit
-ulimit::memory_limit(10240) ##in MiB = 10Gb
+
 
 ########################################################################
 Shiny Server configuration
