@@ -1,5 +1,5 @@
 ---
-title: "Phenotyping using RNAseq data"
+title: "Phenotyping using 450K DNA methylation data"
 output:
   html_document:
     highlight: tango
@@ -12,49 +12,6 @@ bibliography: BBMRIomics.bib
 ```{r, child="_setup.Rmd"}
 ```
 
-# Intro #
-
-This document describes how we try to impute some missing phenotypes,
-specifically, sex, age, smoking status and white blood cell
-composition.
-
-These phenotypes have missing values for ten to a few hundred
-individuals, a few percentages of the whole data, leaving enough
-individuals to build accurate predictors for these phenotypes.
-
-The [**omicsPrint**](https://github.com/molepi/omicsPrin) packages is
-developed to ease the construction of predictive models using
-high-dimensional data. It provides convenient interfaces to the
-[**glmnet**](https://cran.r-project.org/web/packages/glmnet/index.html),
-[**pls**](https://cran.r-project.org/web/packages/pls/index.html) and
-[**gbm**] packages (potentially more can be added in the future),
-i.e. in a unified framework.
-
-
-Different response types can be handle by all algorithms; categorical
-(Sex/Smoking Status) and continuous (Age, white blood cell
-composition).
-
-The currently available algorithms are:
-
- 1. ridge, lasso and elastic net (**glmnet**)
- 2. partial-least squares (**pls**)
- 3. gradient boosting (**gbm**)
-
-
-$\alpha = 0$ ridge, $\alpha = 1$ lasso, $\alpha = 0.5$ elastic-net 
-
-ridge- or lasso-penalty is optimized using interal cross-validation
-
-continuous is linear regression (family=gaussian)
-
-categorical repsonse use logistic regression (with family binomial or multinomial)
-
-
-detect wrongly labeled samples
-
-
-
 Here we define a few helper functions:
 
 ```{r}
@@ -62,24 +19,16 @@ library(omicsPrint)
 
 preprocess <- function(sumExp) {
     require(SummarizedExperiment)
-    require(edgeR)
+    require(DNAmArray)  
 
-    y <- DGEList(assays(sumExp)$data)
+    message("[preprocess] drop features Zhou probes")
+    data(hm450.manifest.pop.GoNL) ##From DNAmArray
+    
+    hm450.manifest.pop.GoNL
+    hm450.manifest.pop.GoNL <- hm450.manifest.pop.GoNL[!is.na(hm450.manifest.pop.GoNL$MASK.general.GoNL) &
+                                                   hm450.manifest.pop.GoNL$MASK.general.GoNL == TRUE, ]
 
-    message("[preprocess] drop features not expressed")
-    ##https://www.bioconductor.org/packages/devel/bioc/vignettes/limma/inst/doc/usersguide.pdf
-    A <- rowSums(y$counts)
-    isexpr <- A > 50
-    y <- y[isexpr,]
-
-    message("[preprocess] normalize")
-    y <- calcNormFactors(y) ##normalize takes some time
-
-    message("[preprocess] calculate log counts per million")
-    y <- cpm(y, log=TRUE)
-
-    sumExp <- sumExp[isexpr,]
-    assays(sumExp)$data <- y ##replace data with filtered subset
+    sumExp <- sumExp[!(names(sumExp) %in% names(hm450.manifest.pop.GoNL)),]       
     sumExp
 }
 
@@ -106,8 +55,9 @@ validate <- function(phenotype, features, train.frac = 2/3, methods = c("ridge",
 
 ```{r}
 library(BBMRIomics)
-data(rnaSeqData_ReadCounts_BIOS_cleaned)
-covariates <- as.data.frame(colData(counts)[, c("Sex", "Sampling_Age", "Smoking", "Lymph_Perc","Mono_Perc", "Eos_Perc", "Neut_Perc")])
+data(methData_Betas_PAN_F2_cleaned)
+covariates <- as.data.frame(colData(betas)[, c("Sex", "Sampling_Age", "Smoking", "Lymph_Perc","Mono_Perc", "Eos_Perc", "Neut_Perc")])
+
 ##missing covariate summary
 missingCov <- apply(covariates, 2, function(x) round(100*table(is.na(x))/length(x),2))
 missingCov
@@ -125,19 +75,19 @@ to use.
 
 
 ```{r}
-data(rnaSeqData_ReadCounts_BIOS_cleaned)
-metadata(counts)$formula <- ~0+Sex
+data(methData_Betas_Bios_F2_cleaned)
+metadata(betas)$formula <- ~0+Sex
 
-dim(counts)
-cnts <- preprocess(counts)
-dim(cnts)
+dim(betas)
+bts <- preprocess(betas)
+dim(bts)
 
-phenotype <- unlist(get_all_vars(metadata(cnts)$formula, data=colData(cnts)))
-features <- assays(cnts)$data
+phenotype <- unlist(get_all_vars(metadata(bts)$formula, data=colData(bts)))
+features <- assays(bts)$data
 table(phenotype, useNA="always")
 
 library(BiocParallel)
-register(MulticoreParam(5))
+register(MulticoreParam(10))
 validation <- validate(phenotype, features, methods = c("ridge", "elastic-net", "lasso"), ntop = c(5, 10, 25, 50, 100), nrep = 25, verbose=FALSE)
 
 library(ggplot2)
@@ -155,7 +105,7 @@ gp + theme_bw() + scale_color_npg() + theme(legend.position = "bottom", legend.d
 ## Predict missing ##
 
 ```{r}
-phenotyped <- phenotyping(phenotype, features, methods = "lasso", ntop=50, verbose=TRUE)
+phenotyped <- phenotyping(phenotype, features, methods = "lasso", ntop=5, verbose=TRUE)
 phenotyped$validation
 predicted <- phenotyped$predicted
 names(predicted) <- colnames(features)
@@ -175,21 +125,12 @@ for predicting Age.
 > this does not include e.g., the lasso selection
 
 ```{r}
-library(org.Hs.eg.db)
-map <- select(org.Hs.eg.db, keys = names(phenotyped$top), keytype="ENSEMBL", columns=c("SYMBOL", "CHR"))
-top <- merge(map, phenotyped$top, by.x="ENSEMBL", by.y="row.names")
-top <- top[order(abs(top$y), decreasing=TRUE),]
-top
-
-mid <- match(top$ENSEMBL, rownames(features))
-y <- features[mid,]
-rownames(y) <- top$SYMBOL
-rownames(y)[is.na(top$SYMBOL)] <- top$ENSEMBL[is.na(top$SYMBOL)]
-rownames(y) <- paste(rownames(y), "(", top$CHR, ",)")
+top <- phenotyped$top
+y <- features[rownames(features) %in% names(top),]
 colnames(y) <- NULL
 
 library(ComplexHeatmap)
-sex <- colData(cnts)$Sex
+sex <- colData(bts)$Sex
 sex[is.na(sex)] <- "Unknown"
 ha <- HeatmapAnnotation(df = data.frame(Sex = factor(sex)), col = list(Sex = c("Male" =  "blue", "Female" = "pink", "Unknown" = "grey")))
 Heatmap(y, top_annotation = ha, name="log CPM", row_names_gp = gpar(fontsize = 8))
@@ -228,16 +169,17 @@ to use:
 
 ```{r, eval=FALSE}
 
-metadata(cnts)$formula <- ~0+Sampling_Age
+metadata(bts)$formula <- ~0+Sampling_Age
 
-phenotype <- unlist(get_all_vars(metadata(cnts)$formula, data=colData(cnts)))
-features <- assays(cnts)$data
+phenotype <- unlist(get_all_vars(metadata(bts)$formula, data=colData(bts)))
+features <- assays(bts)$data
+features <- cbind(features, features^2)
 summary(phenotype)
 
 library(BiocParallel)
-register(MulticoreParam(5))
+register(MulticoreParam(15))
 validation <- validate(phenotype, features, methods = c("ridge", "elastic-net", "lasso", "gradient-boosting", "partial-least-squares"),
-                       ntop = c(100, 250, 500, 1000, 2500, 5000), nrep = 25, verbose=FALSE)
+                       ntop = c(100, 250, 500, 1000, 2500, 5000), nrep = 5, verbose=FALSE)
 
 library(ggplot2)
 library(ggsci)
