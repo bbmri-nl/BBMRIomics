@@ -150,7 +150,7 @@ read.dosages <- function(file,  yieldSize=NULL, colClassesInfo = c("character", 
 ##' @importFrom Rsamtools TabixFile
 ##' @importFrom BiocParallel bplapply
 ##' @importFrom GenomicRanges split
-##' @importFrom GenomeInfoDb mapSeqlevels
+##' @importFrom GenomeInfoDb mapSeqlevels seqlevels seqlevels<-
 ##' @export
 getGenotypes <- function(imputation_id, biobank=c("ALL", "CODAM", "LL", "LLS", "NTR", "RS", "PAN"), snps, type=c("GoNL", "HRC", "GoNLv5"), geno=c("GT", "DS", "GP", "SM"), BASE, ...){
 

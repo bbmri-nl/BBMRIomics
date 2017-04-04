@@ -55,7 +55,7 @@ validate <- function(phenotype, features, train.frac = 2/3, methods = c("ridge",
 
 ```{r}
 library(BBMRIomics)
-data(methData_Betas_PAN_F2_cleaned)
+data(methData_Betas_BIOS_F2_cleaned)
 covariates <- as.data.frame(colData(betas)[, c("Sex", "Sampling_Age", "Smoking", "Lymph_Perc","Mono_Perc", "Eos_Perc", "Neut_Perc")])
 
 ##missing covariate summary
@@ -134,6 +134,7 @@ sex <- colData(bts)$Sex
 sex[is.na(sex)] <- "Unknown"
 ha <- HeatmapAnnotation(df = data.frame(Sex = factor(sex)), col = list(Sex = c("Male" =  "blue", "Female" = "pink", "Unknown" = "grey")))
 Heatmap(y, top_annotation = ha, name="log CPM", row_names_gp = gpar(fontsize = 8))
+
 ```
 
 

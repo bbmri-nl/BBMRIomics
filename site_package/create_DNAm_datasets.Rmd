@@ -127,12 +127,14 @@ for(biobank in c("CODAM", "LLS", "LL", "RS", "NTR")) {
     rowData(mvalues) <- NULL
     b <- SummarizedExperiment::cbind(b, mvalues)
     gc()
-    b
+    print(b)
 }
 
 mvalues <- b
 save(mvalues, file=file.path(path450k, "450k", paste0("methData_Mvalues_BIOS_F2_cleaned.RData")))
 
+
+tools::checkRdaFiles(file.path(path450k, "450k", paste0("methData_Mvalues_BIOS_F2_cleaned.RData")))
 
 ##inspect issue
 library(Biostrings)

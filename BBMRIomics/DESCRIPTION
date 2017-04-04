@@ -1,7 +1,7 @@
 Package: BBMRIomics
 Type: Package
 Title: R utilities for BBMRI omics data analysis
-Version: 1.0.3
+Version: 1.0.4
 Date: 2017-03-17
 Author: Maarten van Iterson
 Maintainer: M. van Iterson <m.van_iterson@lumc.nl>
@@ -15,6 +15,7 @@ Depends:
 Imports:
     BiocParallel,
     GenomicRanges,
+    GenomeInfoDb,
     IRanges,
     jsonlite,
     httr,
