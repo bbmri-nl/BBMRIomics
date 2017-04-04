@@ -143,11 +143,11 @@ colnames(feats) <- NULL
 library(ComplexHeatmap)
 sex <- colData(top)$Sex
 sex[is.na(sex)] <- "Unknown"
-ha <- HeatmapAnnotation(df = data.frame(Sex = factor(sex)), col = list(Sex = c("Male" =  "blue", "Female" = "pink", "Unknown" = "grey")))
 setEPS()
 postscript("/virdir/Scratch/RP3_analysis/imputed_phenotypes/Sex_DNAm_feats.eps")
 Heatmap(feats, top_annotation = ha, name="beta-value", row_names_gp = gpar(fontsize = 8))
 dev.off()
+
 ```
 
 

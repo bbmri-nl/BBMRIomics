@@ -10,7 +10,7 @@ data(rnaSeqData_ReadCounts_RS_cleaned)
 }
 \description{
 A detailed description of the RNA-seq data processing can be found in Zhernakova et al. (doi:10.1038/ng.3737).
-Briefly, total RNA from whole blood, depleted of globin transcripts, was sequenced (2×50-bp) using the Illumina
+Briefly, total RNA from whole blood, depleted of globin transcripts, was sequenced (2x50-bp) using the Illumina
 HiSeq 2000 platform, and read alignment was performed using STAR (v2.3.0).
 }
 \details{
@@ -19,7 +19,7 @@ The data comprise six biobanks: Cohort on Diabetes and Atherosclerosis Maastrich
 (doi: 10.1111/j.1365-2362.2010.02418.x), LifeLines (LL, n~700) (doi: 10.1136/bmjopen-2014-006772),
 the Leiden Longevity Study (LLS, n~600) (doi: 10.1111/j.1532-5415.2009.02381.x),
 the Rotterdam Study (RS, n~600) (doi: 10.1007/s10654-011-9610-5),
-the Netherlands Twin Registry (NTR, n ≈ 1800) (doi:  10.1017/thg.2012.140) and
+the Netherlands Twin Registry (NTR, n~1800) (doi:  10.1017/thg.2012.140) and
 the Prospective ALS Study Netherlands (PAN, n~180) (doi: 10.1136/jnnp.2011.244939).
 Sample identity of DNA methylation and gene expression data was confirmed using genotype data.
 

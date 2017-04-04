@@ -13,6 +13,6 @@ add description
 }
 \examples{
 data(metabolomics_RP3RP4_overlap)
-metaboliteData
+metabolomicData
 }
 \keyword{datasets}

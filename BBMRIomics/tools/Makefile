@@ -1,11 +1,10 @@
 
 SRC=/virdir/Scratch/RP3_data
-HOST=bios-vm
+HOST=alpha
 BIOBANKS=RS PAN CODAM LLS LL NTR
-HOST=bios-vm
 MDB=https://metadatabase.bbmrirp3-lumc.surf-hosted.nl:6984/bios
 RDB=https://metadatabase.bbmrirp3-lumc.surf-hosted.nl:6984/rp3_analysis
-USRPWD=
+USRPWD=''
 
 R_PACKAGE_DIR=/opt/R/microsoft-r/3.3/lib64/R/library/BBMRIomics
 

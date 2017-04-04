@@ -69,47 +69,125 @@ register(MulticoreParam(6, log=TRUE))
 path450k <- file.path(VM_BASE_DATA, "IlluminaHumanMethylation450k")
 
 ##for(biobank in unique(colData$biobank_id)) {
-    biobank <- "NTR"	
-    targets <- subset(colData, biobank_id == biobank)
-    targets$Basename <- with(targets,
-                             file.path(path450k, "raw", Sentrix_Barcode,
-                                       paste(Sentrix_Barcode, Sentrix_Position, sep="_")))
-    ##reading the data
-    RGset <- read.metharray.exp.par(targets, verbose=TRUE, extended=TRUE)    
-    ##normalize
-    pc <- screeplot(RGset)
-    GRset <- preprocessFunnorm.DNAmArray(RGset, nPCs=3, keepCN=FALSE)
-    rm(pc)
-    gc() #remove and clean
-    ##filter
-    RGset <- probeFiltering(RGset)
-    ##store M-values
-    mvalues <- reduce(GRset, RGset, what="M")
-    sink("/dev/null") ##to ignore impute.knn output
-    mvalues <- impute.knn(as.matrix(mvalues))$data
-    sink()
-    
-    mid <- match(colnames(mvalues), colData$run_id)
-    colnames(mvalues) <- colData$uuid[mid]
-    rowData <- getPlatform(platform="HM450", genome="hg19")    
-    mvalues <- makeSE(mvalues, colData[,-1], rowData, note="No chen probe filtering, Functional normalization, knn imputed")
-    save(mvalues, file=file.path(path450k, "450k", biobank, paste0("methData_Mvalues_", biobank, "_F2_cleaned.RData")))
-    rm(mvalues)
-    gc() #remove and clean
-    ##store beta-values
-    betas <- reduce(GRset, RGset, what="beta")
-    sink("/dev/null") ##to ignore impute.knn output
-    betas <- impute.knn(as.matrix(betas))$data
-    sink()
-    mid <- match(colnames(betas), colData$run_id)
-    colnames(betas) <- colData$uuid[mid]
-    betas <- makeSE(betas, colData[,-1], rowData, note="No chen probe filtering, Functional normalization, knn imputed")
-    save(betas, file=file.path(path450k, "450k", biobank, paste0("methData_Betas_", biobank, "_F2_cleaned.RData")))
-    rm(betas)
-    rm(GRset)
-    rm(RGset)
-    gc() ##remove and clean
+biobank <- "NTR"
+targets <- subset(colData, biobank_id == biobank)
+targets$Basename <- with(targets,
+                         file.path(path450k, "raw", Sentrix_Barcode,
+                                   paste(Sentrix_Barcode, Sentrix_Position, sep="_")))
+##reading the data
+RGset <- read.metharray.exp.par(targets, verbose=TRUE, extended=TRUE)
+##normalize
+pc <- screeplot(RGset)
+GRset <- preprocessFunnorm.DNAmArray(RGset, nPCs=3, keepCN=FALSE)
+rm(pc)
+gc() #remove and clean
+##filter
+RGset <- probeFiltering(RGset)
+##store M-values
+mvalues <- reduce(GRset, RGset, what="M")
+sink("/dev/null") ##to ignore impute.knn output
+mvalues <- impute.knn(as.matrix(mvalues))$data
+sink()
+
+mid <- match(colnames(mvalues), colData$run_id)
+colnames(mvalues) <- colData$uuid[mid]
+rowData <- getPlatform(platform="HM450", genome="hg19")
+mvalues <- makeSE(mvalues, colData[,-1], rowData, note="No chen probe filtering, Functional normalization, knn imputed")
+save(mvalues, file=file.path(path450k, "450k", biobank, paste0("methData_Mvalues_", biobank, "_F2_cleaned.RData")))
+rm(mvalues)
+gc() #remove and clean
+##store beta-values
+betas <- reduce(GRset, RGset, what="beta")
+sink("/dev/null") ##to ignore impute.knn output
+betas <- impute.knn(as.matrix(betas))$data
+sink()
+mid <- match(colnames(betas), colData$run_id)
+colnames(betas) <- colData$uuid[mid]
+betas <- makeSE(betas, colData[,-1], rowData, note="No chen probe filtering, Functional normalization, knn imputed")
+save(betas, file=file.path(path450k, "450k", biobank, paste0("methData_Betas_", biobank, "_F2_cleaned.RData")))
+rm(betas)
+rm(GRset)
+rm(RGset)
+gc() ##remove and clean
 ##}
+
+```
+
+
+```{r, eval=FALSE}
+path450k <- file.path(VM_BASE_DATA, "IlluminaHumanMethylation450k")
+biobank <- "PAN"
+load(file.path(path450k, "450k", biobank, paste0("methData_Mvalues_", biobank, "_F2_cleaned.RData")))
+b <- mvalues
+library(GenomicRanges)
+for(biobank in c("CODAM", "LLS", "LL", "RS", "NTR")) {
+    load(file.path(path450k, "450k", biobank, paste0("methData_Mvalues_", biobank, "_F2_cleaned.RData"))) 
+    mvalues <- subsetByOverlaps(mvalues, b)
+    b <- subsetByOverlaps(b, mvalues)
+    rowData(mvalues) <- NULL
+    b <- SummarizedExperiment::cbind(b, mvalues)
+    gc()
+    print(b)
+}
+
+mvalues <- b
+save(mvalues, file=file.path(path450k, "450k", paste0("methData_Mvalues_BIOS_F2_cleaned.RData")))
+
+
+tools::checkRdaFiles(file.path(path450k, "450k", paste0("methData_Mvalues_BIOS_F2_cleaned.RData")))
+
+##inspect issue
+library(Biostrings)
+args <- list(b, betas)
+is(args[[1L]], "RangedSummarizedExperiment")
+
+rowRanges <- rowRanges(args[[1L]])
+mcols(rowRanges) <- SummarizedExperiment:::.cbind.DataFrame(args, mcols, "mcols")
+lst <- lapply(args, mcols)
+!SummarizedExperiment:::.compare(lst)
+nms <- lapply(lst, names)
+nmsv <- unlist(nms, use.names=FALSE)
+names(nmsv) <- rep(seq_along(nms), elementNROWS(nms))
+dups <- duplicated(nmsv)
+
+ndups <- nmsv[duplicated(nmsv)]
+
+lapply(ndups, function(d) {
+    if (!SummarizedExperiment:::.compare(lapply(lst, "[", d)))
+        stop("column(s) '", unname(d),
+             "' in ", sQuote("mcols"),
+             " are duplicated and the data do not match")
+
+}
+)
+
+args <- lapply(lst, "[", ndups[6])
+SummarizedExperiment:::.compare(args)
+
+##example
+library(Biostrings)
+seq1 <- paste(DNA_BASES[sample(1:4,5,replace=T)], collapse="")
+seq2 <- paste(DNA_BASES[sample(1:4,5,replace=T)], collapse="")
+
+seq1
+seq2
+
+s1 <- DNAStringSet(seq1)
+s2 <- DNAStringSet(seq2)
+
+str(s1)
+str(s2)
+
+identical(seq1, seq2)
+identical(s1, s2)
+seq1 == seq2
+s1 == s2
+
+sessionInfo()
+
+
+
+
 
 
 
