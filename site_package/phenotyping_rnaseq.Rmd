@@ -83,7 +83,7 @@ preprocess <- function(sumExp) {
     sumExp
 }
 
-validate <- function(phenotype, features, train.frac = 2/3, methods = c("ridge", "elastic-net", "partial-least-squares", "lasso", "gradient-boosting"), ntop = c(50, 100, 250, 500, 1000, 2500, 5000), nrep = 25, verbose=TRUE) {
+validate <- function(phenotype, features, train.frac = 2/3, methods = c("ridge", "elastic-net", "pls", "lasso", "gbm", "mboost"), ntop = c(50, 100, 250, 500, 1000, 2500, 5000), nrep = 25, verbose=TRUE) {
     require(omicsPrint)
     require(reshape2)
     require(BiocParallel)
@@ -126,11 +126,12 @@ to use.
 
 ```{r}
 data(rnaSeqData_ReadCounts_BIOS_cleaned)
-metadata(counts)$formula <- ~0+Sex
 
 dim(counts)
 cnts <- preprocess(counts)
 dim(cnts)
+
+metadata(cnts)$formula <- ~0+Sex
 
 phenotype <- unlist(get_all_vars(metadata(cnts)$formula, data=colData(cnts)))
 features <- assays(cnts)$data
@@ -138,7 +139,7 @@ table(phenotype, useNA="always")
 
 library(BiocParallel)
 register(MulticoreParam(5))
-validation <- validate(phenotype, features, methods = c("ridge", "elastic-net", "lasso"), ntop = c(5, 10, 25, 50, 100), nrep = 25, verbose=FALSE)
+validation <- validate(phenotype, features, methods = c("ridge", "elastic-net", "lasso"), ntop = c(5, 10, 25, 50, 100), nrep = 25, verbose=TRUE)
 
 library(ggplot2)
 library(ggsci)
@@ -149,13 +150,15 @@ gp <- gp + facet_wrap(~measure, scales="free", nrow=3, ncol=1)
 gp <- gp + xlab("Number of features") + ylab("") + ggtitle("Validation of predictors for `Sex`")
 gp + theme_bw() + scale_color_npg() + theme(legend.position = "bottom", legend.direction = "horizontal")
 
+ggsave(file.path("/virdir/Scratch/RP3_analysis/imputed_phenotypes", "Sex_RNAseq_eval.eps"))
+
 ```
 
 
 ## Predict missing ##
 
 ```{r}
-phenotyped <- phenotyping(phenotype, features, methods = "lasso", ntop=50, verbose=TRUE)
+phenotyped <- phenotyping(phenotype, features, methods = "lasso", ntop=25, verbose=TRUE)
 phenotyped$validation
 predicted <- phenotyped$predicted
 names(predicted) <- colnames(features)
@@ -185,14 +188,19 @@ mid <- match(top$ENSEMBL, rownames(features))
 y <- features[mid,]
 rownames(y) <- top$SYMBOL
 rownames(y)[is.na(top$SYMBOL)] <- top$ENSEMBL[is.na(top$SYMBOL)]
-rownames(y) <- paste(rownames(y), "(", top$CHR, ",)")
+rownames(y) <- paste0(rownames(y), " ( chr", top$CHR, ")")
 colnames(y) <- NULL
 
 library(ComplexHeatmap)
 sex <- colData(cnts)$Sex
 sex[is.na(sex)] <- "Unknown"
 ha <- HeatmapAnnotation(df = data.frame(Sex = factor(sex)), col = list(Sex = c("Male" =  "blue", "Female" = "pink", "Unknown" = "grey")))
+
+setEPS()
+postscript("/virdir/Scratch/RP3_analysis/imputed_phenotypes/Sex_RNAseq_feats.eps")
 Heatmap(y, top_annotation = ha, name="log CPM", row_names_gp = gpar(fontsize = 8))
+dev.off()
+
 ```
 
 
@@ -234,10 +242,12 @@ phenotype <- unlist(get_all_vars(metadata(cnts)$formula, data=colData(cnts)))
 features <- assays(cnts)$data
 summary(phenotype)
 
+phenotyped <- phenotyping(phenotype, features, methods = "lasso", ntop=100, verbose=TRUE)
+                       
 library(BiocParallel)
 register(MulticoreParam(5))
-validation <- validate(phenotype, features, methods = c("ridge", "elastic-net", "lasso", "gradient-boosting", "partial-least-squares"),
-                       ntop = c(100, 250, 500, 1000, 2500, 5000), nrep = 25, verbose=FALSE)
+validation <- validate(phenotype, features, methods = c("ridge", "lasso", "elastic-net", "pls"),
+                       ntop = c(100, 250, 500, 1000, 2500, 5000), nrep = 25, verbose=TRUE)
 
 library(ggplot2)
 library(ggsci)
@@ -246,6 +256,8 @@ gp <- gp + geom_boxplot()
 gp <- gp + facet_wrap(~measure, scales="free", nrow=3, ncol=1)
 gp <- gp + xlab("Number of features") + ylab("") + ggtitle("Validation of predictors for `Age`")
 gp + theme_bw() + scale_color_npg() + theme(legend.position = "bottom", legend.direction = "horizontal")
+
+ggsave(file.path("/virdir/Scratch/RP3_analysis/imputed_phenotypes", "Age_RNAseq_eval.eps"))
 
 ```
 
