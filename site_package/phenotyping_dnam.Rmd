@@ -38,7 +38,7 @@ preprocess <- function(sumExp, dropXY=FALSE) {
     sumExp
 }
 
-validate <- function(phenotype, features, train.frac = 2/3, methods = c("ridge", "elastic-net", "partial-least-squares", "lasso", "gradient-boosting"), ntop = c(50, 100, 250, 500, 1000, 2500, 5000), nrep = 25, verbose=TRUE) {
+validate <- function(phenotype, features, train.frac = 2/3, methods = c("ridge", "elastic-net", "pls", "lasso", "gbm"), ntop = c(50, 100, 250, 500, 1000, 2500, 5000), nrep = 25, verbose=TRUE) {
     require(omicsPrint)
     require(reshape2)
     require(BiocParallel)
@@ -56,6 +56,7 @@ validate <- function(phenotype, features, train.frac = 2/3, methods = c("ridge",
     validations
 }
 
+path <- "/virdir/Scratch/RP3_analysis/imputed_phenotypes"
 
 ```
 
@@ -108,7 +109,7 @@ gp <- gp + facet_wrap(~measure, scales="free", nrow=3, ncol=1)
 gp <- gp + xlab("Number of features") + ylab("") + ggtitle("Validation of predictors for `Sex`")
 gp + theme_bw() + scale_color_npg() + theme(legend.position = "bottom", legend.direction = "horizontal")
 
-ggsave(file.path("/virdir/Scratch/RP3_analysis/imputed_phenotypes", "Sex_DNAm_eval.eps"))
+ggsave(file.path(path, "Sex_DNAm_eval.eps"))
 
 ```
 
@@ -121,8 +122,7 @@ phenotyped$validation
 predicted <- phenotyped$predicted
 names(predicted) <- colnames(features)
 
-write.table(predicted, file="/virdir/Scratch/RP3_analysis/imputed_phenotypes/Sex_DNAm.csv",
-            sep=",", quote=FALSE)
+write.table(predicted, file=file.path(path, "Sex_DNAm.csv"), sep=",", quote=FALSE)
 
 ```
 
@@ -144,7 +144,7 @@ library(ComplexHeatmap)
 sex <- colData(top)$Sex
 sex[is.na(sex)] <- "Unknown"
 setEPS()
-postscript("/virdir/Scratch/RP3_analysis/imputed_phenotypes/Sex_DNAm_feats.eps")
+postscript(file.path(path, "Sex_DNAm_feats.eps"))
 Heatmap(feats, top_annotation = ha, name="beta-value", row_names_gp = gpar(fontsize = 8))
 dev.off()
 
@@ -160,7 +160,7 @@ missclassified. Therefore, we run multiple models and collected the
 number and frequencies of missclassified samples.
 
 
-```{r}
+```{r, eval=FALSE}
 library(BiocParallel)
 register(MulticoreParam(15))
 nrep <- 25
@@ -180,13 +180,10 @@ missclassified <- missclassified[rowSums(missclassified) > 0,]
 First we need to find out which algorithm and which number of features
 to use:
 
-```{r, eval=FALSE}
+```{r}
 metadata(bts)$formula <- ~0+Sampling_Age
 phenotype <- unlist(get_all_vars(metadata(bts)$formula, data=colData(bts)))
 features <- assays(bts)$data
-
-##features <- cbind(features, features^2) ##maybe as suggested by residuals plot
-
 summary(phenotype)
 
 library(BiocParallel)
@@ -202,13 +199,13 @@ gp <- gp + facet_wrap(~measure, scales="free", nrow=3, ncol=1)
 gp <- gp + xlab("Number of features") + ylab("") + ggtitle("Validation of predictors for `Age`")
 gp + theme_bw() + scale_color_npg() + theme(legend.position = "bottom", legend.direction = "horizontal")
 
-ggsave(file.path("/virdir/Scratch/RP3_analysis/imputed_phenotypes", "Age_DNAm_eval.eps"))
+ggsave(file.path(path, "Age_DNAm_eval.eps"))
 
 ```
 
 some diagnostic plots:
 
-```{r, eval=FALSE}
+```{r}
 phenotyped <- phenotyping(phenotype, features, methods = "partial-least-squares", ntop=5000, verbose=TRUE)
 predicted <- phenotyped$predicted
 names(predicted) <- colnames(features)
@@ -219,9 +216,7 @@ type[phenotyped$testid] <- 2
 phenotype[is.na(phenotype)] <- predicted[is.na(phenotype)]
 
 setEPS()
-postscript("/virdir/Scratch/RP3_analysis/imputed_phenotypes/Age_DNAm_diagn.eps")
-
-cairo_ps(file = "/virdir/Scratch/RP3_analysis/imputed_phenotypes/Age_DNAm_diagn.eps", onefile = FALSE, fallback_resolution = 600)
+cairo_ps(file = file.path(path, "Age_DNAm_diagn.eps"), onefile = FALSE, fallback_resolution = 600)
 
 par(mfcol=c(2,1), mar=c(4,4,2,2))
 plot(predicted, phenotype, xlab="predicted (Age)", ylab="reported (Age)",
@@ -230,28 +225,22 @@ plot(predicted, phenotype, xlab="predicted (Age)", ylab="reported (Age)",
 abline(0, 1, col=2)
 grid(col=1)
 legend("topleft", c("train", "test", "unknown"), col=1:3, pch=16, bty="n")
-residuals <- predicted-phenotype
+residuals <- predicted- phenotype
 plot(predicted, residuals,
      xlab="fitted", ylab="residual", pch=16, col = adjustcolor(type, alpha.f = 0.3))
 grid(col=1)
 dev.off()
 
-qqnorm(residuals)
-qqline(residuals)
-grid(col=1)
 
 ```
 
 ## Predict missing ##
 
-```{r, eval=FALSE}
+```{r}
 phenotype <- unlist(get_all_vars(metadata(bts)$formula, data=colData(bts)))
 predicted <- phenotyped$predicted
 names(predicted) <- colnames(features)
-
-write.table(predicted[is.na(phenotype)],
-            file="/virdir/Scratch/RP3_analysis/imputed_phenotypes/Age_DNAm.csv",
-            sep=",", quote=FALSE)
+write.table(predicted, file=file.path(path, "Age_DNAm.csv"), sep=",", quote=FALSE)
 ```
 
 ## Inspect selected features ##
@@ -267,7 +256,6 @@ Age <- cut(phenotype, breaks=10)
 cols <- rainbow(10)[Age]
 plot(pc$x, col=adjustcolor(cols, alpha.f=0.3), pch=16)
 
-
 library(ComplexHeatmap)
 sex <- colData(top)$Sex
 sex[is.na(sex)] <- "Unknown"
@@ -275,7 +263,7 @@ sex[is.na(sex)] <- "Unknown"
 ha <- HeatmapAnnotation(df = data.frame(Age = factor(age)), col = list(Sex = c("Male" =  "blue", "Female" = "pink", "Unknown" = "grey")))
 
 setEPS()
-postscript("/virdir/Scratch/RP3_analysis/imputed_phenotypes/Sex_DNAm_feats.eps")
+postscript(file.path(path, "Sex_DNAm_feats.eps"))
 
 Heatmap(y, name="beta-value", row_names_gp = gpar(fontsize = 8))
 
@@ -318,12 +306,6 @@ grid(col=1)
 ## Model fitting and model selection ##
 
 ```{r, wbccfit}
-library(BBMRIomics)
-data(methData_Betas_BIOS_F2_cleaned)
-
-dim(betas)
-bts <- preprocess(betas, dropXY=TRUE)
-dim(bts)
 
 metadata(bts)$formula <- ~0 + Lymph_Perc + Mono_Perc + Eos_Perc + Neut_Perc
 
@@ -341,20 +323,14 @@ testId <- setdiff(which(complete), trainId)
 length(trainId)
 length(testId)
 
-rho <- apply(phenotypes[trainId,], 2, function(x) cor(x, t(features[, trainId])))
-dim(rho)
-
-ntop <- 500
-top <- unique(as.vector(apply(rho, 2, function(x) order(abs(x))[1:ntop])))
-length(top)
+Sentrix_Position <- colData(bts)$Sentrix_Position
+batches <- model.matrix(~Sentrix_Position)
 
 library(pls)
 pls.options(parallel = 5)
-predictor <- plsr(phenotypes~0+data, ncomp = 50,
-                  data = list(phenotypes = as.matrix(phenotypes[trainId,]),
-                              data=t(features[top, trainId])), validation = "CV", keep.model = TRUE)
-
-str(predictor)
+predictor <- plsr(log10(phenotypes+1)~batches+data, ncomp = 50,
+                  data = list(phenotypes = as.matrix(phenotypes[trainId,]), batches=batches[trainId, ],
+                              data=t(features[, trainId])), validation = "CV", keep.model = TRUE)
 summary(predictor)
 cumsum(explvar(predictor))
 barplot(cumsum(explvar(predictor)), las = 2, ylab = "Cumulative Variance Explained")
@@ -369,19 +345,28 @@ validationplot(predictor, val.type = "RMSEP", ncomp = 1:50)
 
 ```{r, wbcceval}
 
-predicted <- predict(predictor, newdata = list(data=t(features[top, testId])) , ncomp = 10)
+predicted <- predict(predictor, newdata = list(data=t(features[, testId]), batches=batches[testId,]) , ncomp = 40)
+predicted <- 10^predicted - 1
 
 library(reshape2)
 data <- cbind(melt(phenotypes[testId,], value.name="measured"),
               predicted=melt(predicted[,,1])[,3])
+
+##hack to get plot area square
+dummy <- t(simplify2array(by(data, data$variable, function(x) range(c(x$measured, x$predicted)))))
+dummy <- data.frame(variable=rep(rownames(dummy), 2), measured=as.vector(dummy), predicted=as.vector(dummy))
+
+by(data, data$variable, function(x) round(cor(x$measured, x$predicted), 2))
 
 ##correlation plot
 library(ggplot2)
 library(ggsci)
 gp <- ggplot(data, aes(x=measured, y=predicted))
 gp <- gp + geom_point() + geom_abline(intercept=0, slope=1, col=2)
+gp <- gp + geom_blank(data=dummy)
 gp <- gp + facet_wrap(~variable, scales="free")
-gp + theme_bw() + scale_color_npg(alpha=0.3)
+gp + theme_bw() + scale_color_npg()
+ggsave(file.path(path, "WBCC_DNAm_diagn1.eps"))
 
 ##bland altman plot
 tdata <- data
@@ -390,9 +375,10 @@ tdata[,3] <- data[,2] - data[,3]
 colnames(tdata)[2:3] <- c("Average", "Difference")
 
 gp <- ggplot(tdata, aes(x=Average, y=Difference))
-gp <- gp + geom_point(alpha=0.1) + geom_hline(yintercept=0, col=2)
+gp <- gp + geom_point() + geom_hline(yintercept=0, col=2)
 gp <- gp + facet_wrap(~variable, scales="free")
 gp + theme_bw() + scale_color_npg()
+ggsave(file.path(path, "WBCC_DNAm_diagn2.eps"))
 
 ```
 
@@ -400,14 +386,15 @@ gp + theme_bw() + scale_color_npg()
 
 ```{r, wbccpred}
 
-predicted <- predict(predictor, newdata = list(data=t(features)), ncomp = 20)[,,1]
+predicted <- predict(predictor, newdata = list(data=t(features[, testId]), batches=batches[testId,]) , ncomp = 40)
+predicted <- 10^predicted - 1
+
 hist(rowSums(predicted))
 dim(predicted)
 rownames(predicted) <- colnames(features)
 head(predicted)
 
-write.table(predicted, file="/virdir/Scratch/RP3_analysis/imputed_phenotypes/WBCC_RNAseq.csv",
-            sep=",", quote=FALSE)
+write.table(predicted, file=file.path(path, "WBCC_DNAm.csv"), sep=",", quote=FALSE)
 
 
 ```
