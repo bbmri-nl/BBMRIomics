@@ -135,7 +135,7 @@ for predicting Age.
 
 > this does not include e.g., the lasso selection
 
-```{r}
+```{r, eval=FALSE}
 top <- bts[rownames(bts) %in% names(phenotyped$top),]
 rowRanges(top)
 feats <- assays(top)$data
@@ -188,7 +188,7 @@ summary(phenotype)
 
 library(BiocParallel)
 register(MulticoreParam(10))
-validation <- validate(phenotype, features, methods = c("ridge", "elastic-net", "lasso", "partial-least-squares"),
+validation <- validate(phenotype, features, methods = c("ridge", "elastic-net", "lasso", "pls"),
                        ntop = c(100, 250, 500, 1000, 2500, 5000), nrep = 25, verbose=TRUE)
 
 library(ggplot2)
@@ -206,7 +206,7 @@ ggsave(file.path(path, "Age_DNAm_eval.eps"))
 some diagnostic plots:
 
 ```{r}
-phenotyped <- phenotyping(phenotype, features, methods = "partial-least-squares", ntop=5000, verbose=TRUE)
+phenotyped <- phenotyping(phenotype, features, methods = "pls", ntop=5000, verbose=TRUE)
 predicted <- phenotyped$predicted
 names(predicted) <- colnames(features)
 
