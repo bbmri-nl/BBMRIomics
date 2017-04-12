@@ -1,5 +1,5 @@
 ---
-title: "Phenotyping using RNAseq data"
+title: "Phenotyping using RNAseq data (IN PROGRESS)"
 output:
   html_document:
     highlight: tango
@@ -18,48 +18,7 @@ This document describes how we try to impute some missing phenotypes,
 specifically, sex, age, smoking status and white blood cell
 composition.
 
-These phenotypes have missing values for ten to a few hundred
-individuals, a few percentages of the whole data, leaving enough
-individuals to build accurate predictors for these phenotypes.
-
-The [**omicsPrint**](https://github.com/molepi/omicsPrin) packages is
-developed to ease the construction of predictive models using
-high-dimensional data. It provides convenient interfaces to the
-[**glmnet**](https://cran.r-project.org/web/packages/glmnet/index.html),
-[**pls**](https://cran.r-project.org/web/packages/pls/index.html) and
-[**gbm**] packages (potentially more can be added in the future),
-i.e. in a unified framework.
-
-
-Different response types can be handle by all algorithms; categorical
-(Sex/Smoking Status) and continuous (Age, white blood cell
-composition).
-
-The currently available algorithms are:
-
- 1. ridge, lasso and elastic net (**glmnet**)
- 2. partial-least squares (**pls**)
- 3. gradient boosting (**gbm**)
-
-
-$\alpha = 0$ ridge, $\alpha = 1$ lasso, $\alpha = 0.5$ elastic-net 
-
-ridge- or lasso-penalty is optimized using interal cross-validation
-
-continuous is linear regression (family=gaussian)
-
-categorical repsonse use logistic regression (with family binomial or multinomial)
-
-
-detect wrongly labeled samples
-
-
-
-Here we define a few helper functions:
-
 ```{r}
-library(omicsPrint)
-
 preprocess <- function(sumExp) {
     require(SummarizedExperiment)
     require(edgeR)
@@ -87,6 +46,7 @@ validate <- function(phenotype, features, train.frac = 2/3, methods = c("ridge",
     require(omicsPrint)
     require(reshape2)
     require(BiocParallel)
+        
     validations <- c()
     for(ntopi in ntop) {
         reps <- bplapply(1:nrep, function(x) phenotyping(phenotype, features, train.frac=train.frac, methods = methods, ntop=ntopi, verbose=verbose)$validation)
@@ -99,6 +59,7 @@ validate <- function(phenotype, features, train.frac = 2/3, methods = c("ridge",
     validations
 }
 
+path <- "/virdir/Scratch/RP3_analysis/imputed_phenotypes"
 
 ```
 
@@ -114,19 +75,34 @@ missingCov
 ##missing sample summary
 missingSam <- apply(covariates, 1, function(x) round(100*sum(is.na(x))/length(x),2))
 table(missingSam)
+
+tbl <- table(counts$biobank_id, is.na(counts$Sampling_Age))
+round(100*tbl[,2]/rowSums(tbl),2)
+
+biobank <- factor(colData(counts)$biobank_id)
+missing <- c(4, 82,12,2,2,48)
+levels(biobank) <- paste0(levels(biobank), " (", missing, ")")
+colData(counts)$biobank_id <- biobank
+
+library(ggplot2)
+gp <- ggplot(as.data.frame(colData(counts)), aes(x=Sampling_Age))
+gp <- gp + geom_histogram()
+gp + facet_wrap(~biobank_id)
+ggsave(file.path(path, "Age_RNAseq_distr.eps"))
+
 ```
 
-# Predicting Sex #
 
-## Model selection and Validation ##
+
+
+# Predicting Sex #
+## Model Selection and Validation ##
 
 First we need to find out which algorithm and which number of features
 to use. 
 
-
 ```{r}
 data(rnaSeqData_ReadCounts_BIOS_cleaned)
-
 dim(counts)
 cnts <- preprocess(counts)
 dim(cnts)
@@ -138,7 +114,7 @@ features <- assays(cnts)$data
 table(phenotype, useNA="always")
 
 library(BiocParallel)
-register(MulticoreParam(5))
+register(MulticoreParam(10))
 validation <- validate(phenotype, features, methods = c("ridge", "elastic-net", "lasso"), ntop = c(5, 10, 25, 50, 100), nrep = 25, verbose=TRUE)
 
 library(ggplot2)
@@ -150,10 +126,8 @@ gp <- gp + facet_wrap(~measure, scales="free", nrow=3, ncol=1)
 gp <- gp + xlab("Number of features") + ylab("") + ggtitle("Validation of predictors for `Sex`")
 gp + theme_bw() + scale_color_npg() + theme(legend.position = "bottom", legend.direction = "horizontal")
 
-ggsave(file.path("/virdir/Scratch/RP3_analysis/imputed_phenotypes", "Sex_RNAseq_eval.eps"))
-
+ggsave(file.path(path, "Sex_RNAseq_eval.eps"))
 ```
-
 
 ## Predict missing ##
 
@@ -161,11 +135,8 @@ ggsave(file.path("/virdir/Scratch/RP3_analysis/imputed_phenotypes", "Sex_RNAseq_
 phenotyped <- phenotyping(phenotype, features, methods = "lasso", ntop=25, verbose=TRUE)
 phenotyped$validation
 predicted <- phenotyped$predicted
-names(predicted) <- colnames(features)
-
-write.table(predicted, file="/virdir/Scratch/RP3_analysis/imputed_phenotypes/Sex_RNAseq.csv",
-            sep=",", quote=FALSE)
-
+rownames(predicted) <- colnames(features)
+write.table(predicted, file=file.path(path, "Sex_RNAseq.csv"), sep=",", quote=FALSE)
 ```
 
 > TODO add diagnostic plots!
@@ -197,10 +168,9 @@ sex[is.na(sex)] <- "Unknown"
 ha <- HeatmapAnnotation(df = data.frame(Sex = factor(sex)), col = list(Sex = c("Male" =  "blue", "Female" = "pink", "Unknown" = "grey")))
 
 setEPS()
-postscript("/virdir/Scratch/RP3_analysis/imputed_phenotypes/Sex_RNAseq_feats.eps")
+postscript(file.path(path, "Sex_RNAseq_feats.eps"))
 Heatmap(y, top_annotation = ha, name="log CPM", row_names_gp = gpar(fontsize = 8))
 dev.off()
-
 ```
 
 
@@ -213,7 +183,7 @@ missclassified. Therefore, we run multiple models and collected the
 number and frequencies of missclassified samples.
 
 
-```{r}
+```{r, eval=FALSE}
 library(BiocParallel)
 register(MulticoreParam(10))
 nrep <- 25
@@ -234,20 +204,16 @@ missclassified <- missclassified[rowSums(missclassified) > 0,]
 First we need to find out which algorithm and which number of features
 to use:
 
-```{r, eval=FALSE}
-
+```{r}
 metadata(cnts)$formula <- ~0+Sampling_Age
-
 phenotype <- unlist(get_all_vars(metadata(cnts)$formula, data=colData(cnts)))
 features <- assays(cnts)$data
 summary(phenotype)
-
-phenotyped <- phenotyping(phenotype, features, methods = "lasso", ntop=100, verbose=TRUE)
                        
 library(BiocParallel)
-register(MulticoreParam(5))
+register(MulticoreParam(10, log=TRUE))
 validation <- validate(phenotype, features, methods = c("ridge", "lasso", "elastic-net", "pls"),
-                       ntop = c(100, 250, 500, 1000, 2500, 5000), nrep = 25, verbose=TRUE)
+                       ntop = c(100, 250, 500, 1000, 2500, 5000, 10000), nrep = 25, verbose=TRUE)
 
 library(ggplot2)
 library(ggsci)
@@ -256,9 +222,7 @@ gp <- gp + geom_boxplot()
 gp <- gp + facet_wrap(~measure, scales="free", nrow=3, ncol=1)
 gp <- gp + xlab("Number of features") + ylab("") + ggtitle("Validation of predictors for `Age`")
 gp + theme_bw() + scale_color_npg() + theme(legend.position = "bottom", legend.direction = "horizontal")
-
-ggsave(file.path("/virdir/Scratch/RP3_analysis/imputed_phenotypes", "Age_RNAseq_eval.eps"))
-
+ggsave(file.path(path, "Age_RNAseq_eval.eps"))
 ```
 
 some diagnostic plots:
@@ -266,32 +230,31 @@ some diagnostic plots:
 ```{r, eval=FALSE}
 phenotyped <- phenotyping(phenotype, features, methods = "lasso", ntop=5000, verbose=TRUE)
 predicted <- phenotyped$predicted
-names(predicted) <- colnames(features)
+rownames(predicted) <- colnames(features)
 
-plot(predicted, phenotype, xlab="predicted (Age)", ylab="reported (Age)",
-     xlim=c(0, 100), ylim=c(0, 100),
-     pch=16, col = adjustcolor(1, alpha.f = 0.3))
-abline(0, 1, col=2)
-grid(col=1)
+type <- rep("train", length(phenotype))
+type[is.na(phenotype)] <- "unknown"
+type[phenotyped$testid] <- "test"
 
-residuals <- predicted-phenotype
-plot(predicted[!is.na(phenotype)], residuals[!is.na(phenotype)],
-     xlab="fitted", ylab="residual", pch=16, col = adjustcolor(1, alpha.f = 0.3))
-grid(col=1)
+phenotype[is.na(phenotype)] <- predicted[is.na(phenotype)]
 
-qqnorm(residuals)
-qqline(residuals)
+d <- data.frame(predicted=predicted[,1], measured=phenotype, type=factor(type))
+
+gp <- ggplot(d, aes(x=predicted, y=measured, col=type))
+gp <- gp + geom_point() + geom_abline(intercept=0, slope=1, col=1) + ggtitle("Age prediction")
+gp + theme_bw() + scale_color_npg() + theme(legend.position = "bottom", legend.direction = "horizontal")
+ggsave(file.path(path, "Age_RNAseq_diagn.eps"))
+
 
 ```
 
 ## Predict missing ##
 
-```{r, eval=FALSE}
+```{r}
 phenotyped <- phenotyping(phenotype, features, methods = "lasso", ntop=5000, verbose=TRUE)
 predicted <- phenotyped$predicted
-names(predicted) <- colnames(features)
-predicted[is.na(phenotype)]
-
+rownames(predicted) <- colnames(features)
+write.table(predicted, file=file.path(path, "Age_RNAseq.csv"), sep=",", quote=FALSE)
 ```
 
 ## Inspect selected features ##
@@ -347,14 +310,8 @@ grid(col=1)
 ## Model fitting and model selection ##
 
 ```{r, wbccfit}
-library(BBMRIomics)
-data(rnaSeqData_ReadCounts_BIOS_cleaned)
 
-metadata(counts)$formula <- ~0 + Lymph_Perc + Mono_Perc + Eos_Perc + Neut_Perc
-
-dim(counts)
-cnts <- preprocess(counts)
-dim(cnts)
+metadata(cnts)$formula <- ~0 + Lymph_Perc + Mono_Perc + Eos_Perc + Neut_Perc
 
 phenotypes <- get_all_vars(metadata(cnts)$formula, data=colData(cnts))
 features <- assays(cnts)$data
@@ -362,14 +319,21 @@ features <- assays(cnts)$data
 complete <- apply(phenotypes, 1, function(x) all(!is.na(x)))
 table(complete)
 
-head(phenotypes[complete,])
-
 trainId <- sample(which(complete), size = (2/3)*sum(complete))
 testId <- setdiff(which(complete), trainId)
 
+length(trainId)
+length(testId)
+
+flowcell <- gsub("-.*$", "", cnts$run_id)
+batches <- model.matrix(~flowcell)
+
 library(pls)
 pls.options(parallel = 5)
-predictor <- plsr(phenotypes~data, ncomp = 50, data = list(phenotypes = as.matrix(phenotypes[trainId,]), data=t(features[, trainId])), validation = "CV", keep.model = TRUE)
+predictor <- plsr(log10(phenotypes+1)~batches+data, ncomp = 50,
+                  data = list(phenotypes = as.matrix(phenotypes[trainId,]),
+                              batches = batches[trainId, ],
+                              data=t(features[, trainId])), validation = "CV", keep.model = TRUE)
 
 str(predictor)
 summary(predictor)
@@ -386,19 +350,29 @@ validationplot(predictor, val.type = "RMSEP", ncomp = 1:50)
 
 ```{r, wbcceval}
 
-predicted <- predict(predictor, newdata = list(data=t(features[, testId])) , ncomp = 20)
+predicted <- predict(predictor, newdata = list(data=t(features[, testId]), batches = batches[testId,]) , ncomp = 20)
+
+predicted <- 10^predicted - 1
 
 library(reshape2)
 data <- cbind(melt(phenotypes[testId,], value.name="measured"),
               predicted=melt(predicted[,,1])[,3])
+
+by(data, data$variable, function(x) round(cor(x$measured, x$predicted),2))
+
+##hack to get plot area square
+dummy <- t(simplify2array(by(data, data$variable, function(x) range(c(x$measured, x$predicted)))))
+dummy <- data.frame(variable=rep(rownames(dummy), 2), measured=as.vector(dummy), predicted=as.vector(dummy))
 
 ##correlation plot
 library(ggplot2)
 library(ggsci)
 gp <- ggplot(data, aes(x=measured, y=predicted))
 gp <- gp + geom_point() + geom_abline(intercept=0, slope=1, col=2)
+gp <- gp + geom_blank(data=dummy)
 gp <- gp + facet_wrap(~variable, scales="free")
-gp + theme_bw() + scale_color_npg(alpha=0.3)
+gp + theme_bw() + scale_color_npg()
+ggsave(file.path(path, "WBCC_RNAseq_diagn1.eps"))
 
 ##bland altman plot
 tdata <- data
@@ -407,9 +381,10 @@ tdata[,3] <- data[,2] - data[,3]
 colnames(tdata)[2:3] <- c("Average", "Difference")
 
 gp <- ggplot(tdata, aes(x=Average, y=Difference))
-gp <- gp + geom_point(alpha=0.1) + geom_hline(yintercept=0, col=2)
+gp <- gp + geom_point() + geom_hline(yintercept=0, col=2)
 gp <- gp + facet_wrap(~variable, scales="free")
 gp + theme_bw() + scale_color_npg()
+ggsave(file.path(path, "WBCC_RNAseq_diagn2.eps"))
 
 ```
 
@@ -417,14 +392,96 @@ gp + theme_bw() + scale_color_npg()
 
 ```{r, wbccpred}
 
-predicted <- predict(predictor, newdata = list(data=t(features)), ncomp = 20)[,,1]
-hist(rowSums(predicted))
+predicted <- predict(predictor, newdata = list(data=t(features), batches = batches), ncomp = 20)[,,1]
+predicted <- 10^predicted-1
+
+hist(rowSums(predicted), n=50)
+
 dim(predicted)
 rownames(predicted) <- colnames(features)
 head(predicted)
-
-write.table(predicted, file="/virdir/Scratch/RP3_analysis/imputed_phenotypes/WBCC_RNAseq.csv",
+write.table(predicted, file=file.path(path, "WBCC_RNAseq.csv"),
             sep=",", quote=FALSE)
 
+```
 
+# Predicting Smoking #
+## Model Selection and Validation ##
+
+First we need to find out which algorithm and which number of features
+to use. 
+
+```{r}
+data(rnaSeqData_ReadCounts_BIOS_cleaned)
+dim(counts)
+cnts <- preprocess(counts)
+dim(cnts)
+
+metadata(cnts)$formula <- ~0+Smoking
+
+phenotype <- unlist(get_all_vars(metadata(cnts)$formula, data=colData(cnts)))
+features <- assays(cnts)$data
+
+table(phenotype, useNA="always")/length(phenotype)
+levels(phenotype) <- c("current smoker", "non-smoker", "non-smoker")
+table(phenotype, useNA="always")/length(phenotype)
+
+library(BiocParallel)
+register(MulticoreParam(5))
+validation <- validate(phenotype, features, methods = c("ridge", "elastic-net", "lasso"), ntop = c(10, 25, 50, 100, 250, 500, 5000, 10000), nrep = 25, verbose=TRUE)
+
+library(ggplot2)
+library(ggsci)
+gp <- ggplot(subset(validation, measure %in% c("accuracy (Overall)", "f1 (non-smoker)", "f1 (current smoker)")),
+             aes(x=as.factor(ntop), y=value, col=method))
+gp <- gp + geom_boxplot()
+gp <- gp + facet_wrap(~measure, scales="free", nrow=3, ncol=1)
+gp <- gp + xlab("Number of features") + ylab("") + ggtitle("Validation of predictors for `Smoking`")
+gp + theme_bw() + scale_color_npg() + theme(legend.position = "bottom", legend.direction = "horizontal")
+
+ggsave(file.path(path, "Smoking_RNAseq_eval.eps"))
+
+```
+
+## Predict missing ##
+
+```{r}
+phenotyped <- phenotyping(phenotype, features, methods = "elastic-net", ntop=50, verbose=TRUE)
+phenotyped$validation
+predicted <- phenotyped$predicted
+rownames(predicted) <- colnames(features)
+write.table(predicted, file=file.path(path, "Smoking_RNAseq.csv"), sep=",", quote=FALSE)
+```
+
+> TODO add diagnostic plots!
+
+## Inspect selected features ##
+
+It could be interesting to see which genes are the top genes selected
+for predicting Age.
+
+> this does not include e.g., the lasso selection
+
+```{r}
+library(org.Hs.eg.db)
+map <- select(org.Hs.eg.db, keys = names(phenotyped$top), keytype="ENSEMBL", columns=c("SYMBOL", "CHR"))
+top <- merge(map, phenotyped$top, by.x="ENSEMBL", by.y="row.names")
+top <- top[order(abs(top$y), decreasing=TRUE),]
+top
+
+mid <- match(top$ENSEMBL, rownames(features))
+y <- features[mid,]
+rownames(y) <- top$SYMBOL
+rownames(y)[is.na(top$SYMBOL)] <- top$ENSEMBL[is.na(top$SYMBOL)]
+colnames(y) <- NULL
+
+library(ComplexHeatmap)
+smoking <- as.character(phenotype)
+smoking[is.na(smoking)] <- "Unknown"
+ha <- HeatmapAnnotation(df = data.frame(Smoking = factor(smoking)), col = list(Smoking = c("current smoker" =  "blue", "non-smoker" = "pink", "Unknown" = "grey")))
+
+setEPS()
+postscript(file.path(path, "Smoking_RNAseq_feats.eps"))
+Heatmap(y, top_annotation = ha, name="log CPM", row_names_gp = gpar(fontsize = 8))
+dev.off()
 ```
