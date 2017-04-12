@@ -134,7 +134,7 @@ for predicting Age.
 
 > this does not include e.g., the lasso selection
 
-```{r}
+```{r, eval=FALSE}
 top <- bts[rownames(bts) %in% names(phenotyped$top),]
 rowRanges(top)
 feats <- assays(top)$data
@@ -187,7 +187,7 @@ summary(phenotype)
 
 library(BiocParallel)
 register(MulticoreParam(10))
-validation <- validate(phenotype, features, methods = c("ridge", "elastic-net", "lasso", "partial-least-squares"),
+validation <- validate(phenotype, features, methods = c("ridge", "elastic-net", "lasso", "pls"),
                        ntop = c(100, 250, 500, 1000, 2500, 5000), nrep = 25, verbose=TRUE)
 
 library(ggplot2)
