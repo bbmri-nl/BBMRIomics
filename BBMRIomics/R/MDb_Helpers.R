@@ -197,7 +197,7 @@ getView <- function(view, url, usrpwd="anonymous", selection="?reduce=false", fo
         stop("jsonschema probably not installed use: pip install git+https://github.com/Julian/jsonschema.git")
         
     if(class(json) == "list") {
-        json <- toJSON(json, digits = 12, auto_unbox = TRUE, pretty=TRUE) ##set number of digits large than default of 6
+        json <- toJSON(json, digits = 12, auto_unbox = TRUE, pretty=TRUE, na="null") ##set number of digits large than default of 6
         json <- gsub("\\{\\}", "null", json) ## empty list set to "null"
     }
 

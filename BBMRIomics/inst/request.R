@@ -250,11 +250,11 @@ rs[mid,]
 
 ##Adding Age's and Sex
 ids <- gonl$ids
-id <- ids[1]
-
-
 
 template <- BBMRIomics:::.getDoc("CODAM-2001", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
+
+BBMRIomics:::.validateDoc(template, SCHEMA=file.path(VM_BASE_ANALYSIS, "BBMRIomics/couchdbapp/schema/bios.json"))
+
 phenotypes <- names(template$phenotype)
 phenotypes <- phenotypes[!grepl("Age|Sex", phenotypes)]
 
@@ -275,6 +275,6 @@ ph <- c(gonl[i, grepl("Age|Sex", colnames(gonl))], pheno)
 doc$phenotype <- ph
 doc$phenotype
 
-BBMRIomics:::.validateDoc(doc, SCHEMA=file.path(VM_BASE_ANALYSIS, "BBMRIomics/couchdbapp/schema"))
+BBMRIomics:::.validateDoc(doc, SCHEMA=file.path(VM_BASE_ANALYSIS, "BBMRIomics/couchdbapp/schema/bios.json"))
 
 
