@@ -8,13 +8,13 @@
 	"properties": {
 
 		"BirthYear": {
-			"type": "integer",
+		    "type": ["integer", "null"],
 			"format": "year",
 			"description": "xxxx (e.g. 1969)"
 		},
 
 		"Sex": {
-			"type": "integer",
+ 		    "type": ["integer", "null"],
 			"enum": [0, 1],
 			"description": "0=male / 1=female"
 		},
