@@ -291,32 +291,7 @@
                     "additionalProperties": false
                 },
 
-                "genotype": {
-                    "type": ["object", "null"],
-					
-                    "properties": {
-                        "freeze": { "type": "object" },
-
-                        "imputations": {
-                            "anyOf": [
-                                {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "string",
-                                        "pattern": "^[A-z0-9]+$"
-                                    }
-                                },
-                                {
-                                    "type": "string",
-                                    "pattern": "^[A-z0-9]+$"
-                                }
-                            ]
-                        }
-                    },
-
-                    "additionalProperties": false
-                }
-            },
+	    "genotype": { "$ref": "file:./genotype.json" },
 
             "required": ["methylation", "rnaseq", "genotype"],
 

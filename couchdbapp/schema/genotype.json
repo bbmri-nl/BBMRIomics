@@ -1,0 +1,49 @@
+{
+    "title": "genotype imputation information",
+    "description": "genotype imputation information",
+    "type": ["object", "null"],
+    "version": "2016-10-12",
+
+    "definitions": {
+        "relation": {
+            "properties": {
+
+                "relation_type": {
+                    "type": "string",
+                    "description": "has child, child of, has dizygotic twin, has monozygotic twin within the BIOS data",
+                    "enum": ["none", "has child", "has parent", "has dizygotic twin", "has monozygotic twin", "has repeated measurements"]
+                },
+
+                "relation_id": {
+                    "type": ["string", "null"],
+                    "description": "BIOS id of the relation"
+                }
+            },
+
+            "required": ["relation_type"],
+
+            "additionalProperties": false
+
+        },
+
+        "imputation": {
+            "properties": {
+
+                "imputation_reference": {
+                    "type": ["string", "null"],
+                    "description": "which reference data is used for the imputation",
+                    "enum": ["GoNLv5", "HRC"]
+                },
+
+                "imputation_id": {
+                    "type": ["string", "null"],
+                    "description": "identifier used in the imputated data, e.g. gwas or dna id"
+                }
+            },
+
+            "additionalProperties": false
+        }
+    },
+    
+    "additionalProperties": false
+}
