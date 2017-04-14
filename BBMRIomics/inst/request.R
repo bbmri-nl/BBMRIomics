@@ -275,6 +275,6 @@ ph <- c(gonl[i, grepl("Age|Sex", colnames(gonl))], pheno)
 doc$phenotype <- ph
 doc$phenotype
 
-BBMRIomics:::.validateDoc(doc)
+BBMRIomics:::.validateDoc(doc, SCHEMA=file.path(VM_BASE_ANALYSIS, "BBMRIomics/couchdbapp/schema"))
 
 

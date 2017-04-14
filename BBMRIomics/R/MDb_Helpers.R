@@ -188,11 +188,14 @@ getView <- function(view, url, usrpwd="anonymous", selection="?reduce=false", fo
 ## for(id in ids$ids) {
 ##     print(id)
 ##     doc <- .getDoc(id)
-##     val <- .validateDoc(doc, SCHEMA="~/bios-schema/bios/bios.json")
+##     val <- .validateDoc(doc, SCHEMA=file.path(VM_BASE_ANALYSIS, "BBMRIomics/couchdbapp/schema/bios.json"))
 ##     if(!is.null(val))
 ##         stop(val)
 .validateDoc <- function(json, SCHEMA) {
 
+    if(system2("jsonschema") == 127)
+        stop("jsonschema probably not installed use: pip install git+https://github.com/Julian/jsonschema.git")
+        
     if(class(json) == "list") {
         json <- toJSON(json, digits = 12, auto_unbox = TRUE, pretty=TRUE) ##set number of digits large than default of 6
         json <- gsub("\\{\\}", "null", json) ## empty list set to "null"

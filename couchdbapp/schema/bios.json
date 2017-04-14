@@ -72,8 +72,8 @@
             "type": ["string", "null"],
             "description": "ID as used by the GoNL consortium (anonymised)"
         },
-
-        "old_gonl_id": {
+	
+	 "old_gonl_id": {
             "type": ["string", "null"],
             "description": "ID as used by the GoNL consortium (non-anonymised)"
         },
@@ -291,8 +291,31 @@
                     "additionalProperties": false
                 },
 
-                "genotype": { "$ref": "file:./genotype.json" }
+                "genotype": {
+                    "type": ["object", "null"],
+					
+                    "properties": {
+                        "freeze": { "type": "object" },
 
+                        "imputations": {
+                            "anyOf": [
+                                {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string",
+                                        "pattern": "^[A-z0-9]+$"
+                                    }
+                                },
+                                {
+                                    "type": "string",
+                                    "pattern": "^[A-z0-9]+$"
+                                }
+                            ]
+                        }
+                    },
+
+                    "additionalProperties": false
+                }
             },
 
             "required": ["methylation", "rnaseq", "genotype"],
