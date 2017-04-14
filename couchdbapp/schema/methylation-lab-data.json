@@ -1,0 +1,132 @@
+{
+	"title": "Methylation lab data",
+	"description": "Lab data of a methylation run from LLS.",
+	"type": "object",
+	"version": "2015-01-28",
+
+	"properties": {
+		"Sample_Name": {
+			"type": "string",
+			"description": ""
+		},
+
+		"Sample_Group": {
+			"type": "string",
+			"description": ""
+		},
+
+		"Sample_Plate": {
+			"type": "string",
+			"description": ""
+		},
+
+		"Sample_Well": {
+			"type": "string",
+			"description": ""
+		},
+
+		"Sentrix_Barcode": {
+			"type": "string",
+			"description": ""
+		},
+
+		"Sentrix_Lotnumber": {
+			"type": "string",
+			"description": ""
+		},
+
+		"Sentrix_Position": {
+			"type": "string",
+			"description": ""
+		},
+
+		"C1_Barcode": {
+			"type": "string",
+			"description": ""
+		},
+
+		"C1_Lotnumber": {
+			"type": "string",
+			"description": ""
+		},
+
+		"C2_Barcode": {
+			"type": "string",
+			"description": ""
+		},
+
+		"C2_Lotnumber": {
+			"type": "string",
+			"description": ""
+		},
+
+		"TEM_Barcode": {
+			"type": "string",
+			"description": ""
+		},
+
+		"TEM_Lotnumber": {
+			"type": "string",
+			"description": ""
+		},
+
+		"STM_Barcode": {
+			"type": "string",
+			"description": ""
+		},
+
+		"STM_Lotnumber": {
+			"type": "string",
+			"description": ""
+		},
+
+		"ATM_Barcode": {
+			"type": "string",
+			"description": ""
+		},
+
+		"ATM_Lotnumber": {
+			"type": "string",
+			"description": ""
+		},
+
+		"Library_Date": {
+			"type": "string",
+			"format": "date",
+			"description": ""
+		},
+
+		"Hybridization_Date": {
+			"type": "string",
+			"format": "date",
+			"description": ""
+		},
+
+		"Stain_Date": {
+			"type": "string",
+			"format": "date",
+			"description": ""
+		},
+
+		"Scan_Date": {
+			"type": "string",
+			"format": "date",
+			"description": ""
+		},
+
+		"Scan_Time": {
+			"type": "string",
+			"format": "time",
+			"description": ""
+		},
+
+		"Scanner_Name": {
+			"type": "string",
+			"description": ""
+		}
+	},
+
+	"required": ["Sentrix_Barcode", "Sentrix_Position"],
+
+	"additionalProperties": false
+}

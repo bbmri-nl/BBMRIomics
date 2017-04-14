@@ -1,0 +1,419 @@
+{
+	"title": "Phenotype meta data",
+	"version": "2015-02-20",
+	"description": "phenotype of biobank subjects. Null values indicate data not available.",
+
+	"type": "object",
+
+	"properties": {
+
+		"BirthYear": {
+			"type": "integer",
+			"format": "year",
+			"description": "xxxx (e.g. 1969)"
+		},
+
+		"Sex": {
+			"type": "integer",
+			"enum": [0, 1],
+			"description": "0=male / 1=female"
+		},
+
+		"Ascertainment_criterion": {
+			"type": ["string", "null"],
+			"description": "Inclusion criterion biobank/selected samples"
+		},
+
+ 		"GWAS_Chip": {
+ 			"type": ["string", "null"],
+ 			"description": "comma separated in case of multiple chips"
+ 		},
+
+ 		"GWAS_DataGeneration_Date": {
+ 			"type": ["string", "null"],
+ 			"description": "YYYY"
+ 		},
+
+ 		"DNA_BloodSampling_Age": {
+ 			"type": ["number", "null"],
+ 			"description": "xx.x (i.e. years + 1 decimal)"
+ 		},
+
+ 		"DNA_BloodSampling_Date": {
+ 			"type": ["string", "null"],
+ 			"format": "date",
+ 			"description": "YYYY-MM-DD" 
+ 		}, 
+
+ 		"DNA_BloodSampling_Time": {
+ 			"type": ["string", "null"],
+ 			"format": "time",
+ 			"description": "HH:MM"
+ 		},
+
+ 		"DNA_Source": {
+ 			"type": ["string", "null"],
+ 			"enum": ["whole blood (buffy coat)", "Whole peripheral blood", "other", null],
+ 			"description": "whole blood (buffy coat), Whole peripheral blood, other"
+ 		},
+
+ 		"DNA_Extraction_Method": {
+ 			"type": ["string", "null"],
+ 			"description": ""
+ 		},
+
+		"DNA_Extraction_Date": {
+ 			"type": ["string", "null"],
+ 			"format": "date",
+			"description": "YYYY-MM-DD"
+		},
+
+ 		"DNA_QuantificationMethod": {
+ 			"type": ["string", "null"],
+ 			"description": ""
+ 		},
+
+ 		"DNA_A260A280ratio": {
+ 			"type": ["number", "null"],
+ 			"description": "A260/A280"
+ 		},
+
+ 		"RNA_BloodSampling_Age": {
+ 			"type": ["number", "null"],
+ 			"description": "xx.x (i.e. years + 1 decimal)"
+ 		},
+
+ 		"RNA_Sampling_Date": {
+ 			"type": ["string", "null"],
+ 			"format": "date",
+ 			"description": "YYYY-MM-DD" 
+ 		}, 
+
+ 		"RNA_Sampling_Time": {
+ 			"type": ["string", "null"],
+ 			"format": "time",
+ 			"description": "HH:MM"
+ 		},
+
+ 		"RNA_Source": {
+ 			"type": ["string", "null"],
+ 			"enum": ["PAX gene", "Whole peripheral blood", "other", null],
+ 			"description": "PAX gene, Whole peripheral blood, other"
+ 		},
+
+		"RNA_Extraction_Date": {
+ 			"type": ["string", "null"],
+ 			"format": "date",
+			"description": "YYYY-MM-DD"
+		},
+
+ 		"RNA_Extraction_Method": {
+ 			"type": ["string", "null"],
+ 			"description": ""
+ 		},
+
+ 		"RNA_RIN": {
+ 			"type": ["number", "null"],
+ 			"description": "RIN or equivalent score"
+ 		},
+
+ 		"RNA_A260280ratio": {
+ 			"type": ["number", "null"],
+ 			"description": "A260/A280"
+ 		},
+
+ 		"Smoking_Age": {
+ 			"type": ["number", "null"],
+ 			"description": "xx.x (i.e. years + 1 decimal)"
+ 		},
+
+ 		"Smoking": {
+ 			"type": ["integer", "null"],
+ 			"enum": [0, 1, 2, null],
+ 			"description": "0=non-smoker/1=former smoker/2=current smoker"
+ 		},
+
+ 		"Lipids_BloodSampling_Age": {
+ 			"type": ["number", "null"],
+ 			"description": "xx.x (i.e. years + 1 decimal)"
+ 		},
+
+ 		"Lipids_BloodSampling_Date": {
+ 			"type": ["string", "null"],
+ 			"format": "YYYY-MM-DD",
+ 			"description": ""
+ 		},
+
+ 		"Lipids_BloodSampling_Time": {
+ 			"type": ["string", "null"],
+ 			"format": "HH:MM",
+ 			"description": ""
+ 		},
+
+ 		"Lipids_BloodSampling_Fasting": {
+ 			"type": ["integer", "null"],
+ 			"enum": [0, 1, null],
+ 			"description": "0=no/1=yes"
+ 		},
+
+ 		"TotChol": {
+ 			"type": ["number", "null"],
+ 			"description": "in mmol/L"
+ 		},
+
+ 		"HDLchol": {
+ 			"type": ["number", "null"],
+ 			"description": "in mmol/L"
+ 		},
+
+ 		"Triglycerides": {
+ 			"type": ["number", "null"],
+ 			"description": "in mmol/L"
+ 		},
+
+ 		"LDLchol": {
+ 			"type": ["number", "null"],
+ 			"description": "in mmol/L"
+ 		},
+
+ 		"LDLcholMethod": {
+ 			"type": ["integer", "null"],
+ 			"enum": [0, 1, null],
+ 			"description": "1=Friedewald estimation/2=measured"
+ 		},
+
+ 		"LipidsMed_Age": {
+ 			"type": ["number", "null"],
+ 			"description": "xx.x (i.e. years + 1 decimal)"
+ 		},
+
+ 		"LipidMed": {
+ 			"type": ["integer", "null"],
+ 			"enum": [0, 1, 2, null],
+ 			"description": "0=no/1=statins/2=yes, but no statins"
+ 		},
+
+ 		"Anthropometry_Age": {
+ 			"type": ["number", "null"],
+ 			"description": "xx.x (i.e. years + 1 decimal)"
+ 		},
+
+ 		"Height": {
+ 			"type": ["number", "null"],
+ 			"description": "xxx.x in cm"
+ 		},
+
+ 		"Weight": {
+ 			"type": ["number", "null"],
+ 			"description": "xx.x in kg "
+ 		},
+
+ 		"CRP_BloodSampling_Age": {
+ 			"type": ["number", "null"],
+ 			"description": "xx.x (i.e. years + 1 decimal)"
+ 		},
+
+ 		"CRP_BloodSampling_Date": {
+ 			"type": ["string", "null"],
+ 			"format": "YYYY-MM-DD",
+ 			"description": ""
+ 		},
+
+ 		"CRP_BloodSampling_Time": {
+ 			"type": ["string", "null"],
+ 			"format": "HH:MM",
+ 			"description": ""
+ 		},
+
+ 		"hsCRP": {
+ 			"type": ["number", "null"],
+ 			"description": "in mg/L"
+ 		},
+
+ 		"CellCount_BloodSampling_Age": {
+ 			"type": ["number", "null"],
+ 			"description": "xx.x (i.e. years + 1 decimal)"
+ 		},
+
+ 		"CellCount_BloodSampling_Date": {
+ 			"type": ["string", "null"],
+ 			"format": "YYYY-MM-DD",
+ 			"description": ""
+ 		},
+
+ 		"CellCount_BloodSampling_Time": {
+ 			"type": ["string", "null"],
+ 			"format": "HH:MM",
+ 			"description": ""
+ 		},
+
+ 		"WBC": {
+ 			"type": ["number", "null"],
+ 			"description": "WhiteBloodcellCount_WBC in x10^9cells/L"
+ 		},
+
+ 		"RBC": {
+ 			"type": ["number", "null"],
+ 			"description": "RedBloodcellCount in x10^12cells/L"
+ 		},
+
+ 		"HGB": {
+ 			"type": ["number", "null"],
+ 			"description": "Hemoglobulin in mmol/L"
+ 		},
+
+ 		"HCT": {
+ 			"type": ["number", "null"],
+ 			"description": "Hematocrit L/L"
+ 		},
+
+ 		"MCV": {
+ 			"type": ["number", "null"],
+ 			"description": "MeanCorpuscularVolume in fL"
+ 		},
+
+ 		"MCH": {
+ 			"type": ["number", "null"],
+ 			"description": "MeanCorpuscularHemoglobin fmol"
+ 		},
+
+ 		"MCHC": {
+ 			"type": ["number", "null"],
+ 			"description": "MeanCorpuscularHemoglobinConcentration in mmol/L"
+ 		},
+
+ 		"CHCM": {
+ 			"type": ["number", "null"],
+ 			"description": "CorpuscularHemoglobinConcentrationMean in mmol/L"
+ 		},
+
+ 		"CH": {
+ 			"type": ["number", "null"],
+ 			"description": "CorpuscularHemoglobinContent in fmol/L"
+ 		},
+
+ 		"RDW": {
+ 			"type": ["number", "null"],
+ 			"min": 0,
+ 			"max": 1,
+ 			"description": "RedCellVolumeDistributionWidth in %"
+ 		},
+
+ 		"HDW": {
+ 			"type": ["number", "null"],
+ 			"description": "HemoglobinConcentrationDistributionWidth in mmol/L"
+ 		},
+
+ 		"PLT": {
+ 			"type": ["number", "null"],
+ 			"description": "PlateletCount in x10^9cells/L"
+ 		},
+
+ 		"MPV": {
+ 			"type": ["number", "null"],
+ 			"description": "MeanPlateletVolume in fL"
+ 		},
+
+ 		"Neut": {
+ 			"type": ["number", "null"],
+ 			"description": "NeutrophilCount in 10^9/L"
+ 		},
+
+ 		"Lymph": {
+ 			"type": ["number", "null"],
+ 			"description": "LymphocyteCount in 10^9/L"
+ 		},
+
+ 		"Mono": {
+ 			"type": ["number", "null"],
+ 			"description": "MonocyteCount in 10^9/L"
+ 		},
+
+ 		"Eos": {
+ 			"type": ["number", "null"],
+ 			"description": "EosinophilCount in 10^9/L"
+ 		},
+
+ 		"Baso": {
+ 			"type": ["number", "null"],
+ 			"description": "BasophilCount in 10^9/L"
+ 		},
+
+ 		"Granulocyte": {
+ 			"type": ["number", "null"],
+ 			"description": "GranulocyteCount in 10^9/L"
+ 		},
+
+ 		"LUC": {
+ 			"type": ["number", "null"],
+ 			"description": "LargeUnstainedCells in 10^9/L"
+ 		},
+
+ 		"Neut_Perc": {
+ 			"type": ["number", "null"],
+ 			"min": 0,
+ 			"max": 1,
+ 			"description": "in % of white blood cell count"
+ 		},
+
+ 		"Lymph_Perc": {
+ 			"type": ["number", "null"],
+ 			"min": 0,
+ 			"max": 1,
+ 			"description": "in % of white blood cell count"
+ 		},
+
+ 		"Mono_Perc": {
+ 			"type": ["number", "null"],
+ 			"min": 0,
+ 			"max": 1,
+ 			"description": "in % of white blood cell count"
+ 		},
+
+ 		"Eos_Perc": {
+ 			"type": ["number", "null"],
+ 			"min": 0,
+ 			"max": 1,
+ 			"description": "in % of white blood cell count"
+ 		},
+
+ 		"Baso_Perc": {
+ 			"type": ["number", "null"],
+ 			"min": 0,
+ 			"max": 1,
+ 			"description": "in % of white blood cell count"
+ 		}, 
+
+ 		"Granulocyte_Perc": {
+ 			"type": ["number", "null"],
+ 			"min": 0,
+ 			"max": 1,
+ 			"description": "in % of white blood cell count"
+ 		},
+
+ 		"LUC_Perc": {
+ 			"type": ["number", "null"],
+ 			"min": 0,
+ 			"max": 1,
+ 			"description": "in % of white blood cell count"
+ 		}
+	},
+
+	"required": ["BirthYear", "Sex", "Ascertainment_criterion", 
+				 "GWAS_Chip", "GWAS_DataGeneration_Date", "DNA_BloodSampling_Age", 
+				 "DNA_BloodSampling_Date", "DNA_BloodSampling_Time", "DNA_Source", 
+				 "DNA_Extraction_Method", "DNA_Extraction_Date", "DNA_QuantificationMethod",
+				 "DNA_A260A280ratio", "RNA_BloodSampling_Age", "RNA_Sampling_Date",
+				 "RNA_Sampling_Time", "RNA_Source", "RNA_Extraction_Date", "RNA_Extraction_Method",
+				 "RNA_RIN", "RNA_A260280ratio", "Smoking_Age", "Smoking", "Lipids_BloodSampling_Age",
+				 "Lipids_BloodSampling_Date", "Lipids_BloodSampling_Time", "Lipids_BloodSampling_Fasting",
+				 "TotChol", "HDLchol", "Triglycerides", "LDLchol", "LDLcholMethod", "LipidsMed_Age",
+				 "LipidMed", "Anthropometry_Age", "Height", "Weight", "CRP_BloodSampling_Age",
+				 "CRP_BloodSampling_Date", "CRP_BloodSampling_Time", "hsCRP", "CellCount_BloodSampling_Age",
+				 "CellCount_BloodSampling_Date", "CellCount_BloodSampling_Time", "WBC", "RBC", 
+				 "HGB", "HCT", "MCV", "MCH", "MCHC", "CHCM", "CH", "RDW", "HDW", "PLT", "MPV",
+				 "Neut", "Lymph", "Mono", "Eos", "Baso", "Granulocyte", "LUC", "Neut_Perc", "Lymph_Perc", "Mono_Perc",
+				 "Eos_Perc", "Baso_Perc", "LUC_Perc", "Granulocyte_Perc"],
+
+	"additionalProperties": false
+}

@@ -1,0 +1,87 @@
+{
+	"title": "RNASeq Lab data",
+	"description": "Lab data of a rnaseq run from RS.",
+	"type": "object",
+	"version": "2015-02-24",
+
+	"oneOf": [
+		{ "$ref": "#/definitions/run" },
+		{ "$ref": "#/definitions/merged_run" }
+	],
+
+	"definitions": {
+		"run": {
+			"properties": {
+
+				"insert_size": {
+					"type": "number",
+					"description": "From the lab protocol"
+				},
+
+				"raw": {
+					"type": "integer",
+					"description": "Number of raw reads"
+				},
+
+				"past_filter": {
+					"type": "integer",
+					"description": "Number of reads past filtering"
+				},
+				
+				"machine": {
+					"type": "string",
+					"description": ""
+				},
+
+				"run_num": {
+					"type": "string",
+					"description": ""
+				},
+
+				"flowcell_num": {
+					"type": "string",
+					"description": ""
+				},
+
+				"date": {
+					"type": ["string", "null"],
+					"format": "date",
+					"description": ""
+				}
+			},
+			
+			"required": ["insert_size", "raw", "past_filter"],
+
+			"additionalProperties": false
+
+		}, 
+
+		"merged_run": {		
+			"properties": {
+				"merged" : {
+					"type": "array",
+					"description": "A list of run_ids that indicates which runs are used to create this merged run.",
+					"items": {
+						"type": "string"
+					}, 
+					"minItems": 2
+				},
+
+				"raw": {
+					"type": "integer",
+					"description": "Number of raw reads"
+				},
+
+				"past_filter": {
+					"type": "integer",
+					"description": "Number of reads past filtering"
+				}
+			},
+
+			"required": ["merged", "raw", "past_filter"],
+
+			"additionalProperties": false
+		}
+	}
+}
+

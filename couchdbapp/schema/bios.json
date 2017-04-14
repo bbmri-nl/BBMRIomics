@@ -1,0 +1,303 @@
+{
+    "title": "rp3 bios metadatabase",
+    "type": "object",
+    "version" : "2015-07-07",
+    "description": "All meta data for a single person in the biobank.",
+
+    "properties": {
+        "_id": {
+            "type": "string",
+            "description": "[biobank abbreviation]-[subject ID], must match sample sheets, exceptions in the NTR."
+        },
+
+        "_rev": {
+            "type": "string",
+            "description": "mainteined by couchdb"
+        },
+
+        "type": {
+            "type": "string",
+            "value": "bios",
+            "description": "indicating that this is a metadata file about a subject in bios."
+        },
+
+        "person_id": {
+            "type": "string",
+            "description": "[person ID (subject ID used in cohort)]"
+        },
+
+        "biobank": {
+            "type": "string",
+            "description": "biobank abbreviation",
+            "enum": ["CODAM", "LL", "LLS", "NTR", "RS", "PAN"]
+        },
+
+        "uuid": {
+            "type": "string",
+            "description": "randomly generated identifier used for EGA upload"
+        },
+
+        "in_rp3": {
+            "type": "boolean",
+            "description": "indicating whether the ?person? is in part of RP3."
+        },
+
+        "dna_id": {
+            "type": ["string", "null"],
+            "description": "[subject ID], can be person_id if no special id for DNA exists."
+        },
+
+        "pheno_id": {
+            "type": ["string", "null"],
+            "description": "[phenotype ID], can be person_id if no special id for phenotype exists."
+        },
+
+        "rna_id": {
+            "type": ["string", "null"],
+            "description": "[RNASeq ID], can be person_id if no special id for RNA exists."
+        },
+
+        "rna_note": {
+            "type": "string",
+            "description": "rnaseq notes",
+            "enum": ["library-prep: failed", "library-prep: succeeded", "no rna available/other reason missing"]
+        },
+
+        "cg_id": {
+            "type": ["string", "null"],
+            "description": "[Complete Genomics ID]"
+        },
+
+        "gonl_id": {
+            "type": ["string", "null"],
+            "description": "ID as used by the GoNL consortium (anonymised)"
+        },
+
+        "old_gonl_id": {
+            "type": ["string", "null"],
+            "description": "ID as used by the GoNL consortium (non-anonymised)"
+        },
+
+        "gwas_id": {
+            "type": ["string", "null"],
+            "description": "[GWAS ID]"
+        },
+
+        "phenotype": { "$ref": "file:./phenotype.json" },
+
+        "files": { "$ref": "#/definitions/files" }
+    },
+
+    "required": ["_id", "_rev", "type", "in_rp3", "biobank", "uuid", "files",
+                 "dna_id", "pheno_id", "cg_id", "rna_id", "rna_note", "gonl_id", "person_id", "gwas_id"],
+
+    "additionalProperties": false,
+
+    "definitions": {
+
+        "srm_location": {
+            "type": "object",
+            "desciption": "A data file on SRM",
+            "properties": {
+                "path": {
+                    "type": "string",
+                    "description": "full srm path to a location"
+                },
+
+                "verification_date": {
+                    "type": ["string", "null"],
+                    "description": "verification date in format [YYYY-MM-DD]",
+                    "format": "date"
+                },
+
+                "verification_passed": {
+                    "type": ["boolean", "null"]
+                }
+            },
+
+            "required": ["path"],
+
+            "additionalProperties": false
+        },
+
+        "file": {
+            "type": "object",
+            "description": "An input file",
+            "properties": {
+                "md5": {
+                    "type": "string",
+                    "description": "md5 checksum of the file"
+                },
+
+                "disk": { "$ref": "#/definitions/srm_location" },
+                "tape": { "$ref": "#/definitions/srm_location" }
+            },
+
+            "required": ["md5", "disk", "tape"],
+
+            "additionalProperties": false
+        },
+
+        "quality_control": {
+            "type": "object",
+
+            "properties": {
+
+                "contaminated": {
+                    "type": "boolean"
+                },
+
+                "bad_quality": {
+                    "type": "boolean",
+                    "description": "i.e., not enough reads"
+                },
+
+                "genotype_discordance": {
+                    "type": "boolean"
+                },
+
+                "note": {
+                    "type": "string"
+                }
+            },
+
+            "additionalProperties": false
+        },
+
+        "methylation_data": {
+            "type": "object",
+            "description": "Data for a DNA methylation anlaysis.",
+            "properties": {
+                "uploader": {
+                    "type": "string",
+                    "description": "email adress of the uploader"
+                },
+
+                "upload_date": {
+                    "type": "string",
+                    "description": "upload date in format [YYYY-MM-DD]",
+                    "format": "date"
+                },
+
+                "Red": { "$ref": "#/definitions/file" },
+                "Grn": { "$ref": "#/definitions/file" }
+            },
+
+            "required": ["Red", "Grn"],
+
+            "additionalProperties": false
+        },
+
+        "methylation_run": {
+            "type": "object",
+            "description": "A methylation analysis, matching to one run of one sample",
+            "properties": {
+
+                "type": {
+                    "type": "string",
+                    "description": "indicating the provenance of the data",
+                    "enum": ["original", "rerun", "replicate"]
+                },
+
+                "data": { "$ref": "#definitions/methylation_data" },
+                "quality_control": { "$ref": "#/definitions/quality_control" },
+                "lab_data": { "$ref": "file:./methylation-lab-data.json" }
+            },
+
+            "required": ["type", "data", "lab_data"],
+
+            "additionalProperties": false
+        },
+
+        "rnaseq_data": {
+            "type": "object",
+            "description": "An RNASeq run. Paired end sequencing.",
+            "properties": {
+                "uploader": {
+                    "type": ["string", "null"],
+                    "description": "email adress of the uploader"
+                },
+
+                "upload_date": {
+                    "type": ["string", "null"],
+                    "description": "upload date in format [YYYY-MM-DD]",
+                    "format": "date"
+                },
+
+                "R1": { "$ref": "#/definitions/file" },
+                "R2": { "$ref": "#/definitions/file" }
+            },
+
+            "required": ["R1", "R2"],
+
+            "additionalProperties": false
+        },
+
+        "rnaseq_run": {
+            "type": "object",
+            "description": "A RNASeq Run",
+            "properties": {
+
+                "type": {
+                    "type": "string",
+                    "description": "indicating the provenance of the data",
+                    "enum": ["original", "rerun", "replicate", "merged"]
+                },
+
+                "data": { "$ref": "#definitions/rnaseq_data" },
+                "quality_control": { "$ref": "#/definitions/quality_control" },
+                "lab_data": { "$ref": "file:./rnaseq-lab-data.json" }
+            },
+
+            "required": ["type", "data", "lab_data"],
+
+            "additionalProperties": false
+        },
+
+        "files": {
+            "type": "object",
+            "description": "All files related to the subject.",
+            "properties": {
+
+                "methylation": {
+                    "type": ["object", "null"],
+                    "properties": {
+                        "freeze" : { "type": "object" },
+
+                        "runs": {
+                            "type": "object",
+                            "patternProperties": {
+                                "^[0-9]+_[A-Z0-9]+$": { "$ref": "#/definitions/methylation_run" }
+                            }
+                        }
+                    },
+
+                    "additionalProperties": false
+                },
+
+                "rnaseq": {
+                    "type": ["object", "null"],
+                    "properties": {
+                        "freeze": { "type": "object" },
+
+                        "runs": {
+                            "type": "object",
+                            "patternProperties": {
+                                "^[A-Z0-9_-]+$": { "$ref": "#/definitions/rnaseq_run" }
+                            }
+                        }
+                    },
+
+                    "additionalProperties": false
+                },
+
+                "genotype": { "$ref": "file:./genotype.json" }
+
+            },
+
+            "required": ["methylation", "rnaseq", "genotype"],
+
+            "additionalProperties": false
+        }
+    }
+}

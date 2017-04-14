@@ -329,7 +329,7 @@ flowcell <- gsub("-.*$", "", cnts$run_id)
 batches <- model.matrix(~flowcell)
 
 library(pls)
-pls.options(parallel = 5)
+pls.options(parallel = 1)
 predictor <- plsr(log10(phenotypes+1)~batches+data, ncomp = 50,
                   data = list(phenotypes = as.matrix(phenotypes[trainId,]),
                               batches = batches[trainId, ],
@@ -341,7 +341,10 @@ cumsum(explvar(predictor))
 barplot(cumsum(explvar(predictor)), las = 2, ylab = "Cumulative Variance Explained")
 
 validationplot(predictor, val.type = "R2", ncomp = 1:50)
+setEPS()
+postscript(file.path(path, "WBCC_eval.eps"))
 validationplot(predictor, val.type = "RMSEP", ncomp = 1:50)
+dev.off()
 
 ```
 
@@ -422,9 +425,9 @@ metadata(cnts)$formula <- ~0+Smoking
 phenotype <- unlist(get_all_vars(metadata(cnts)$formula, data=colData(cnts)))
 features <- assays(cnts)$data
 
-table(phenotype, useNA="always")/length(phenotype)
+round(100*table(phenotype, useNA="always")/length(phenotype),2)
 levels(phenotype) <- c("current smoker", "non-smoker", "non-smoker")
-table(phenotype, useNA="always")/length(phenotype)
+round(100*table(phenotype, useNA="always")/length(phenotype),2)
 
 library(BiocParallel)
 register(MulticoreParam(5))

@@ -201,3 +201,80 @@ subset(rels, person_id %in% dups | person_id %in% missing)
 rels[order(rels$person_id),]
 
 write.table(rels, file="NTR_longitudinal_ambiguous.csv", row.names=FALSE, quote=FALSE, sep=",")
+
+
+##Joyce
+##Update RS phenotypes
+##Fri Apr 14 08:49:51 2017
+library(BBMRIomics)
+id <- getView("getIds", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
+id <- subset(id, biobank_id == "RS")
+
+rs <- getView("allPhenotypes", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
+rs <- subset(rs, grepl("RS", ids))
+rs <- droplevels(rs)
+
+
+
+y <- sort(colnames(rs))
+
+gonl <- read.table("16_12_2015_BBMRI_RP3_Rotterdam_rest_samples.csv", header=TRUE, sep="\t", na.strings=c(NA, NULL, "", "missing", "Missing"))
+dim(gonl)
+##fix columns names (manually)
+x <- sort(colnames(gonl))
+x <- x[-24]
+mid <- match(x,y)
+z <- cbind(x=x, y=y)
+z[is.na(mid),]
+
+##fix content
+gonl$ids <- paste0("RS-", gonl$ids)
+gonl$ids
+
+gonl$Sex <- as.integer(gonl$Sex)
+gonl$Sex[gonl$Sex == 2] <- 0
+gonl$Sex
+
+cname <- colnames(gonl)
+i <- 6
+cname[i]
+gonl[,cname[i]]
+rs[, colnames(rs) == cname[i]]
+
+
+rs <- merge(rs, id, by="ids", all.y=TRUE)
+rs$ids
+
+mid <- match(gonl$ids, rs$ids)
+rs[mid,]
+
+##Adding Age's and Sex
+ids <- gonl$ids
+id <- ids[1]
+
+
+
+template <- BBMRIomics:::.getDoc("CODAM-2001", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
+phenotypes <- names(template$phenotype)
+phenotypes <- phenotypes[!grepl("Age|Sex", phenotypes)]
+
+pheno <- as.list(rep(NA, length(phenotypes)))
+names(pheno) <- phenotypes
+
+length(pheno)
+
+i <- 1
+
+id <- ids[i]
+message(id)
+doc <- BBMRIomics:::.getDoc(id, usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
+if(!is.null(doc$phenotype)) stop("has already phenotype info")
+
+ph <- c(gonl[i, grepl("Age|Sex", colnames(gonl))], pheno)
+    
+doc$phenotype <- ph
+doc$phenotype
+
+BBMRIomics:::.validateDoc(doc)
+
+
