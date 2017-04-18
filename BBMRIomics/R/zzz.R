@@ -18,7 +18,7 @@
     ##assign urls and directories
     assign("VM_BASE_DATA", "/virdir/Scratch/RP3_data/", envir=as.environment(paste0("package:", pkgname)))
     assign("VM_BASE_ANALYSIS", "/virdir/Scratch/RP3_analysis/", envir=as.environment(paste0("package:", pkgname)))    
-    assign("SRM_BASE", "https://fly1.grid.sara.nl:2882/pnfs/grid.sara.nl/data/bbmri.nl/", envir=as.environment(paste0("package:", pkgname)))        
+    assign("SRM_BASE", "https://webdav.grid.sara.nl:2882/pnfs/grid.sara.nl/data/bbmri.nl/", envir=as.environment(paste0("package:", pkgname)))        
     assign("RP3_MDB", "https://metadatabase.bbmrirp3-lumc.surf-hosted.nl:6984/bios/", envir=as.environment(paste0("package:", pkgname)))
     assign("RP3_RDB", "https://metadatabase.bbmrirp3-lumc.surf-hosted.nl:6984/rp3_analysis/", envir=as.environment(paste0("package:", pkgname)))
     assign("RP4_DB", "https://db.metabolomicsdb-lumc.surf-hosted.nl:443/api/v1/", envir=as.environment(paste0("package:", pkgname)))
