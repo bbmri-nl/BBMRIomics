@@ -24,7 +24,7 @@
 ##' bam <- getView("getBAM", usrpwd=RP3_MDB_USRPWD, url=RP3_RDB)
 ##' bam$path[1]
 ##' file <- basename(bam$path[1])
-##' srm.path <- file.path(dirname(bam$path[1])) 
+##' srm.path <- dirname(bam$path[1])
 ##' srm.path <- gsub("srm.*nl", SRM_BASE, srm.path) ##for curl access with need slightly different url 
 ##' srm.path
 ##' file

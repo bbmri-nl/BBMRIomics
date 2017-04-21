@@ -1,7 +1,7 @@
 IFS=$'\n' read -d '' -r -a SAMPLES < $1
 
 PROJDIR=/exports/molepi/users/mvaniterson/variantcalling
-URL=https://fly1.grid.sara.nl:2882/pnfs/grid.sara.nl/data/bbmri.nl/RP3/RNASeq//v2.1.3/
+URL=https://webdav.grid.sara.nl:2882/pnfs/grid.sara.nl/data/bbmri.nl/RP3/RNASeq//v2.1.3/
 
 MYPROXY="${PROJDIR}/x509up_u34722"
 CURL="curl --CApath /etc/grid-security/certificates/ -E ${MYPROXY} -L -k"

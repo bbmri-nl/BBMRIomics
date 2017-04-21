@@ -16,7 +16,7 @@ bibliography: BBMRIomics.bib
 
 Preprocess metadata including phenotype harmonization.
 
-```{r, eval=FALSE}
+```{r, eval=TRUE}
 library(BBMRIomics)
 colData <- read.table(file=file.path(VM_BASE_ANALYSIS, "BBMRIomics/BBMRIomics/data", "freeze2_dnam_identifiers.csv"), header=TRUE, sep=",", as.is=TRUE)
 
@@ -61,15 +61,15 @@ Here we follow the approach described at
 [DNAmArray](https://molepi.github.io/DNAmArray_workflow/) for
 preprocessing and quality control.
 
-```{r, eval=FALSE}
+```{r, eval=TRUE}
 library(BiocParallel)
 library(DNAmArray)
 library(impute)
-register(MulticoreParam(6, log=TRUE))
+register(MulticoreParam(10, log=TRUE))
 path450k <- file.path(VM_BASE_DATA, "IlluminaHumanMethylation450k")
 
 ##for(biobank in unique(colData$biobank_id)) {
-biobank <- "NTR"
+biobank <- "CODAM"
 targets <- subset(colData, biobank_id == biobank)
 targets$Basename <- with(targets,
                          file.path(path450k, "raw", Sentrix_Barcode,
@@ -113,6 +113,14 @@ gc() ##remove and clean
 
 ```
 
+# Create one `SummarizedExperiment` containg all cohorts #
+
+Here we merge the `SummarizedExperiment` of the separate cohorts in one
+single `SummarizedExperiment`.
+
+> NOTE: direct use of `cbind` currently doesn't work with `GRanges`
+> containing `DNAStringSets` problem has been reported to
+> Bioconductor-developers who proposed to fix it!
 
 ```{r, eval=FALSE}
 path450k <- file.path(VM_BASE_DATA, "IlluminaHumanMethylation450k")
@@ -129,12 +137,8 @@ for(biobank in c("CODAM", "LLS", "LL", "RS", "NTR")) {
     gc()
     print(b)
 }
-
 mvalues <- b
 save(mvalues, file=file.path(path450k, "450k", paste0("methData_Mvalues_BIOS_F2_cleaned.RData")))
-
-
+##can we reduce the size?
 tools::checkRdaFiles(file.path(path450k, "450k", paste0("methData_Mvalues_BIOS_F2_cleaned.RData")))
-
-
 ```

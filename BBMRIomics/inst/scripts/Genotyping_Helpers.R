@@ -310,15 +310,21 @@ DNAmCalls <- function(cohort, DNAmFile, verbose=FALSE, maxbatch=500){
     if(cohort != "ALL")
         targets <- targets[targets$biobank_id == cohort,]
 
-    load(DNAmFile)
-    cpgs <- names(DNAmSNPs)
 
-    register(MulticoreParam(6))
+    data(hg19.GoNLsnps)
+    cpgs <- unique(hg19.GoNLsnps$probe)
+    ##load(DNAmFile)
+    ##cpgs <- names(DNAmSNPs)
+    
+    RGset <- read.metharray.exp.par(targets[1:10,], verbose=verbose)
+    
+    register(MulticoreParam(1))
     if(nrow(targets) > maxbatch) {
         betas <- lapply(split(targets, 1+(1:nrow(targets))%/%maxbatch), function(targetsbatch) {
-            RGset <- read.metharray.exp.par(targetsbatch, verbose=verbose)
+            ##RGset <- read.metharray.exp.par(targetsbatch, verbose=verbose)
+            RGset <- read.metharray.exp(targets=targets)
             beta <- getBeta(RGset)
-            betas <- rbind(beta[rownames(beta) %in% cpgs, ], getSnpBeta(RGset))
+            rbind(beta[rownames(beta) %in% cpgs, ], getSnpBeta(RGset))
         })
         betas <- do.call('cbind', betas)
     } else {
