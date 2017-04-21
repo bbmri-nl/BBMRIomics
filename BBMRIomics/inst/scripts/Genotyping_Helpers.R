@@ -215,6 +215,36 @@ hashRelations <- function(relations, idx.col="id.x", idy.col="id.y", rel.col="re
     hash
 }
 
+.beta2genotype <- function(x, minSep = 0.25, minSize = 5, centers = c(0.2, 0.5, 0.8)) {
+
+    ##first check three clusters
+    km <- try(kmeans(as.numeric(x), centers), silent=TRUE)
+    if(!inherits(km, 'try-error')) {
+        if (all(abs(rep(km$centers, 3) - rep(km$centers, each=3))[-c(1,5,9)] > minSep)) {
+            if(100*min(as.numeric(table(km$cluster)))/length(x) > minSize)
+                return(km$cluster)
+        }
+    }
+
+    ##failed so check two clusters
+    ## km <- try(kmeans(as.numeric(x), centers[-2]), silent=TRUE)
+    ## if(!inherits(km, 'try-error')) {
+    ##     if(all(abs(rep(km$centers, 2) - rep(km$centers, each=2))[-c(1,4)] > minSep)) {
+
+    ##         if (km$centers[1] < centers[1] & km$centers[2] > centers[3]) ##relabelling of clusters is necessary
+    ##             km$clusters[km$clusters == 2] <- 3
+    ##         else if (km$centers[1] > centers[1] & km$centers[2] > centers[3])
+    ##             km$clusters <- km$clusters + 1
+
+    ##         if(100*min(as.numeric(table(km$cluster)))/length(x) > minSize)
+    ##             return(km$cluster)
+    ##     }
+    ## }
+
+    ##no clusters detected
+    return(rep(NA, length(x)))
+}
+
 ##' convert betas to genotypes
 ##'
 ##' based on idea's from Leonard Schalkwyk (wateRmelon)
@@ -247,39 +277,8 @@ beta2genotype <- function(betas, na.rm=TRUE, minSep = 0.25, minSize = 5, centers
     genotypes
 }
 
-.beta2genotype <- function(x, minSep = 0.25, minSize = 5, centers = c(0.2, 0.5, 0.8)) {
-
-    ##first check three clusters
-    km <- try(kmeans(as.numeric(x), centers), silent=TRUE)
-    if(!inherits(km, 'try-error')) {
-        if (all(abs(rep(km$centers, 3) - rep(km$centers, each=3))[-c(1,5,9)] > minSep)) {
-            if(100*min(as.numeric(table(km$cluster)))/length(x) > minSize)
-                return(km$cluster)
-        }
-    }
-
-    ##failed so check two clusters
-    ## km <- try(kmeans(as.numeric(x), centers[-2]), silent=TRUE)
-    ## if(!inherits(km, 'try-error')) {
-    ##     if(all(abs(rep(km$centers, 2) - rep(km$centers, each=2))[-c(1,4)] > minSep)) {
-
-    ##         if (km$centers[1] < centers[1] & km$centers[2] > centers[3]) ##relabelling of clusters is necessary
-    ##             km$clusters[km$clusters == 2] <- 3
-    ##         else if (km$centers[1] > centers[1] & km$centers[2] > centers[3])
-    ##             km$clusters <- km$clusters + 1
-
-    ##         if(100*min(as.numeric(table(km$cluster)))/length(x) > minSize)
-    ##             return(km$cluster)
-    ##     }
-    ## }
-
-    ##no clusters detected
-    return(rep(NA, length(x)))
-}
-
-
 ##some BBMRIomics specific helper functions
-DNAmCalls <- function(cohort, DNAmFile, verbose=FALSE, maxbatch=500){
+DNAmCalls <- function(cohort, verbose=FALSE, maxbatch=500){
 
     suppressPackageStartupMessages({
         require(BBMRIomics)
@@ -310,19 +309,12 @@ DNAmCalls <- function(cohort, DNAmFile, verbose=FALSE, maxbatch=500){
     if(cohort != "ALL")
         targets <- targets[targets$biobank_id == cohort,]
 
-
     data(hg19.GoNLsnps)
-    cpgs <- unique(hg19.GoNLsnps$probe)
-    ##load(DNAmFile)
-    ##cpgs <- names(DNAmSNPs)
-    
-    RGset <- read.metharray.exp.par(targets[1:10,], verbose=verbose)
-    
-    register(MulticoreParam(1))
+    cpgs <- unique(hg19.GoNLsnps$probe)   
+
     if(nrow(targets) > maxbatch) {
         betas <- lapply(split(targets, 1+(1:nrow(targets))%/%maxbatch), function(targetsbatch) {
-            ##RGset <- read.metharray.exp.par(targetsbatch, verbose=verbose)
-            RGset <- read.metharray.exp(targets=targets)
+            RGset <- read.metharray.exp.par(targetsbatch, verbose=verbose)
             beta <- getBeta(RGset)
             rbind(beta[rownames(beta) %in% cpgs, ], getSnpBeta(RGset))
         })
@@ -333,7 +325,7 @@ DNAmCalls <- function(cohort, DNAmFile, verbose=FALSE, maxbatch=500){
         betas <- rbind(betas[rownames(betas) %in% cpgs,], getSnpBeta(RGset))
     }
 
-    beta2genotype(betas)
+    DNAmCalls <- beta2genotype(betas)
 }
 
 
@@ -396,9 +388,8 @@ DNACalls <- function(cohort, snps=NULL, DNAFile, type, verbose){
         require(rtracklayer)
         snps <- import(DNAFile)
     }
-
-    register(MulticoreParam(6))
-    dnaCalls <- getGenotypes(ids, cohort, snps, type=type, geno="SM", BASE=VM_BASE_DATA)
+   
+    getGenotypes(ids, cohort, snps, type=type, geno="SM", BASE=VM_BASE_DATA)
 }
 
 relabelIntra <- function(x) {
@@ -535,7 +526,6 @@ genotyping <- function(typex, typey, filex, filey, cohort, out, verbose) {
     ##hard-coded
     ##RNAFile <- file.path(VM_BASE_ANALYSIS, "BBMRIomics/data/output.vcf")
     ##RNAFile <- file.path("~/output.vcf")
-    ##DNAmFile <- file.path(VM_BASE_ANALYSIS, "BBMRIomics/data/DNAm_snps.RData")
     ##DNAFile <- file.path(VM_BASE_ANALYSIS, "BBMRIomics/data/final_list_50_SNPs.corrected.bed")
 
     if(any(typey %in% c("DNAm", "RNA")) & any(typex %in% c("HRC", "GoNL"))) {
@@ -548,7 +538,7 @@ genotyping <- function(typex, typey, filex, filey, cohort, out, verbose) {
     xCalls <- switch(typex,
                      "GoNL"= DNACalls(cohort, file = DNAFile, type="GoNL", verbose = verbose),
                      "HRC"= DNACalls(cohort, file = DNAFile, type="HRC", verbose = verbose),
-                     "DNAm"= DNAmCalls(cohort, filex, verbose),
+                     "DNAm"= DNAmCalls(cohort, verbose),
                      "RNA"= RNACalls(filex, verbose=verbose)) ##no subsetting on cohorts yet
 
     if(typey != typex) {
@@ -557,21 +547,23 @@ genotyping <- function(typex, typey, filex, filey, cohort, out, verbose) {
                             IRanges(start=as.integer(gsub("^.*:", "", rownames(xCalls))), width=1))
         }
         if(typex == "DNAm") {
-            load(DNAmFile)
-            snps <- DNAmSNPs[names(DNAmSNPs) %in% rownames(xCalls)]
-            snpsC <- snpsG <- snps
-            end(snpsC) <- start(snpsC)
-            start(snpsG) <- end(snpsG)
-            snps <- c(snpsC, snpsG)
-
-            map <- names(snps)
-            names(map) <- paste(seqnames(snps), start(snps), sep=":")
+            data(hg19.GoNLsnps)
+            snps <- hg19.GoNLsnps[hg19.GoNLsnps$probe %in% rownames(xCalls),]          
+            map <- c(snps$probe, snps$probe)
+            names(map) <- c(paste(snps$CHROM, snps$location_c, sep=":"),
+                            paste(snps$CHROM, snps$location_g, sep=":"))
+            names(map) <- gsub("chr", "", names(map))
+            
+            snps <- GRanges(seqnames = gsub(":.*$", "", names(map)),
+                            IRanges(start=as.integer(gsub("^.*:", "", names(map))), width=1))
+            snps <- sort(snps)
+            snps <- snps[!duplicated(snps),]
         }
 
         yCalls <- switch(typey,
                          "GoNL"= DNACalls(cohort, snps = snps, type="GoNL", verbose = verbose),
                          "HRC"= DNACalls(cohort, snps = snps, type="HRC", verbose = verbose),
-                         "DNAm"= DNAmCalls(cohort, filey, verbose),
+                         "DNAm"= DNAmCalls(cohort, verbose),
                          "RNA"= RNACalls(filey, verbose=verbose)) ##no subsetting on cohorts yet
 
         if(typex == "DNAm") {
@@ -653,6 +645,8 @@ genotyping <- function(typex, typey, filex, filey, cohort, out, verbose) {
         ##colnames(mm) <-  c("colnames.y", "colnames.x", "mean", "var", "relation", "predicted", "ids.x", "ids.y")
         mm <- mm[, c( "mean", "var", "relation", "predicted", "colnames.x", "ids.x", "colnames.y", "ids.y")]
         mm[, 1:2] <- round(mm[, 1:2], 3)
+        mm <- mm[!duplicated(mm),]
+        
         if(!is.null(out))
             write.table(mm, file=paste0(fileName, ".txt"), row.names=FALSE, quote=FALSE, sep="\t")
         else
