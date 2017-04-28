@@ -32,39 +32,52 @@ if (is.null(opt$typex)){
     opt$typex <- match.arg(opt$typex, choices=c("GoNL", "HRC", "DNAm", "RNA"))
 }
 
-if (is.null(opt$filex) | !file.exists(opt$filex)){
-    print_help(opt_parser)
-    stop("At least one existing omic type file should be given.", call.=FALSE)
+if (!is.null(opt$filex)) {
+    if(!file.exists(opt$filex)){        
+        print_help(opt_parser)
+        stop("filex does not exists!", call.=FALSE)
+    }
 }
 
-if (is.null(opt$typey) & !is.null(opt$filey)) {
-    stop("You should provide to omic type of file:", opt$filey)
-}
-
-if (!is.null(opt$typey) & is.null(opt$filey)) {
-    stop("You should provide a file for omic type:", opt$typey)
+if (!is.null(opt$filey)) {
+    if(!file.exists(opt$filey)){        
+        print_help(opt_parser)
+        stop("filey does not exists!", call.=FALSE)
+    }
 }
 
 if (is.null(opt$typey)) {
     opt$typey <- opt$typex
 } else {
-    opt$typex <- match.arg(opt$typex, choices=c("GoNL", "HRC", "DNAm", "RNA"))
+    opt$typey <- match.arg(opt$typey, choices=c("GoNL", "HRC", "DNAm", "RNA"))
 }
-
 
 opt$cohort <- match.arg(opt$cohort, choices=c("ALL", "CODAM", "LL", "LLS", "NTR", "PAN", "RS"))
 
 suppressPackageStartupMessages({
     require(BBBMRIomics)
-    source(file.path(path.package("BBMRIomics"), "scripts/Genotyping_Helpers.R"), verbose=FALSE)
+    ##source(file.path(path.package("BBMRIomics"), "scripts/Genotyping_Helpers.R"), verbose=FALSE)
+    source(file.path("/virdir/Backup/RP3_analysis/BBMRIomics/BBMRIomics/inst", "scripts/Genotyping_Helpers.R"), verbose=FALSE)
 })
 
-## typex <- "RNA"
-## typey <- "RNA"
-## filex <- "~/output.vcf"
-## filey <- file.path(VM_BASE_ANALYSIS, "BBMRIomics/data/DNAm_snps.RData")
-## cohort <- "ALL"
-## verbose <- TRUE
-## genotyping(typex, typey, filex, filey, cohort=cohort, out=NULL, verbose=verbose)
+opt <- list()
+opt$typex <- "RNA"
+opt$typey <- "RNA"
+opt$filex <- "/virdir/Backup/RP3_analysis/SwapDetection/RNAcalls.vcf"
+opt$filey <- NULL
+opt$cohort <- "PAN"
+opt$verbose <- TRUE
+opt$out <- "/virdir/Backup/RP3_analysis/SwapDetection/"
+
+library(BiocParallel)
+register(MulticoreParam(10))
 
 genotyping(typex=opt$typex, typey=opt$typey, filex=opt$filex, filey=opt$filey, cohort=opt$cohort, out=opt$out, verbose=opt$verbose)
+
+typex <- "RNA"
+typey <- "RNA"
+filex <- "/virdir/Backup/RP3_analysis/SwapDetection/RNAcalls.vcf"
+filey <- NULL
+cohort <- "PAN"
+cverbose <- TRUE
+out <- "/virdir/Backup/RP3_analysis/SwapDetection/"

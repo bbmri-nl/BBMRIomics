@@ -13,16 +13,16 @@ echo $RSCRIPT --version
 #inter
 # for cohort in ${COHORTS}
 # do
-#     $RSCRIPT genotyping.R -x DNAm -y HRC -c $cohort
-#     $RSCRIPT genotyping.R -x DNAm -y GoNL -c $cohort
-#     $RSCRIPT genotyping.R -x RNA -y HRC -c $cohort
-#     $RSCRIPT genotyping.R -x RNA -y GoNL -c $cohort
+#     $RSCRIPT genotyping.R --typex DNAm --typey HRC --cohort $cohort
+#     $RSCRIPT genotyping.R --typex DNAm --typey GoNL --cohort $cohort
+#     $RSCRIPT genotyping.R --typex RNA --typey HRC --cohort $cohort
+#     $RSCRIPT genotyping.R --typex RNA --typey GoNL --cohort $cohort
 # done
 
 #intra
 for type in ${TYPES}
 do
-    $RSCRIPT genotyping.R -x $type
+    $RSCRIPT genotyping.R --typex $type
 done
 
 
