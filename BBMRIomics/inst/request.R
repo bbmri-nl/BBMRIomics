@@ -278,3 +278,14 @@ doc$phenotype
 BBMRIomics:::.validateDoc(doc, SCHEMA=file.path(VM_BASE_ANALYSIS, "BBMRIomics/couchdbapp/schema/bios.json"))
 
 
+##Verify mismatches
+##Wed Apr 26 08:19:49 2017
+
+files <- dir("/virdir/Backup/RP3_analysis/SwapDetection/", pattern="DNAm-DNAm.*.txt$", full.names=TRUE)
+
+
+mm <- read.table(files[1], header=TRUE, sep="\t")
+
+
+
+

@@ -122,7 +122,6 @@ phenotyped$validation
 predicted <- phenotyped$predicted
 rownames(predicted) <- colnames(features)
 write.table(predicted, file=file.path(path, "Sex_DNAm.csv"), sep=",", quote=FALSE)
-
 ```
 
 > TODO add diagnostic plots!

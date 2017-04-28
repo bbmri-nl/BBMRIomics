@@ -329,7 +329,7 @@ flowcell <- gsub("-.*$", "", cnts$run_id)
 batches <- model.matrix(~flowcell)
 
 library(pls)
-pls.options(parallel = 1)
+pls.options(parallel = 5)
 predictor <- plsr(log10(phenotypes+1)~batches+data, ncomp = 50,
                   data = list(phenotypes = as.matrix(phenotypes[trainId,]),
                               batches = batches[trainId, ],

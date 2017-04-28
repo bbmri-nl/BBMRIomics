@@ -72,7 +72,8 @@
     ##robust against NA's and outliers
 
     ##FIX level `identical`
-    identical <- names(which(unlist(mget(ls(rHash), rHash, mode = "integer", ifnotfound=list(0L)), use.names=TRUE) == 2))
+   
+    identical <- names(grep("identical", as.list(rHash), value=TRUE))
 
     colnames.x <- gsub(":.*$", "", identical)
     colnames.y <- gsub("^.*:", "", identical)
@@ -325,7 +326,7 @@ DNAmCalls <- function(cohort, verbose=FALSE, maxbatch=500){
         betas <- rbind(betas[rownames(betas) %in% cpgs,], getSnpBeta(RGset))
     }
 
-    DNAmCalls <- beta2genotype(betas)
+   beta2genotype(betas)
 }
 
 
@@ -521,12 +522,7 @@ genotyping <- function(typex, typey, filex, filey, cohort, out, verbose) {
         message("Verbose: ", verbose)
     }
 
-    message("Extracting the data...")
-
-    ##hard-coded
-    ##RNAFile <- file.path(VM_BASE_ANALYSIS, "BBMRIomics/data/output.vcf")
-    ##RNAFile <- file.path("~/output.vcf")
-    ##DNAFile <- file.path(VM_BASE_ANALYSIS, "BBMRIomics/data/final_list_50_SNPs.corrected.bed")
+    message("Extracting the data...")        
 
     if(any(typey %in% c("DNAm", "RNA")) & any(typex %in% c("HRC", "GoNL"))) {
         tmp <- typey
@@ -536,8 +532,8 @@ genotyping <- function(typex, typey, filex, filey, cohort, out, verbose) {
 
     ##read omic type(s)
     xCalls <- switch(typex,
-                     "GoNL"= DNACalls(cohort, file = DNAFile, type="GoNL", verbose = verbose),
-                     "HRC"= DNACalls(cohort, file = DNAFile, type="HRC", verbose = verbose),
+                     "GoNL"= DNACalls(cohort, snps = snps, type="GoNL", verbose = verbose),
+                     "HRC"= DNACalls(cohort, snps = snps, type="HRC", verbose = verbose),
                      "DNAm"= DNAmCalls(cohort, verbose),
                      "RNA"= RNACalls(filex, verbose=verbose)) ##no subsetting on cohorts yet
 
@@ -563,14 +559,13 @@ genotyping <- function(typex, typey, filex, filey, cohort, out, verbose) {
         yCalls <- switch(typey,
                          "GoNL"= DNACalls(cohort, snps = snps, type="GoNL", verbose = verbose),
                          "HRC"= DNACalls(cohort, snps = snps, type="HRC", verbose = verbose),
-                         "DNAm"= DNAmCalls(cohort, verbose),
+                         "DNAm"= DNAmCalls(cohort,  verbose),
                          "RNA"= RNACalls(filey, verbose=verbose)) ##no subsetting on cohorts yet
 
         if(typex == "DNAm") {
             mid <- match(rownames(yCalls), names(map))
             rownames(yCalls) <- map[mid]
         }
-
     } else
         yCalls <- NULL
 
@@ -578,8 +573,8 @@ genotyping <- function(typex, typey, filex, filey, cohort, out, verbose) {
 
     ##obtain relations
     type <- paste(typex, typey, sep="-")
-    relations <- getRelations(type, verbose=verbose)
 
+    relations <- getRelations(type, verbose=verbose)
     if(typex == typey) {
         relations$relation_type <- relabelIntra(relations$relation_type)
         rHash <- hashRelations(relations, idx.col="idx.x", idy.col="idx.y")
@@ -602,8 +597,9 @@ genotyping <- function(typex, typey, filex, filey, cohort, out, verbose) {
     message("Predict sample relations...")
 
     ##predict and output
-    if(!is.null(out))
+    if(!is.null(out)) {        
         fileName <- file.path(out, paste0("mismatches_", type, "_", cohort))
+    }
 
     if(!is.null(out)) {
         pdf(paste0(fileName, ".pdf"))
