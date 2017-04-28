@@ -529,3 +529,38 @@ gp + facet_grid(.~type) + theme_bw() + scale_color_npg()
 ggsave(file.path(path, "WBCC_total.eps"))
 
 ```
+
+
+## Try out `sparklyr` ##
+
+```{r, eval=FALSE}
+##setup spark connection: sc
+
+library(sparklyr)
+
+sc <- spark_connect(master = "local", config = spark_config(), version = "1.6.2")
+
+metadata(bts)$formula <- ~0+Sampling_Age
+
+phenotype <- unlist(get_all_vars(metadata(bts)$formula, data=colData(bts)))
+features <- assays(bts)$data
+
+library(dplyr)
+data <- t(features[1:1000, 1:100])
+data <- cbind(phenotype=phenotype[1:100], data)
+rownames(data) <- colnames(features)[1:100]
+data[1:5, 1:5]
+
+data_tbl <- copy_to(sc, data)
+
+partitions <- data %>%
+  sdf_partition(training = 2/3, test = 1/3, seed = 1099)
+
+fit <- ml_linear_regression(response = "phenotype", features = c("wt", "cyl"))
+
+alpha = 0,
+lambda = 0
+
+```
+
+
