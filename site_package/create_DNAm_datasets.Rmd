@@ -9,14 +9,14 @@ output:
 bibliography: BBMRIomics.bib
 ---
 
-```{r, child="_setup.Rmd"}
+```{r, child="_setup_devel.Rmd"}
 ```
 
 # Prepare sample metadata #
 
 Preprocess metadata including phenotype harmonization.
 
-```{r, eval=TRUE}
+```{r}
 library(BBMRIomics)
 colData <- read.table(file=file.path(VM_BASE_ANALYSIS, "BBMRIomics/BBMRIomics/data", "freeze2_dnam_identifiers.csv"), header=TRUE, sep=",", as.is=TRUE)
 
@@ -61,7 +61,7 @@ Here we follow the approach described at
 [DNAmArray](https://molepi.github.io/DNAmArray_workflow/) for
 preprocessing and quality control.
 
-```{r, eval=TRUE}
+```{r}
 library(BiocParallel)
 library(DNAmArray)
 library(impute)

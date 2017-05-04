@@ -1,5 +1,5 @@
 ---
-title: "Contribute Use-Cases"
+title: "Contribute to this website"
 output: 
   html_document:
     highlight: tango
@@ -9,47 +9,52 @@ output:
 bibliography: BBMRIomics.bib
 ---
 
-We welcome contributions to the
-[BBMRIomics](bios-vm.bbmrirp3-lumc.surf-hosted.nl/BBMRIomics/index.html)
-web-site, for example, with use-cases. The BBMRIomics web-site is
-completely build using R. Especially,
-[rmarkdown](http://rmarkdown.rstudio.com/) is used to generate the
-complete web-site from a few Rmarkdown-files. This rmarkdown
-[section](http://rmarkdown.rstudio.com/rmarkdown_websites.html) shows
-how easy it is to generate a web-site using rmarkdown. 
+We welcome contributions to [this website](bios-vm.bbmrirp3-lumc.surf-hosted.nl/BBMRIomics/)
+web-site, for example, with use-cases. The BBMRIomics website is built entirely
+using \<R\>. Specifically, [R\ Markdown](http://rmarkdown.rstudio.com/) is used
+to generate the complete website from a few R\ Markdown files. [This section of
+the RStudio R\ Markdown website](http://rmarkdown.rstudio.com/rmarkdown_websites.html)
+shows how easy it is to generate a website using R\ Markdown.
+
 
 ## Adding a use-case ##
 
-Modify `_site.yml` by adding a new use-case under the use-case items, e.g. 
+Modify `_site.yml` (Note dated 2017-03-17 14:45 : currently this file is accessible
+on the BIOS VM in "/virdir/Scratch/RP3_analysis/BBMRIomics/site_package") by adding
+a new use-case under the use-case items, *e.g.*: 
 
- - `- text:  "eqtl analysis"`
- - `href: eqtl.html`
+```{bash, eval = FALSE}
+- text: "eqtl analysis"
+  href: eqtl.html
+```
   
-*beware spacing does matter!*
+*Beware: spacing **does** matter!*
 
-Now from within the `site_package` directory generate a new template using 
+Now, from within the `site_package` directory generate a new template by entering
+from the Ubuntu command prompt:
 
-```bash
-make newpage file=eqtl
+```{bash, eval = FALSE}
+$ make newpage file=eqtl
 ```
 
-This will generate `eqtl.Rmd` for you with the same settings as the
-other Rmd-files in this folder. Provide your example with
-documentation and use `cache=TRUE` as an argument for the R-code
-chunk (maybe check one of the other Rmd-documents). 
+This will generate `eqtl.Rmd` for you with the same settings as the other \*.Rmd
+files in this folder. Provide your example with documentation and use `cache=TRUE`
+as an argument for the \<R\> code chunk (perhaps check one of the other \*.Rmd
+documents).
 
-See, for more information on [rmarkdown](http://rmarkdown.rstudio.com/).
+For more information on [R\ Markdown](http://rmarkdown.rstudio.com/).
 
-Check if all code chunks run without errors, optionally add a library
-to `_setup.Rmd`. Now run
+Check if all code chunks run without errors -- optionally add a library to
+`_setup.Rmd`. Then enter at the Ubuntu command prompt the following command:
 
-```bash
-make render     
+```{bash, eval = FALSE}
+$ make render
 ```
 
-and if successfully run
+..., and, if successfully run:
 
-```bash
-sudo make publish
+```{bash, eval = FALSE}
+$ sudo make publish
 ```
+
 
