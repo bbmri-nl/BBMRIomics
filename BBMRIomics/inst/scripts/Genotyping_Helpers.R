@@ -72,7 +72,7 @@
     ##robust against NA's and outliers
 
     ##FIX level `identical`
-   
+
     identical <- names(grep("identical", as.list(rHash), value=TRUE))
 
     colnames.x <- gsub(":.*$", "", identical)
@@ -311,7 +311,7 @@ DNAmCalls <- function(cohort, verbose=FALSE, maxbatch=500){
         targets <- targets[targets$biobank_id == cohort,]
 
     data(hg19.GoNLsnps)
-    cpgs <- unique(hg19.GoNLsnps$probe)   
+    cpgs <- unique(hg19.GoNLsnps$probe)
 
     if(nrow(targets) > maxbatch) {
         betas <- lapply(split(targets, 1+(1:nrow(targets))%/%maxbatch), function(targetsbatch) {
@@ -326,7 +326,7 @@ DNAmCalls <- function(cohort, verbose=FALSE, maxbatch=500){
         betas <- rbind(betas[rownames(betas) %in% cpgs,], getSnpBeta(RGset))
     }
 
-   beta2genotype(betas)
+    beta2genotype(betas)
 }
 
 
@@ -346,18 +346,18 @@ RNACalls <- function(vcfFile, mafThr=0.025, verbose){
 
     ##SNP pruning
     rnaCalls[rnaCalls == 0] <- NA
-    
+
     maf <- apply(rnaCalls, 1, function(x) min(tabulate(x))/length(x))
-    
+
     noninformative <- maf == 1 | !is.finite(maf) | maf < mafThr
-    
+
     if(verbose) {
         hist(maf)
         message("noninformative RNA SNP calls: ", sum(noninformative))
     }
     rnaCalls <- rnaCalls[!noninformative,]
-    
-    rnaCalls  
+
+    rnaCalls
 }
 
 DNACalls <- function(cohort, snps=NULL, DNAFile, type, verbose){
@@ -376,7 +376,7 @@ DNACalls <- function(cohort, snps=NULL, DNAFile, type, verbose){
     }
     else if (type == "GoNL"){
         imputations <- getView("getIds", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB, verbose=verbose)
-        if(cohort != "ALL")
+        if(cohort == "ALL")
             ids <- unique(subset(imputations, !is.na(gonl_id))$gonl_id)
         else
             ids <- unique(subset(imputations, biobank_id == cohort & !is.na(gonl_id))$gonl_id)
@@ -389,14 +389,14 @@ DNACalls <- function(cohort, snps=NULL, DNAFile, type, verbose){
         require(rtracklayer)
         snps <- import(DNAFile)
     }
-   
+
     getGenotypes(ids, cohort, snps, type=type, geno="SM", BASE=VM_BASE_DATA)
 }
 
 relabelIntra <- function(x) {
     x <- gsub("original|has monozygotic twin|has repeated measurements|merged|replicate|rerun", "identical", x)
     x <- gsub("has child|has parent", "parentoffspring", x)
-    x <- gsub("has dizygotic twin|has sib", "sibship", x)    
+    x <- gsub("has dizygotic twin|has sib", "sibship", x)
     as.character(x)
 }
 
@@ -418,8 +418,7 @@ getRelations <- function(type, verbose){
 
             relx <- getView("getImputations", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB, verbose=verbose)
             colnames(relx)[colnames(relx) == "gonl_id"] <- "idx"
-            colnames(relations)[colnames(relations) == "gonl_id"] <- "idx"
-
+            
         } else if (type == "HRC-HRC") {
 
             relx <- getView("getImputations", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB, verbose=verbose)
@@ -453,6 +452,7 @@ getRelations <- function(type, verbose){
     } else if (length(unique(unlist(strsplit(type, "-")))) == 2) {
 
         if( type == "DNAm-GoNL" | type == "GoNL-DNAm") {
+            
             stop("not implemented yet!")
 
         } else if( type == "DNAm-HRC" | type == "HRC-DNAm") {
@@ -476,6 +476,7 @@ getRelations <- function(type, verbose){
             colnames(rely)[colnames(rely) == "imputation_id"] <- "idy"
 
         } else if( type == "RNA-GoNL" | type == "GoNL-RNA") {
+            
             stop("not implemented yet!")
         }
 
@@ -522,13 +523,16 @@ genotyping <- function(typex, typey, filex, filey, cohort, out, verbose) {
         message("Verbose: ", verbose)
     }
 
-    message("Extracting the data...")        
+    message("Extracting the data...")
 
     if(any(typey %in% c("DNAm", "RNA")) & any(typex %in% c("HRC", "GoNL"))) {
         tmp <- typey
         typey <- typex
         typex <- tmp
     }
+
+    if(typex %in% c("HRC", "GoNL"))
+        snps <- rtracklayer::import(filex)
 
     ##read omic type(s)
     xCalls <- switch(typex,
@@ -544,12 +548,12 @@ genotyping <- function(typex, typey, filex, filey, cohort, out, verbose) {
         }
         if(typex == "DNAm") {
             data(hg19.GoNLsnps)
-            snps <- hg19.GoNLsnps[hg19.GoNLsnps$probe %in% rownames(xCalls),]          
+            snps <- hg19.GoNLsnps[hg19.GoNLsnps$probe %in% rownames(xCalls),]
             map <- c(snps$probe, snps$probe)
             names(map) <- c(paste(snps$CHROM, snps$location_c, sep=":"),
                             paste(snps$CHROM, snps$location_g, sep=":"))
             names(map) <- gsub("chr", "", names(map))
-            
+
             snps <- GRanges(seqnames = gsub(":.*$", "", names(map)),
                             IRanges(start=as.integer(gsub("^.*:", "", names(map))), width=1))
             snps <- sort(snps)
@@ -590,14 +594,14 @@ genotyping <- function(typex, typey, filex, filey, cohort, out, verbose) {
         data <- alleleSharing(x=xCalls, y=yCalls, rHash=rHash, phasing=TRUE, verbose=verbose)
     else
         data <- alleleSharing(x=xCalls, y=yCalls, rHash=rHash, verbose=verbose)
-    
+
     if(verbose)
         print(head(data))
 
     message("Predict sample relations...")
 
     ##predict and output
-    if(!is.null(out)) {        
+    if(!is.null(out)) {
         fileName <- file.path(out, paste0("mismatches_", type, "_", cohort))
     }
 
@@ -614,35 +618,42 @@ genotyping <- function(typex, typey, filex, filey, cohort, out, verbose) {
 
     if(nrow(mismatches) > 0) {
 
-        if(typex == "RNA")
-            runs <- getView("getRNASeqRuns", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB, verbose=verbose)
-        else if(typex == "DNAm")
-            runs <- getView("getMethylationRuns", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB, verbose=verbose)
+        if(!(typex %in% c("HRC", "GoNL"))) {
 
-        mm <- merge(mismatches, runs[, c("run_id", "ids")], by.x="colnames.x", by.y="run_id")
+            if(typex == "RNA")
+                runs <- getView("getRNASeqRuns", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB, verbose=verbose)
+            else if(typex == "DNAm")
+                runs <- getView("getMethylationRuns", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB, verbose=verbose)
 
-        if(typey == typex)
-            mm$ids.y <- runs$ids[match(mm$colnames.y, runs$run_id)]
-        else if (typey == "HRC") {
 
-            runs <- getView("getImputations", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB, verbose=verbose)
-            runs <- subset(runs, imputation_reference == "HRC")
-            colnames(runs)[colnames(runs) == "imputation_id"] <- "run_id"
+            mm <- merge(mismatches, runs[, c("run_id", "ids")], by.x="colnames.x", by.y="run_id")
 
-        } else if (typey == "GoNL") {
+            if(typey == typex)
+                mm$ids.y <- runs$ids[match(mm$colnames.y, runs$run_id)]
+            else if (typey == "HRC") {
 
-            runs <- getView("getImputations", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB, verbose=verbose)
-            colnames(runs)[colnames(runs) == "gonl_id"] <- "run_id"
+                runs <- getView("getImputations", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB, verbose=verbose)
+                runs <- subset(runs, imputation_reference == "HRC")
+                colnames(runs)[colnames(runs) == "imputation_id"] <- "run_id"
+
+            } else if (typey == "GoNL") {
+
+                runs <- getView("getImputations", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB, verbose=verbose)
+                colnames(runs)[colnames(runs) == "gonl_id"] <- "run_id"
+
+            }
+
+            mm <- merge(mm, runs[, c("run_id", "ids")], by.x="colnames.y", by.y="run_id")
+
+            ##colnames(mm) <-  c("colnames.y", "colnames.x", "mean", "var", "relation", "predicted", "ids.x", "ids.y")
+            mm <- mm[, c( "mean", "var", "relation", "predicted", "colnames.x", "ids.x", "colnames.y", "ids.y")]
+            mm[, 1:2] <- round(mm[, 1:2], 3)
+            mm <- mm[!duplicated(mm),]
 
         }
+        else
+            mm <- mismatches
 
-        mm <- merge(mm, runs[, c("run_id", "ids")], by.x="colnames.y", by.y="run_id")
-
-        ##colnames(mm) <-  c("colnames.y", "colnames.x", "mean", "var", "relation", "predicted", "ids.x", "ids.y")
-        mm <- mm[, c( "mean", "var", "relation", "predicted", "colnames.x", "ids.x", "colnames.y", "ids.y")]
-        mm[, 1:2] <- round(mm[, 1:2], 3)
-        mm <- mm[!duplicated(mm),]
-        
         if(!is.null(out))
             write.table(mm, file=paste0(fileName, ".txt"), row.names=FALSE, quote=FALSE, sep="\t")
         else

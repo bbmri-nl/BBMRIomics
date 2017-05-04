@@ -118,7 +118,7 @@ read.dosages <- function(file,  yieldSize=NULL, colClassesInfo = c("character", 
     m
 }
 
-.getGONL <- function(param, files, imputation_id){
+.getGONL <- function(param, files, imputation_id, genotype){
 
     chr <- unique(as.character(seqnames(param)))
     file <- grep(paste0("chr", chr, ".release5.raw_SNVs.vcf.gz"), files, value=TRUE)
@@ -126,8 +126,12 @@ read.dosages <- function(file,  yieldSize=NULL, colClassesInfo = c("character", 
     if(length(param) == 0 | is.null(file)) return(NULL)
 
     vcf <- readVcf(TabixFile(file), "hg19", param=param)
-    m <- genotypeToSnpMatrix(vcf)$genotypes
-    m <- t(matrix(as.numeric(m), nrow=nrow(m), ncol=ncol(m), dimnames=dimnames(m)))
+    if(genotype=="SM") {
+        m <- genotypeToSnpMatrix(vcf)$genotypes
+        m <- t(matrix(as.numeric(m), nrow=nrow(m), ncol=ncol(m), dimnames=dimnames(m)))
+    }
+    else
+        m <- geno(vcf)[[genotype]]
     rownames(m) <- paste(seqnames(vcf@rowRanges), start(vcf@rowRanges), sep=":")
     m[, match(imputation_id, colnames(m)), drop=FALSE] ##return in proper order
 }
@@ -183,6 +187,7 @@ getGenotypes <- function(imputation_id, biobank=c("ALL", "CODAM", "LL", "LLS", "
     } else if(type == "GoNL") {
         vcfs <- dir(file.path(BASE, "gonl-snv-release-5.4"), pattern=".vcf.gz$", full.names=TRUE, recursive=TRUE)
         genotypes <- bplapply(snps, .getGONL, files=vcfs, imputation_id = as.character(imputation_id), genotype = geno)
+        genotypes <- do.call("rbind", genotypes)
     }
     else if(type == "GoNLv5")
         stop("Not implemented yet!")
