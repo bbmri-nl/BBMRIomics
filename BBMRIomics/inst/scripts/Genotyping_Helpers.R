@@ -123,23 +123,47 @@
 ##' @title allele sharing based on ibs
 ##' @param x genotype vector or matrix
 ##' @param y genotype vector or matrix
-##' @param relationHash
+##' @param rHash
 ##' @param phasing FALSE
+##' @param mafThr minor allele frequency calls to included default 0.05
 ##' @param verbose show progress
 ##' @return data.frame with mean and variance ibs between all pairs
 ##' @author mvaniterson
 ##' @importFrom matrixStats colVars
 ##' @export
-alleleSharing <- function(x, y=NULL, rHash, phasing=FALSE, verbose=TRUE) {
+alleleSharing <- function(x, y=NULL, rHash, phasing=FALSE, mafThr=0.05, verbose=TRUE) {
 
     suppressPackageStartupMessages({
         require(matrixStats)
     })
 
+    ##SNP pruning
+    maf <- apply(x, 1, function(x) min(tabulate(x))/length(x))
+    noninformative <- maf == 1 | !is.finite(maf) | maf < mafThr
+    x <- x[!noninformative,]
+
+    if(verbose) {
+        hist(maf)
+        message("noninformative calls: ", sum(noninformative))
+    }
+
     if(is.null(y)) {
-        message("Using ", nrow(x), " polymophic SNPs to determine allele sharing.")
+        if(verbose) {
+            message("Using ", nrow(x), " polymophic SNPs to determine allele sharing.")
+        }
         data <- .square(x, x, verbose)
     } else {
+
+        ##SNP pruning
+        maf <- apply(y, 1, function(x) min(tabulate(x))/length(x))
+        noninformative <- maf == 1 | !is.finite(maf) | maf < mafThr
+        y <- y[!noninformative,]
+
+        if(verbose) {
+            hist(maf)
+            message("noninformative calls: ", sum(noninformative))
+        }
+
         rows <- intersect(rownames(x), rownames(y))
         rId <- match(rows, rownames(x))
         x <- x[rId,]
@@ -177,27 +201,28 @@ predict <- function(data, n=100, plot.it=TRUE){
     print(table(`Predicted relation`=data$predicted, `Assumed relation`=data$relation), zero.print = ".")
 
     id <- which(data$predicted != data$relation)
-    if(plot.it)
+    if(plot.it) {
         plot(data[, c("mean", "var")], pch=".", cex=3, col=as.integer(data$relation), xlab="mean (IBS)", ylab="variance (IBS)")
 
-    xp <- seq(min(data$mean), max(data$mean), length = n)
-    yp <- seq(min(data$var), max(data$var), length = n)
-    grid <- expand.grid(mean = xp, var = yp)
-    predicted <- MASS:::predict.lda(model, grid)
-    posterior <- predicted$posterior
-    if(ncol(posterior) > 2) {
-        for(k in 1:ncol(posterior)) {
-            zp <- posterior[, k] - apply(posterior[,-k], 1, max)
+        xp <- seq(min(data$mean), max(data$mean), length = n)
+        yp <- seq(min(data$var), max(data$var), length = n)
+        grid <- expand.grid(mean = xp, var = yp)
+        predicted <- MASS:::predict.lda(model, grid)
+        posterior <- predicted$posterior
+        if(ncol(posterior) > 2) {
+            for(k in 1:ncol(posterior)) {
+                zp <- posterior[, k] - apply(posterior[,-k], 1, max)
+                contour(xp, yp, matrix(zp, n), add = T, levels = 0, drawlabels=FALSE, lty=1, lwd=2, col="grey")
+            }
+        } else {
+            zp <- posterior[, 2] - pmax(posterior[, 1])
             contour(xp, yp, matrix(zp, n), add = T, levels = 0, drawlabels=FALSE, lty=1, lwd=2, col="grey")
         }
-    } else {
-        zp <- posterior[, 2] - pmax(posterior[, 1])
-        contour(xp, yp, matrix(zp, n), add = T, levels = 0, drawlabels=FALSE, lty=1, lwd=2, col="grey")
+
+        points(data[id, c("mean", "var")], pch=".", cex=3, col=as.integer(data$relation[id]))
+        legend("topright", paste("assumed", levels(data$relation)), col=1:nlevels(data$relation), pch=15, bty="n")
     }
-
-    points(data[id, c("mean", "var")], pch=".", cex=3, col=as.integer(data$relation[id]))
-    legend("topright", paste("assumed", levels(data$relation)), col=1:nlevels(data$relation), pch=15, bty="n")
-
+    
     invisible(data[id,])
 }
 
@@ -268,9 +293,7 @@ beta2genotype <- function(betas, na.rm=TRUE, minSep = 0.25, minSize = 5, centers
     rownames(genotypes) <- rownames(betas)
 
     if(na.rm) {
-
         nas <- apply(betas, 2, function(x) sum(is.na(x))/length(x))
-
         nas <- apply(genotypes, 1, anyNA)
         genotypes <- genotypes[!nas, ]
     }
@@ -330,7 +353,7 @@ DNAmCalls <- function(cohort, verbose=FALSE, maxbatch=500){
 }
 
 
-RNACalls <- function(vcfFile, mafThr=0.025, verbose){
+RNACalls <- function(vcfFile, verbose){
 
     suppressPackageStartupMessages({
         require(VariantAnnotation)
@@ -344,18 +367,7 @@ RNACalls <- function(vcfFile, mafThr=0.025, verbose){
     rownames(rnaCalls) <- gsub("_.*$", "", rownames(rnaCalls))
     colnames(rnaCalls) <- gsub("\\.variant.*$", "", colnames(rnaCalls))
 
-    ##SNP pruning
     rnaCalls[rnaCalls == 0] <- NA
-
-    maf <- apply(rnaCalls, 1, function(x) min(tabulate(x))/length(x))
-
-    noninformative <- maf == 1 | !is.finite(maf) | maf < mafThr
-
-    if(verbose) {
-        hist(maf)
-        message("noninformative RNA SNP calls: ", sum(noninformative))
-    }
-    rnaCalls <- rnaCalls[!noninformative,]
 
     rnaCalls
 }
@@ -418,7 +430,7 @@ getRelations <- function(type, verbose){
 
             relx <- getView("getImputations", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB, verbose=verbose)
             colnames(relx)[colnames(relx) == "gonl_id"] <- "idx"
-            
+
         } else if (type == "HRC-HRC") {
 
             relx <- getView("getImputations", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB, verbose=verbose)
@@ -452,7 +464,7 @@ getRelations <- function(type, verbose){
     } else if (length(unique(unlist(strsplit(type, "-")))) == 2) {
 
         if( type == "DNAm-GoNL" | type == "GoNL-DNAm") {
-            
+
             stop("not implemented yet!")
 
         } else if( type == "DNAm-HRC" | type == "HRC-DNAm") {
@@ -476,7 +488,7 @@ getRelations <- function(type, verbose){
             colnames(rely)[colnames(rely) == "imputation_id"] <- "idy"
 
         } else if( type == "RNA-GoNL" | type == "GoNL-RNA") {
-            
+
             stop("not implemented yet!")
         }
 
@@ -548,10 +560,10 @@ genotyping <- function(typex, typey, filex, filey, cohort, out, verbose) {
         }
         if(typex == "DNAm") {
             data(hg19.GoNLsnps)
-            snps <- hg19.GoNLsnps[hg19.GoNLsnps$probe %in% rownames(xCalls),]
-            map <- c(snps$probe, snps$probe)
-            names(map) <- c(paste(snps$CHROM, snps$location_c, sep=":"),
-                            paste(snps$CHROM, snps$location_g, sep=":"))
+            snps <- hg19.GoNLsnps[hg19.GoNLsnps$probe %in% rownames(xCalls) &
+                                  hg19.GoNLsnps$variantType == "SNP",]
+            map <- snps$probe
+            names(map) <- paste(snps$CHROM, snps$snpBeg, sep=":")
             names(map) <- gsub("chr", "", names(map))
 
             snps <- GRanges(seqnames = gsub(":.*$", "", names(map)),
