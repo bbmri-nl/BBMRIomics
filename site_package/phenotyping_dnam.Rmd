@@ -307,20 +307,25 @@ table(complete)
 
 head(phenotypes[complete,])
 
-trainId <- sample(which(complete), size = (2/3)*sum(complete))
+trainId <- sample(which(complete), size = (1/2)*sum(complete))
 testId <- setdiff(which(complete), trainId)
 
 length(trainId)
 length(testId)
+
+trainId <- sample(trainId, 500)
 
 Sentrix_Position <- colData(bts)$Sentrix_Position
 batches <- model.matrix(~Sentrix_Position)
 
 library(pls)
 pls.options(parallel = 5)
+
 predictor <- plsr(log10(phenotypes+1)~batches+data, ncomp = 50,
-                  data = list(phenotypes = as.matrix(phenotypes[trainId,]), batches=batches[trainId, ],
+                  data = list(phenotypes = as.matrix(phenotypes[trainId,]),
+                              batches=batches[trainId, ],
                               data=t(features[, trainId])), validation = "CV", keep.model = TRUE)
+
 summary(predictor)
 cumsum(explvar(predictor))
 barplot(cumsum(explvar(predictor)), las = 2, ylab = "Cumulative Variance Explained")

@@ -287,5 +287,3 @@ files <- dir("/virdir/Backup/RP3_analysis/SwapDetection/", pattern="DNAm-DNAm.*.
 mm <- read.table(files[1], header=TRUE, sep="\t")
 
 
-
-

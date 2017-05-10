@@ -116,10 +116,10 @@ subset(relations, family_id == 245)
 
 Now we can selected the maximal unrelated individuals e.g. in case of
 GoNL trio's if all have dnam and rna chose the parents; to maximize the
-number of individuals. 
+number of individuals.
 
 The rna or dnam freeze 2 is extended with unrelated individuals having
-only rna or dnam. 
+only rna or dnam.
 
 
 ```{r}
@@ -133,7 +133,7 @@ reduceRelations <- function(ids, relations) {
             return( as.character(fam$ids[fam$relation_type == "has child"]) )
         } else if( sum(grepl("twin", fam$relation_type)) >= 1 ) { ##return single twin
             ##message("family with at least one twin with both rna/dnam!")
-            return( as.character(fam$ids[which(grepl("twin", fam$relation_type))[1]]) )
+                return( as.character(fam$ids[which(grepl("twin", fam$relation_type))[1]]) )
         } else {
             ##message("family with at least on member having both rna/dnam!")
             return( as.character(fam$ids[1] ) ) ##return any other single family member with complete rna/dnam
@@ -174,10 +174,6 @@ dim(dnamF2)
 freeze2 <- merge(rnaF2[,c("ids", "run_id")], dnamF2[,c("ids", "run_id")], by="ids", suffixes=c("_rna","_dnam"))
 head(freeze2)
 dim(freeze2)
-
-write.table(freeze2, file=file.path(VM_BASE_ANALYSIS, "BBMRIomics/BBMRIomics/data", "freeze2_overlap_identifiers.csv"), row.names=FALSE, quote=FALSE, sep=",")
-write.table(rnaF2[, c("ids", "run_id")], file=file.path(VM_BASE_ANALYSIS, "BBMRIomics/BBMRIomics/data", "freeze2_rna_identifiers.csv"), row.names=FALSE, quote=FALSE, sep=",")
-write.table(dnamF2[, c("ids", "run_id")], file=file.path(VM_BASE_ANALYSIS, "BBMRIomics/BBMRIomics/data", "freeze2_dnam_identifiers.csv"), row.names=FALSE, quote=FALSE, sep=",")
 
 ```
 
