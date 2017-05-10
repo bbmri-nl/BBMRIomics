@@ -55,15 +55,15 @@ if (is.null(opt$typey)) {
 opt$cohort <- match.arg(opt$cohort, choices=c("ALL", "CODAM", "LL", "LLS", "NTR", "PAN", "RS"))
 
 suppressPackageStartupMessages({
-    library(BBBMRIomics, lib.loc="/opt/R/microsoft-r/3.3/lib64/R/library")
+    library(BBBMRIomics)
     ##source(file.path(path.package("BBMRIomics"), "scripts/Genotyping_Helpers.R"), verbose=FALSE)
     source(file.path("/virdir/Backup/RP3_analysis/BBMRIomics/BBMRIomics/inst", "scripts/Genotyping_Helpers.R"), verbose=FALSE)
 })
 
 opt <- list()
-opt$typex <- "RNA"
+opt$typex <- "DNAm"
 opt$typey <- "GoNL"
-opt$filex <- "/virdir/Scratch/RP3_analysis/SwapDetection/HighQualPositions.GCRh37.bed" ##"/virdir/Scratch/RP3_analysis/SwapDetection/output.vcf" 
+opt$filex <- NULL ##"/virdir/Scratch/RP3_analysis/SwapDetection/output.vcf" ##"/virdir/Scratch/RP3_analysis/SwapDetection/HighQualPositions.GCRh37.bed"
 opt$filey <- NULL
 opt$cohort <- "ALL"
 opt$verbose <- TRUE
@@ -74,9 +74,9 @@ register(MulticoreParam(22))
 
 genotyping(typex=opt$typex, typey=opt$typey, filex=opt$filex, filey=opt$filey, cohort=opt$cohort, out=opt$out, verbose=opt$verbose)
 
-typex <- "GoNL"
+typex <- "RNA"
 typey <- "GoNL"
-filex <- "/virdir/Scratch/RP3_analysis/SwapDetection/HighQualPositions.GCRh37.bed" 
+filex <- "/virdir/Scratch/RP3_analysis/SwapDetection/output.vcf"
 filey <- NULL
 cohort <- "ALL"
 verbose <- TRUE

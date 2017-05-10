@@ -22,7 +22,7 @@ echo $RSCRIPT --version
 #intra
 for type in ${TYPES}
 do
-    $RSCRIPT genotyping.R --typex $type
+    $RSCRIPT genotyping.R --typex $type --cohort ALL
 done
 
 
