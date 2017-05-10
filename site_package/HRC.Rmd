@@ -69,6 +69,7 @@ boxplot(NOD2~rs1981760)
 library(SNPlocs.Hsapiens.dbSNP142.GRCh37)
 gr <- rsidsToGRanges(c("rs9302752", "rs1981760"))
 data(rnaSeqData_ReadCounts_BIOS_cleaned)
+counts <- counts[,!is.na(counts$imputation_id)] ##not all samples have genotype data
 library(BiocParallel)
 register(MulticoreParam(2, log=TRUE))
 dosages <- getGenotypes(imputation_id = counts$imputation_id, biobank="ALL", snps=gr, type="HRC", geno="DS", BASE=VM_BASE_DATA)
@@ -80,11 +81,12 @@ dim(counts)
 dim(dosages)
 head(counts$imputation_id)
 head(colnames(dosages))
-cnts <- assays(counts)$data
 library(edgeR)
-
+y <- DGEList(assays(counts)$data, remove.zeros=TRUE)
+y <- calcNormFactors(y) ##use edgeR's TMM normalization
+y <- cpm(y, log=TRUE)
 library(limma)
-fit <- lmFit(cnts, dosages[1,]) ##run for 1 SNP
+fit <- lmFit(y, dosages[1,]) ##run for 1 SNP
 tstat <- fit$coef/fit$stdev.unscaled/fit$sigma
 pval <- 2 * pnorm(-abs(tstat[,1]))
 head(sort(pval, decreasing=FALSE))

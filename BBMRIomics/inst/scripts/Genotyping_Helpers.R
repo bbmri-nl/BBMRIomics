@@ -49,7 +49,7 @@ DNAmCalls <- function(cohort, verbose=FALSE, maxbatch=500){
 }
 
 
-RNACalls <- function(vcfFile, mafThr=0.025, verbose){
+RNACalls <- function(vcfFile, verbose){
 
     suppressPackageStartupMessages({
         require(VariantAnnotation)
@@ -63,18 +63,7 @@ RNACalls <- function(vcfFile, mafThr=0.025, verbose){
     rownames(rnaCalls) <- gsub("_.*$", "", rownames(rnaCalls))
     colnames(rnaCalls) <- gsub("\\.variant.*$", "", colnames(rnaCalls))
 
-    ##SNP pruning
     rnaCalls[rnaCalls == 0] <- NA
-
-    maf <- apply(rnaCalls, 1, function(x) min(tabulate(x))/length(x))
-
-    noninformative <- maf == 1 | !is.finite(maf) | maf < mafThr
-
-    if(verbose) {
-        hist(maf)
-        message("noninformative RNA SNP calls: ", sum(noninformative))
-    }
-    rnaCalls <- rnaCalls[!noninformative,]
 
     rnaCalls
 }
@@ -172,6 +161,7 @@ getRelations <- function(type, verbose){
 
         if( type == "DNAm-GoNL" | type == "GoNL-DNAm") {
 
+<<<<<<< HEAD
             relx <- getView("getMethylationRuns", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB, verbose=verbose)
             colnames(relx)[colnames(relx) == "run_id"] <- "idx"
             relx <- relx[!duplicated(relx$idx), ]
@@ -179,6 +169,9 @@ getRelations <- function(type, verbose){
             rely <- getView("getImputations", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB, verbose=TRUE)
             rely <- subset(rely, !is.na(gonl_id))
             colnames(rely)[colnames(rely) == "gonl_id"] <- "idy"
+=======
+            stop("not implemented yet!")
+>>>>>>> ca75df7e1430a43a189455940832ee9e078a92d5
 
         } else if( type == "DNAm-HRC" | type == "HRC-DNAm") {
 
@@ -202,6 +195,7 @@ getRelations <- function(type, verbose){
 
         } else if( type == "RNA-GoNL" | type == "GoNL-RNA") {
 
+<<<<<<< HEAD
             relx <- getView("getRNASeqRuns", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB, verbose=verbose)
             colnames(relx)[colnames(relx) == "run_id"] <- "idx"
             relx <- relx[!duplicated(relx$idx), ]
@@ -210,6 +204,9 @@ getRelations <- function(type, verbose){
             rely <- subset(rely, !is.na(gonl_id))
             colnames(rely)[colnames(rely) == "gonl_id"] <- "idy"
 
+=======
+            stop("not implemented yet!")
+>>>>>>> ca75df7e1430a43a189455940832ee9e078a92d5
         }
 
         relx <- relx[!is.na(relx$idx),]
@@ -281,10 +278,10 @@ genotyping <- function(typex, typey, filex, filey, cohort, out, verbose) {
         }
         if(typex == "DNAm") {
             data(hg19.GoNLsnps)
-            snps <- hg19.GoNLsnps[hg19.GoNLsnps$probe %in% rownames(xCalls),]
-            map <- c(snps$probe, snps$probe)
-            names(map) <- c(paste(snps$CHROM, snps$location_c, sep=":"),
-                            paste(snps$CHROM, snps$location_g, sep=":"))
+            snps <- hg19.GoNLsnps[hg19.GoNLsnps$probe %in% rownames(xCalls) &
+                                  hg19.GoNLsnps$variantType == "SNP",]
+            map <- snps$probe
+            names(map) <- paste(snps$CHROM, snps$snpBeg, sep=":")
             names(map) <- gsub("chr", "", names(map))
 
             snps <- GRanges(seqnames = gsub(":.*$", "", names(map)),
