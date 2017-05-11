@@ -20,8 +20,8 @@ DNAmCalls <- function(cohort, verbose=FALSE, maxbatch=500){
     samplesheets <- samplesheets[!duplicated(samplesheets$run_id),]
 
     runs <- getView("getMethylationRuns", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB, verbose=verbose)
-    drop <- runs$run_id[runs$qc == "bad quality"]
-    targets <- samplesheets[!(samplesheets %in% drop),]
+    runs <- runs[runs$qc == "passed",]    
+    targets <- samplesheets[samplesheets$run_id %in% runs$run_id, ]
 
     if(cohort != "ALL")
         targets <- targets[targets$biobank_id == cohort,]
