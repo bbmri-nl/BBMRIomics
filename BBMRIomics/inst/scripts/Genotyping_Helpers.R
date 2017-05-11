@@ -161,7 +161,6 @@ getRelations <- function(type, verbose){
 
         if( type == "DNAm-GoNL" | type == "GoNL-DNAm") {
 
-<<<<<<< HEAD
             relx <- getView("getMethylationRuns", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB, verbose=verbose)
             colnames(relx)[colnames(relx) == "run_id"] <- "idx"
             relx <- relx[!duplicated(relx$idx), ]
@@ -169,9 +168,6 @@ getRelations <- function(type, verbose){
             rely <- getView("getImputations", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB, verbose=TRUE)
             rely <- subset(rely, !is.na(gonl_id))
             colnames(rely)[colnames(rely) == "gonl_id"] <- "idy"
-=======
-            stop("not implemented yet!")
->>>>>>> ca75df7e1430a43a189455940832ee9e078a92d5
 
         } else if( type == "DNAm-HRC" | type == "HRC-DNAm") {
 
@@ -195,7 +191,6 @@ getRelations <- function(type, verbose){
 
         } else if( type == "RNA-GoNL" | type == "GoNL-RNA") {
 
-<<<<<<< HEAD
             relx <- getView("getRNASeqRuns", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB, verbose=verbose)
             colnames(relx)[colnames(relx) == "run_id"] <- "idx"
             relx <- relx[!duplicated(relx$idx), ]
@@ -204,9 +199,6 @@ getRelations <- function(type, verbose){
             rely <- subset(rely, !is.na(gonl_id))
             colnames(rely)[colnames(rely) == "gonl_id"] <- "idy"
 
-=======
-            stop("not implemented yet!")
->>>>>>> ca75df7e1430a43a189455940832ee9e078a92d5
         }
 
         relx <- relx[!is.na(relx$idx),]
