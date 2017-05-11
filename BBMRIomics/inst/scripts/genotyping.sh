@@ -4,11 +4,9 @@
 #
 # 2017-06-06, M. van Iterson <m.van_iterson@lumc.nl>
 RSCRIPT=Rscript
-COHORTS=(PAN LL LLS RS CODAM NTR ALL)
+COHORTS=(PAN LL LLS RS CODAM NTR)
 TYPES=(DNAm RNA HRC GoNL)
 OUT=/virdir/Backup/RP3_analysis/SwapDetection/
-
-echo $RSCRIPT --version
 
 ##intra
 $RSCRIPT genotyping.R --typex HRC --cohort ALL --out ${OUT} --filex ${OUT}/HighQualPositions.GCRh37.bed
@@ -21,7 +19,8 @@ do
 done
 
 ##inter
-$RSCRIPT genotyping.R --typex DNAm --typey HRC --cohort ALL --out ${OUT}
-##$RSCRIPT genotyping.R --typex DNAm --typey GoNL --cohort ALL
 $RSCRIPT genotyping.R --typex RNA --typey HRC --cohort ALL --out ${OUT} --filex ${OUT}/output.vcf
-##$RSCRIPT genotyping.R --typex RNA --typey GoNL --cohort $cohort
+$RSCRIPT genotyping.R --typex RNA --typey GoNL --cohort $cohort
+$RSCRIPT genotyping.R --typex DNAm --typey HRC --cohort ALL --out ${OUT}
+$RSCRIPT genotyping.R --typex DNAm --typey GoNL --cohort ALL
+x

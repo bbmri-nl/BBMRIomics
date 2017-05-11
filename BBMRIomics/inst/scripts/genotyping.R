@@ -66,25 +66,24 @@ suppressPackageStartupMessages({
     RP3_MDB <- "http://metadatabase.bbmrirp3-lumc.surf-hosted.nl/bios/"
 })
 
-opt <- list()
-opt$typex <- "DNAm"
-opt$typey <- "GoNL"
-opt$filex <- NULL ##"/virdir/Scratch/RP3_analysis/SwapDetection/output.vcf" ##"/virdir/Scratch/RP3_analysis/SwapDetection/HighQualPositions.GCRh37.bed"
-opt$filey <- NULL
-opt$cohort <- "ALL"
-opt$verbose <- TRUE
-opt$out <- "/virdir/Backup/RP3_analysis/SwapDetection/"
+## opt <- list()
+## opt$typex <- "DNAm"
+## opt$typey <- "HRC"
+## opt$filex <- NULL ##"/virdir/Scratch/RP3_analysis/SwapDetection/output.vcf" ##"/virdir/Scratch/RP3_analysis/SwapDetection/HighQualPositions.GCRh37.bed"
+## opt$filey <- NULL
+## opt$cohort <- "ALL"
+## opt$verbose <- TRUE
+## opt$out <- "/virdir/Backup/RP3_analysis/SwapDetection/"
 
 library(BiocParallel)
 register(MulticoreParam(22))
 
 genotyping(typex=opt$typex, typey=opt$typey, filex=opt$filex, filey=opt$filey, cohort=opt$cohort, out=opt$out, verbose=opt$verbose)
 
-
-typex <- "DNAm"
-typey <- "GoNL"
-## filex <- NULL
-## filey <- NULL
-cohort <- "PAN"
-verbose <- TRUE
-out <- "/virdir/Backup/RP3_analysis/SwapDetection/"
+## typex <- "DNAm"
+## typey <- "GoNL"
+## ## filex <- NULL
+## ## filey <- NULL
+## cohort <- "PAN"
+## verbose <- TRUE
+## out <- "/virdir/Backup/RP3_analysis/SwapDetection/"
