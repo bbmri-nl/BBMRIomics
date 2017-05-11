@@ -2,7 +2,7 @@
 
 suppressPackageStartupMessages({
     require(optparse)
-    require(BiocParallel)   
+    require(BiocParallel)
     require(BBBMRIomics)
     ##source(file.path(path.package("BBMRIomics"), "scripts/Genotyping_Helpers.R"), verbose=FALSE)
     source(file.path("/virdir/Backup/RP3_analysis/BBMRIomics/BBMRIomics/inst", "scripts/Genotyping_Helpers.R"), verbose=FALSE)
@@ -37,14 +37,14 @@ if (is.null(opt$typex)){
 }
 
 if (!is.null(opt$filex)) {
-    if(!file.exists(opt$filex)){        
+    if(!file.exists(opt$filex)){
         print_help(opt_parser)
         stop("filex does not exists!", call.=FALSE)
     }
 }
 
 if (!is.null(opt$filey)) {
-    if(!file.exists(opt$filey)){        
+    if(!file.exists(opt$filey)){
         print_help(opt_parser)
         stop("filey does not exists!", call.=FALSE)
     }
@@ -60,9 +60,10 @@ opt$cohort <- match.arg(opt$cohort, choices=c("ALL", "CODAM", "LL", "LLS", "NTR"
 
 
 suppressPackageStartupMessages({
-    library(BBBMRIomics)
+    library(BBMRIomics)
     ##source(file.path(path.package("BBMRIomics"), "scripts/Genotyping_Helpers.R"), verbose=FALSE)
     source(file.path("/virdir/Backup/RP3_analysis/BBMRIomics/BBMRIomics/inst", "scripts/Genotyping_Helpers.R"), verbose=FALSE)
+    RP3_MDB <- "http://metadatabase.bbmrirp3-lumc.surf-hosted.nl/bios/"
 })
 
 opt <- list()
@@ -80,11 +81,10 @@ register(MulticoreParam(22))
 genotyping(typex=opt$typex, typey=opt$typey, filex=opt$filex, filey=opt$filey, cohort=opt$cohort, out=opt$out, verbose=opt$verbose)
 
 
-## typex <- "DNAm"
-## typey <- "DNAm"
+typex <- "DNAm"
+typey <- "GoNL"
 ## filex <- NULL
 ## filey <- NULL
-## cohort <- "ALL"
-## verbose <- TRUE
-## out <- "/virdir/Backup/RP3_analysis/SwapDetection/"
-
+cohort <- "PAN"
+verbose <- TRUE
+out <- "/virdir/Backup/RP3_analysis/SwapDetection/"

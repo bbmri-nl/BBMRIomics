@@ -6,6 +6,7 @@ DNAmCalls <- function(cohort, verbose=FALSE, maxbatch=500){
         require(DNAmArray)
         require(BiocParallel)
         require(FDb.InfiniumMethylation.hg19)
+        require(omicsPrint)
     })
 
     samplesheets <- getView("methylationSamplesheet", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB, verbose=verbose)
@@ -21,10 +22,6 @@ DNAmCalls <- function(cohort, verbose=FALSE, maxbatch=500){
     runs <- getView("getMethylationRuns", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB, verbose=verbose)
     drop <- runs$run_id[runs$qc == "bad quality"]
     targets <- samplesheets[!(samplesheets %in% drop),]
-
-    if(cohort == "NTR") {
-        targets <- targets[targets$run_id != "9340996015_R06C02", ] ##all NA's?
-    }
 
     if(cohort != "ALL")
         targets <- targets[targets$biobank_id == cohort,]
@@ -383,3 +380,6 @@ genotyping <- function(typex, typey, filex, filey, cohort, out, verbose) {
     }
 
 }
+
+
+
