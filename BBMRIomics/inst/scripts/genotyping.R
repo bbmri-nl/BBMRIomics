@@ -3,7 +3,7 @@
 suppressPackageStartupMessages({
     require(optparse)
     require(BiocParallel)
-    require(BBBMRIomics)
+    require(BBMRIomics)
     ##source(file.path(path.package("BBMRIomics"), "scripts/Genotyping_Helpers.R"), verbose=FALSE)
     source(file.path("/virdir/Backup/RP3_analysis/BBMRIomics/BBMRIomics/inst", "scripts/Genotyping_Helpers.R"), verbose=FALSE)
 })
@@ -59,8 +59,7 @@ if (is.null(opt$typey)) {
 opt$cohort <- match.arg(opt$cohort, choices=c("ALL", "CODAM", "LL", "LLS", "NTR", "PAN", "RS"))
 
 
-suppressPackageStartupMessages({
-    library(BBMRIomics)
+suppressPackageStartupMessages({  
     ##source(file.path(path.package("BBMRIomics"), "scripts/Genotyping_Helpers.R"), verbose=FALSE)
     source(file.path("/virdir/Backup/RP3_analysis/BBMRIomics/BBMRIomics/inst", "scripts/Genotyping_Helpers.R"), verbose=FALSE)
     RP3_MDB <- "http://metadatabase.bbmrirp3-lumc.surf-hosted.nl/bios/"

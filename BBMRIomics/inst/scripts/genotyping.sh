@@ -3,7 +3,7 @@
 # Genotyping
 #
 # 2017-06-06, M. van Iterson <m.van_iterson@lumc.nl>
-RSCRIPT=Rscript
+RSCRIPT=/usr/lib64/microsoft-r/3.3/lib64/R/bin/Rscript
 COHORTS=(PAN LL LLS RS CODAM NTR)
 TYPES=(DNAm RNA HRC GoNL)
 OUT=/virdir/Backup/RP3_analysis/SwapDetection/
@@ -23,4 +23,4 @@ $RSCRIPT genotyping.R --typex RNA --typey HRC --cohort ALL --out ${OUT} --filex 
 $RSCRIPT genotyping.R --typex RNA --typey GoNL --cohort $cohort
 $RSCRIPT genotyping.R --typex DNAm --typey HRC --cohort ALL --out ${OUT}
 $RSCRIPT genotyping.R --typex DNAm --typey GoNL --cohort ALL
-x
+
