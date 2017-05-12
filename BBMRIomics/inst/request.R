@@ -147,7 +147,7 @@ dim(gonl)
 
 fastq <- getView("getFastq", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
 gonl <- merge(gonl, fastq, by="ids")
-dim(gonl) 
+dim(gonl)
 ##[1] 516  74
 
 ##not for all gonl_id's there is RNAseq data available
@@ -156,8 +156,8 @@ dim(gonl)
 head(gonl)
 
 files <- c(gonl$R1[1], gonl$R2[1])
-srm.path <- file.path(dirname(files[1])) 
-srm.path <- gsub("srm.*nl", SRM_BASE, srm.path) ##for curl access with need slightly different url                      
+srm.path <- file.path(dirname(files[1]))
+srm.path <- gsub("srm.*nl", SRM_BASE, srm.path) ##for curl access with need slightly different url
 files <- basename(files)
 srm.path
 files
@@ -271,7 +271,7 @@ doc <- BBMRIomics:::.getDoc(id, usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
 if(!is.null(doc$phenotype)) stop("has already phenotype info")
 
 ph <- c(gonl[i, grepl("Age|Sex", colnames(gonl))], pheno)
-    
+
 doc$phenotype <- ph
 doc$phenotype
 
@@ -281,7 +281,44 @@ BBMRIomics:::.validateDoc(doc, SCHEMA=file.path(VM_BASE_ANALYSIS, "BBMRIomics/co
 ##Verify mismatches
 ##
 
-files <- dir("/virdir/Backup/RP3_analysis/SwapDetection/", pattern="DNAm-DNAm.*.txt$", full.names=TRUE)
-mm <- read.table(files[1], header=TRUE, sep="\t")
+rbind.all.columns <- function(x, y) {
+
+    x.diff <- setdiff(colnames(x), colnames(y))
+    y.diff <- setdiff(colnames(y), colnames(x))
+
+    x[, c(as.character(y.diff))] <- NA
+
+    y[, c(as.character(x.diff))] <- NA
+
+    return(rbind(x, y))
+}
 
 
+path <- "/media/mvaniterson/Storage/beamer"
+
+for(cohort in c("PAN", "CODAM", "RS", "LL", "LLS", "NTR")){
+
+    files <- dir(file.path(path, "SwapDetection/"), pattern="ALL.txt$", full.names=TRUE)
+    files <- c(files,  dir(file.path(path, "SwapDetection/"), pattern=paste0(cohort, ".txt$"), full.names=TRUE))
+    message(files)
+    
+    mm <- read.table(files[1], header=TRUE, sep="\t")
+    mm$file <- basename(files[1])
+    for(i in 2:length(files)) {
+        m <- read.table(files[i], header=TRUE, sep="\t")
+        m$file <- basename(files[i])
+        mm <- rbind.all.columns(mm, m)
+    }
+
+    view <- mm[grepl(cohort, mm$ids.x) | grepl(cohort, mm$ids.y) | grepl(cohort, mm$colnames.x) | grepl(cohort, mm$colnames.y), ]
+
+    write.table(view[order(view$ids.x), ], file=file.path(path, paste0("SwapDetection/", cohort, "_view.txt")), sep=",", col.names=TRUE, row.names=FALSE)
+}
+
+
+##Remove invalid idat
+id <- "9340996015_R06C02"
+library(BBMRIomics)
+RP3_MDB <- "http://metadatabase.bbmrirp3-lumc.surf-hosted.nl/bios/"
+runs <- getView("getMethylationRuns", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
+subset(runs, grepl(id, run_id))
