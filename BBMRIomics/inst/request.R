@@ -299,7 +299,7 @@ path <- "/media/mvaniterson/Storage/beamer"
 for(cohort in c("PAN", "CODAM", "RS", "LL", "LLS", "NTR")){
 
     files <- dir(file.path(path, "SwapDetection/"), pattern="ALL.txt$", full.names=TRUE)
-    files <- c(files,  dir(file.path(path, "SwapDetection/"), pattern=paste0(cohort, ".txt$"), full.names=TRUE))
+    files <- c(files,  dir(file.path(path, "SwapDetection/"), pattern=paste0(cohort, "txt$"), full.names=TRUE))
     message(files)
     
     mm <- read.table(files[1], header=TRUE, sep="\t")
@@ -310,7 +310,8 @@ for(cohort in c("PAN", "CODAM", "RS", "LL", "LLS", "NTR")){
         mm <- rbind.all.columns(mm, m)
     }
 
-    view <- mm[grepl(cohort, mm$ids.x) | grepl(cohort, mm$ids.y) | grepl(cohort, mm$colnames.x) | grepl(cohort, mm$colnames.y), ]
+    ptrn <- paste0("^",cohort,"-")
+    view <- mm[grepl(ptrn, mm$ids.x) | grepl(ptrn, mm$ids.y) | grepl(ptrn, mm$colnames.x) | grepl(ptrn, mm$colnames.y), ]
 
     write.table(view[order(view$ids.x), ], file=file.path(path, paste0("SwapDetection/", cohort, "_view.txt")), sep=",", col.names=TRUE, row.names=FALSE)
 }

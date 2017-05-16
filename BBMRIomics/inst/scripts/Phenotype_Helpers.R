@@ -144,8 +144,13 @@ cleanPhenotypes <- function() {
 
     phenotypes <- phenotypes[, !(colnames(phenotypes) %in% c("CHCM", "CH","HDW"))]
 
-    ##phenotypes <- .addUnits(phenotypes)
+    ##Calculate LDLchol, for those missing, from Tot, HDL and TriGlycerides
+    ##http://www.gpnotebook.co.uk/simplepage.cfm?ID=x20030114211535665170
+    LDLchol <- phenotypes$TotChol - phenotypes$HDLchol - (phenotypes$Triglycerides/2.2)
+    phenotypes$LDLchol[is.na(phenotypes$LDLchol)] <- LDLchol[is.na(phenotypes$LDLchol)]
 
+    ##phenotypes <- .addUnits(phenotypes)
+    
     invisible(phenotypes)
 }
 
