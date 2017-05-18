@@ -3,7 +3,7 @@
 suppressPackageStartupMessages({
     require(optparse)
     require(BiocParallel)
-    require(BBBMRIomics)
+    require(BBMRIomics)
     ##source(file.path(path.package("BBMRIomics"), "scripts/Genotyping_Helpers.R"), verbose=FALSE)
     source(file.path("/virdir/Backup/RP3_analysis/BBMRIomics/BBMRIomics/inst", "scripts/Genotyping_Helpers.R"), verbose=FALSE)
 })
@@ -58,31 +58,28 @@ if (is.null(opt$typey)) {
 
 opt$cohort <- match.arg(opt$cohort, choices=c("ALL", "CODAM", "LL", "LLS", "NTR", "PAN", "RS"))
 
-
-suppressPackageStartupMessages({
-    library(BBMRIomics)
-    ##source(file.path(path.package("BBMRIomics"), "scripts/Genotyping_Helpers.R"), verbose=FALSE)
+suppressPackageStartupMessages({  
     source(file.path("/virdir/Backup/RP3_analysis/BBMRIomics/BBMRIomics/inst", "scripts/Genotyping_Helpers.R"), verbose=FALSE)  
 })
 
-opt <- list()
-opt$typex <- "GoNL"
-opt$typey <- "HRC"
-opt$filex <- "/virdir/Scratch/RP3_analysis/SwapDetection/HighQualPositions.GCRh37.bed"
-opt$filey <- NULL
-opt$cohort <- "ALL"
-opt$verbose <- TRUE
-opt$out <- "/virdir/Backup/RP3_analysis/SwapDetection/"
+## opt <- list()
+## opt$typex <- "GoNL"
+## opt$typey <- "HRC"
+## opt$filex <- "/virdir/Scratch/RP3_analysis/SwapDetection/HighQualPositions.GCRh37.bed"
+## opt$filey <- NULL
+## opt$cohort <- "ALL"
+## opt$verbose <- TRUE
+## opt$out <- "/virdir/Backup/RP3_analysis/SwapDetection/"
 
 library(BiocParallel)
 register(MulticoreParam(22))
 
 genotyping(typex=opt$typex, typey=opt$typey, filex=opt$filex, filey=opt$filey, cohort=opt$cohort, out=opt$out, verbose=opt$verbose)
 
-## typex <- "DNAm"
+## typex <- "HRC"
 ## typey <- "GoNL"
-## ## filex <- NULL
-## ## filey <- NULL
-## cohort <- "PAN"
+## filex <- "/virdir/Scratch/RP3_analysis/SwapDetection/HighQualPositions.GCRh37.bed"
+## filey <- NULL
+## cohort <- "ALL"
 ## verbose <- TRUE
 ## out <- "/virdir/Backup/RP3_analysis/SwapDetection/"
