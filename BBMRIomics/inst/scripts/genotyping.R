@@ -58,11 +58,9 @@ if (is.null(opt$typey)) {
 
 opt$cohort <- match.arg(opt$cohort, choices=c("ALL", "CODAM", "LL", "LLS", "NTR", "PAN", "RS"))
 
-
 suppressPackageStartupMessages({  
     ##source(file.path(path.package("BBMRIomics"), "scripts/Genotyping_Helpers.R"), verbose=FALSE)
     source(file.path("/virdir/Backup/RP3_analysis/BBMRIomics/BBMRIomics/inst", "scripts/Genotyping_Helpers.R"), verbose=FALSE)
-    RP3_MDB <- "http://metadatabase.bbmrirp3-lumc.surf-hosted.nl/bios/"
 })
 
 ## opt <- list()
@@ -79,10 +77,10 @@ register(MulticoreParam(22))
 
 genotyping(typex=opt$typex, typey=opt$typey, filex=opt$filex, filey=opt$filey, cohort=opt$cohort, out=opt$out, verbose=opt$verbose)
 
-## typex <- "DNAm"
+## typex <- "HRC"
 ## typey <- "GoNL"
-## ## filex <- NULL
-## ## filey <- NULL
-## cohort <- "PAN"
+## filex <- "/virdir/Scratch/RP3_analysis/SwapDetection/HighQualPositions.GCRh37.bed"
+## filey <- NULL
+## cohort <- "ALL"
 ## verbose <- TRUE
 ## out <- "/virdir/Backup/RP3_analysis/SwapDetection/"

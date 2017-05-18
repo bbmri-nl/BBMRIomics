@@ -1,9 +1,11 @@
 
 SRC=/virdir/Scratch/RP3_data
 BIOBANKS=RS PAN CODAM LLS LL NTR
-MDB=https://metadatabase.bbmrirp3-lumc.surf-hosted.nl:6984/bios
-RDB=https://metadatabase.bbmrirp3-lumc.surf-hosted.nl:6984/rp3_analysis
-USRPWD='mvaniterson:m0l3p1'
+
+USRPWD=''
+
+MDB=https://metadatabase.bbmrirp3-lumc.surf-hosted.nl/bios
+RDB=https://metadatabase.bbmrirp3-lumc.surf-hosted.nl/rp3_analysis
 
 R_PACKAGE_DIR=/opt/R/microsoft-r/3.3/lib64/R/library/BBMRIomics
 
