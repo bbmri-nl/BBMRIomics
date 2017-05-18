@@ -145,9 +145,12 @@ cleanPhenotypes <- function() {
     phenotypes <- phenotypes[, !(colnames(phenotypes) %in% c("CHCM", "CH","HDW"))]
 
     ##Calculate LDLchol, for those missing, from Tot, HDL and TriGlycerides
-    ##http://www.gpnotebook.co.uk/simplepage.cfm?ID=x20030114211535665170
-    LDLchol <- phenotypes$TotChol - phenotypes$HDLchol - (phenotypes$Triglycerides/2.2)
+    ##http://www.gpnotebook.co.uk/simplepage.cfm?ID=x20030114211535665170    
+    LDLchol <- phenotypes$TotChol - phenotypes$HDLchol - (phenotypes$Triglycerides/2.2)    
+    phenotypes$LDLcholMethod[is.na(phenotypes$LDLchol)] <- "Friedewald estimation"    
     phenotypes$LDLchol[is.na(phenotypes$LDLchol)] <- LDLchol[is.na(phenotypes$LDLchol)]
+    phenotypes$LDLcholMethod[phenotypes$Triglycerides > 4.52 & phenotypes$LDLcholMethod == "Friedewald estimation"] <- NA    
+    phenotypes$LDLchol[phenotypes$Triglycerides > 4.52 &  phenotypes$LDLcholMethod == "Friedewald estimation"] <- NA
 
     ##phenotypes <- .addUnits(phenotypes)
     
@@ -292,3 +295,4 @@ if(FALSE) {
     phenotypes[dates==4, grep("Sampling_Date", colnames(phenotypes))]
 
 }
+

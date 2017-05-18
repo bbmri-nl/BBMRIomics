@@ -301,7 +301,7 @@ for(cohort in c("PAN", "CODAM", "RS", "LL", "LLS", "NTR")){
     files <- dir(file.path(path, "SwapDetection/"), pattern="ALL.txt$", full.names=TRUE)
     files <- c(files,  dir(file.path(path, "SwapDetection/"), pattern=paste0(cohort, "txt$"), full.names=TRUE))
     message(files)
-    
+
     mm <- read.table(files[1], header=TRUE, sep="\t")
     mm$file <- basename(files[1])
     for(i in 2:length(files)) {
@@ -320,6 +320,40 @@ for(cohort in c("PAN", "CODAM", "RS", "LL", "LLS", "NTR")){
 ##Remove invalid idat
 id <- "9340996015_R06C02"
 library(BBMRIomics)
-RP3_MDB <- "http://metadatabase.bbmrirp3-lumc.surf-hosted.nl/bios/"
 runs <- getView("getMethylationRuns", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
 subset(runs, grepl(id, run_id))
+
+
+##something wrong with this one AC43B7ACXX-5-6?
+runs <- getView("getRNASeqRuns", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
+
+subset(runs, run_id == "AC43B7ACXX-5-6")
+
+NTR-A969D-NT0027660-10392
+bam <- getView("getBAM", usrpwd=RP3_MDB_USRPWD, url=RP3_RDB)
+
+subset(bam, ids=="AC43B7ACXX-5-6")
+
+bam$path[159]
+
+file <- basename(bam$path[159])
+srm.path <- file.path(dirname(bam$path[159]))
+srm.path <- gsub("srm.*nl", SRM_BASE, srm.path) ##for curl access with need slightly different url
+srm.path
+file
+SRM2VM(srm.path, file, vm.path="~", proxy=GRID_PROXY)
+
+
+##CODAM genotype and sex
+##Joost Verlouw
+##Thu May 18 10:52:15 2017
+library(BBMRIomics)
+geno <- getView("getImputations", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
+pheno <- getView("allPhenotypes", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
+
+geno <- subset(geno, biobank_id == "CODAM")
+
+geno2pheno <- merge(geno, pheno, all.x=TRUE, by="ids")
+str(geno2pheno)
+
+geno2pheno[,c("imputation_id", "imputation_reference", "Sex", "ids")]

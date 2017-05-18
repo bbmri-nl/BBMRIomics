@@ -62,18 +62,17 @@ opt$cohort <- match.arg(opt$cohort, choices=c("ALL", "CODAM", "LL", "LLS", "NTR"
 suppressPackageStartupMessages({
     library(BBMRIomics)
     ##source(file.path(path.package("BBMRIomics"), "scripts/Genotyping_Helpers.R"), verbose=FALSE)
-    source(file.path("/virdir/Backup/RP3_analysis/BBMRIomics/BBMRIomics/inst", "scripts/Genotyping_Helpers.R"), verbose=FALSE)
-    RP3_MDB <- "http://metadatabase.bbmrirp3-lumc.surf-hosted.nl/bios/"
+    source(file.path("/virdir/Backup/RP3_analysis/BBMRIomics/BBMRIomics/inst", "scripts/Genotyping_Helpers.R"), verbose=FALSE)  
 })
 
-## opt <- list()
-## opt$typex <- "DNAm"
-## opt$typey <- "HRC"
-## opt$filex <- NULL ##"/virdir/Scratch/RP3_analysis/SwapDetection/output.vcf" ##"/virdir/Scratch/RP3_analysis/SwapDetection/HighQualPositions.GCRh37.bed"
-## opt$filey <- NULL
-## opt$cohort <- "ALL"
-## opt$verbose <- TRUE
-## opt$out <- "/virdir/Backup/RP3_analysis/SwapDetection/"
+opt <- list()
+opt$typex <- "GoNL"
+opt$typey <- "HRC"
+opt$filex <- "/virdir/Scratch/RP3_analysis/SwapDetection/HighQualPositions.GCRh37.bed"
+opt$filey <- NULL
+opt$cohort <- "ALL"
+opt$verbose <- TRUE
+opt$out <- "/virdir/Backup/RP3_analysis/SwapDetection/"
 
 library(BiocParallel)
 register(MulticoreParam(22))

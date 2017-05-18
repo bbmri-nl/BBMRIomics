@@ -19,14 +19,14 @@ library(omicsPrint)
 
 preprocess <- function(sumExp, dropXY=FALSE) {
     require(SummarizedExperiment)
-    require(DNAmArray)  
+    require(DNAmArray)
 
     message("[preprocess] drop Zhou probes...")
     data(hm450.manifest.pop.GoNL) ##From DNAmArray
-    
+
     hm450.manifest.pop.GoNL
     hm450.manifest.pop.GoNL <- hm450.manifest.pop.GoNL[!is.na(hm450.manifest.pop.GoNL$MASK.general.GoNL) &
-                                                   hm450.manifest.pop.GoNL$MASK.general.GoNL == TRUE, ]
+                                                       hm450.manifest.pop.GoNL$MASK.general.GoNL == TRUE, ]
 
     sumExp <- sumExp[!(names(sumExp) %in% names(hm450.manifest.pop.GoNL)),]
 
@@ -34,7 +34,7 @@ preprocess <- function(sumExp, dropXY=FALSE) {
         message("[preprocess] drop XY probes...")
         sumExp <- sumExp[!(seqnames(sumExp) %in% c("chrX", "chrY")),]
     }
-    
+
     sumExp
 }
 
@@ -399,7 +399,7 @@ write.table(predicted, file=file.path(path, "WBCC_DNAm.csv"), sep=",", quote=FAL
 ## Model Selection and Validation ##
 
 First we need to find out which algorithm and which number of features
-to use. 
+to use.
 
 ```{r}
 
@@ -524,16 +524,62 @@ ggsave(file.path(path, "WBCC_con.eps"))
 library(ggplot2)
 library(ggsci)
 
-d <- data.frame(x = c(rowSums(d1), rowSums(d2)))                
+d <- data.frame(x = c(rowSums(d1), rowSums(d2)))
 d$type <- c(rep("DNAm", nrow(d1)), rep("RNAseq", nrow(d2)))
 
 gp <- ggplot(d, aes(x=x))
-gp <- gp + geom_histogram(colour="black", fill = "white") + xlab("Total Percentage") 
+gp <- gp + geom_histogram(colour="black", fill = "white") + xlab("Total Percentage")
 gp + facet_grid(.~type) + theme_bw() + scale_color_npg()
 ggsave(file.path(path, "WBCC_total.eps"))
 
 ```
 
+
+# Estimate cell composition Houseman approach #
+
+```{r}
+require(BBMRIomics)
+require(minfi)
+require(DNAmArray)
+require(BiocParallel)
+require(FDb.InfiniumMethylation.hg19)
+verbose <- TRUE
+register(MulticoreParam(20))
+
+samplesheets <- getView("methylationSamplesheet", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB, verbose=verbose)
+
+##get location idat-files on VM
+path450k <- file.path(VM_BASE_DATA, "IlluminaHumanMethylation450k")
+samplesheets$biobank_id <- gsub("-.*$", "", samplesheets$ids)
+samplesheets$Basename <- with(samplesheets, file.path(path450k, "raw", Sentrix_Barcode,
+                                                      paste(Sentrix_Barcode, Sentrix_Position, sep = "_")))
+
+samplesheets <- samplesheets[!duplicated(samplesheets$run_id),]
+
+runs <- getView("getMethylationRuns", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB, verbose=verbose)
+runs <- runs[runs$qc == "passed",]
+
+targets <- samplesheets[samplesheets$run_id %in% runs$run_id, ]
+
+for(biobank in c("RS", "NTR")) {
+    target <- subset(targets, biobank_id == biobank)
+    maxbatch <- 500
+    RGset <- lapply(split(target, 1+(1:nrow(target))%/%maxbatch), function(targetsbatch) {
+        read.metharray.exp.par(targetsbatch)        
+    })
+    
+    rgset <- RGset[[1]]
+    for(i in 2:length(RGset))
+        rgset <- combine(rgset, RGset[[i]])
+
+    counts <- estimateCellCounts(rgset, meanPlot = FALSE)
+    rownames(counts) <- pData(phenoData(rgset))$uuid
+    head(counts)
+    write.table(round(counts, 4), file=file.path("/virdir/Scratch/RP3_analysis/imputed_phenotypes", paste0("WBCC_DNAm_Houseman_", biobank, ".csv")), sep=",", quote=FALSE)
+    gc()
+}
+
+```
 
 ## Try out `sparklyr` ##
 
@@ -558,7 +604,7 @@ data[1:5, 1:5]
 data_tbl <- copy_to(sc, data)
 
 partitions <- data %>%
-  sdf_partition(training = 2/3, test = 1/3, seed = 1099)
+    sdf_partition(training = 2/3, test = 1/3, seed = 1099)
 
 fit <- ml_linear_regression(response = "phenotype", features = c("wt", "cyl"))
 
@@ -566,5 +612,3 @@ alpha = 0,
 lambda = 0
 
 ```
-
-
