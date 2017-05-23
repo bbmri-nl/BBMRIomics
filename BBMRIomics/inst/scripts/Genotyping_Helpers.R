@@ -100,8 +100,9 @@ DNACalls <- function(cohort, snps=NULL, DNAFile, type, verbose){
 
 relabelIntra <- function(x) {
     x <- gsub("original|has monozygotic twin|has repeated measurements|merged|replicate|rerun", "identical", x)
-    x <- gsub("has child|has parent", "parentoffspring", x)
-    x <- gsub("has dizygotic twin|has sib", "sibship", x)
+    ##x <- gsub("has child|has parent", "parentoffspring", x)
+    ##x <- gsub("has dizygotic twin|has sib", "sibship", x)
+    x <- gsub("inferred 1st degree family|2nd degree family|has child|has parent|has dizygotic twin|has sib", "family", x)    
     as.character(x)
 }
 
@@ -309,11 +310,13 @@ genotyping <- function(typex, typey, filex, filey, cohort, out, verbose) {
     type <- paste(typex, typey, sep="-")
 
     relations <- getRelations(type, verbose=verbose)
-    if(typex == typey) {
+
+   if(typex == typey) {
         relations$relation_type <- relabelIntra(relations$relation_type)
         rHash <- hashRelations(relations, idx.col="idx.x", idy.col="idx.y")
     } else {
-        relations$relation_type <- relabelInter(relations$relation_type)
+        ##relations$relation_type <- relabelInter(relations$relation_type)
+        relations$relation_type <- relabelIntra(relations$relation_type)
         rHash <- hashRelations(relations, idx.col="idx", idy.col="idy")
     }
 
@@ -408,7 +411,7 @@ genotyping <- function(typex, typey, filex, filey, cohort, out, verbose) {
             }
 
             mm <- merge(mm, runs[, c("run_id", "ids")], by.x="colnames.y", by.y="run_id")
-         
+
         }
 
         mm <- mm[, c( "mean", "var", "relation", "predicted", "colnames.x", "ids.x", "colnames.y", "ids.y")]
