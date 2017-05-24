@@ -112,7 +112,6 @@ relabelInter <- function(x) {
     as.character(x)
 }
 
-
 getRelations <- function(type, verbose){
 
     ##obtain relations

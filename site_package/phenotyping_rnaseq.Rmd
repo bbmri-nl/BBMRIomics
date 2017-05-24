@@ -67,6 +67,7 @@ path <- "/virdir/Scratch/RP3_analysis/imputed_phenotypes"
 
 ```{r}
 library(BBMRIomics)
+library(omicsPrint)
 data(rnaSeqData_ReadCounts_BIOS_cleaned)
 covariates <- as.data.frame(colData(counts)[, c("Sex", "Sampling_Age", "Smoking", "Lymph_Perc","Mono_Perc", "Eos_Perc", "Neut_Perc")])
 ##missing covariate summary
@@ -91,9 +92,6 @@ gp + facet_wrap(~biobank_id)
 ggsave(file.path(path, "Age_RNAseq_distr.eps"))
 
 ```
-
-
-
 
 # Predicting Sex #
 ## Model Selection and Validation ##
