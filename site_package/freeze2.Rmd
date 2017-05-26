@@ -105,13 +105,13 @@ famSizes <- table(relations$family_id)
 table(famSizes)
 
 head(names(famSizes[famSizes==2]))
-subset(relations, family_id == 23)
+subset(relations, family_id == 25)
 head(names(famSizes[famSizes==4]))
-subset(relations, family_id == 1)
+subset(relations, family_id == 3)
 head(names(famSizes[famSizes==12]))
-subset(relations, family_id == 151)
+subset(relations, family_id == 152)
 head(names(famSizes[famSizes==28]))
-subset(relations, family_id == 245)
+subset(relations, family_id == 246)
 ```
 
 Now we can selected the maximal unrelated individuals e.g. in case of
@@ -174,6 +174,12 @@ dim(dnamF2)
 freeze2 <- merge(rnaF2[,c("ids", "run_id")], dnamF2[,c("ids", "run_id")], by="ids", suffixes=c("_rna","_dnam"))
 head(freeze2)
 dim(freeze2)
+
+##double check
+relations <- getView("getRelations", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
+relations <- subset(relations, !is.na(relation_id))
+relations <- subset(relations, ids %in% freeze2$ids)
+intersect(relations$ids, relations$relation_id) ##intersect is empty!
 
 ```
 

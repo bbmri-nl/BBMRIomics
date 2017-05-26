@@ -62,6 +62,11 @@ RNACalls <- function(vcfFile, verbose){
 
     rnaCalls[rnaCalls == 0] <- NA
 
+    ##drop 'bad quality', 'contaminated' and 'genotype_discordance'
+    runs <- getView("getRNASeqRuns", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB, verbose=verbose)
+    runs <- runs[runs$qc == "passed",]
+    rnaCalls <- rnaCalls[, colnames(rnaCalls) %in% runs$run_id]
+    
     rnaCalls
 }
 
@@ -163,7 +168,8 @@ getRelations <- function(type, verbose){
             relx <- relx[!duplicated(relx$idx), ]
 
             rely <- getView("getImputations", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB, verbose=TRUE)
-            rely <- subset(rely, !is.na(gonl_id))
+            ##do not remove samples without gonl_id still can have imputation_id mapped to gonl!!!
+            ##rely <- subset(rely, !is.na(gonl_id))
             colnames(rely)[colnames(rely) == "gonl_id"] <- "idy"
 
         } else if( type == "DNAm-HRC" | type == "HRC-DNAm") {
@@ -193,7 +199,7 @@ getRelations <- function(type, verbose){
             relx <- relx[!duplicated(relx$idx), ]
 
             rely <- getView("getImputations", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB, verbose=TRUE)
-            rely <- subset(rely, !is.na(gonl_id))
+            ##rely <- subset(rely, !is.na(gonl_id))
             colnames(rely)[colnames(rely) == "gonl_id"] <- "idy"
 
         } else if( type == "HRC-GoNL" | type == "GoNL-HRC") {
@@ -203,7 +209,7 @@ getRelations <- function(type, verbose){
             colnames(relx)[colnames(relx) == "imputation_id"] <- "idx"
 
             rely <- getView("getImputations", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB, verbose=TRUE)
-            rely <- subset(rely, !is.na(gonl_id))
+            ##rely <- subset(rely, !is.na(gonl_id))
             colnames(rely)[colnames(rely) == "gonl_id"] <- "idy"
 
         }

@@ -77,7 +77,7 @@ register(MulticoreParam(22))
 genotyping(typex=opt$typex, typey=opt$typey, filex=opt$filex, filey=opt$filey, cohort=opt$cohort, out=opt$out, verbose=opt$verbose)
 
 ## typex <- "HRC"
-## typey <- "GoNL"
+## typey <- "HRC"
 ## filex <- "/virdir/Scratch/RP3_analysis/SwapDetection/HighQualPositions.GCRh37.bed"
 ## filey <- NULL
 ## cohort <- "ALL"
