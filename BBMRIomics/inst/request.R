@@ -357,3 +357,24 @@ geno2pheno <- merge(geno, pheno, all.x=TRUE, by="ids")
 str(geno2pheno)
 
 geno2pheno[,c("imputation_id", "imputation_reference", "Sex", "ids")]
+
+
+##Check sex
+##PB 
+library(BBMRIomics)
+
+load(file.path(VM_BASE_DATA, "RNASeq/v2.1.3/gene_read/", paste0("rnaSeqData_ReadCounts_GoNL.RData")))
+
+cnts <- assays(counts)$data[rownames(counts) %in% c("ENSG00000229807", "ENSG00000129824"),]
+
+cex <- rep(1, ncol(counts))
+cex[counts$gonl_id %in% c("gonl-186c", "gonl-228c", "gonl-231c", "gonl-24c")] <- 3
+table(cex)
+sex <- ifelse(counts$Sex == "Female", 1, 2)
+
+pdf("~/gonlxistandrps4y1.pdf")
+plot(log2(1+t(cnts)), col=adjustcolor(sex, alpha.f = 0.3), pch=16, cex=cex, ylab="XIST (ENSG00000229807)", xlab=" RPS4Y1 (ENSG00000129824)", main="log2(1+raw counts)")
+dev.off()
+
+
+

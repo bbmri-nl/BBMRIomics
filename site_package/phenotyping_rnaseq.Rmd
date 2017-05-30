@@ -185,13 +185,22 @@ number and frequencies of missclassified samples.
 library(BiocParallel)
 register(MulticoreParam(10))
 nrep <- 25
-predicted <- bplapply(1:nrep, function(x) phenotyping(phenotype, features, methods = "ridge", ntop=50, verbose=FALSE)$predicted)
+predicted <- bplapply(1:nrep, function(x) phenotyping(phenotype, features, methods = "lasso", ntop=25, verbose=FALSE)$predicted)
 predicted <- do.call('cbind', predicted)
+
+rownames(predicted) <- names(phenotype) <- colnames(features)
 
 missclassified <- (predicted != phenotype)[!is.na(phenotype), ]
 rownames(missclassified) <- colnames(features)[!is.na(phenotype)]
 missclassified <- missclassified[rowSums(missclassified) > 0,]
-100*rowSums(missclassified)/nrep
+missclass <- 100*rowSums(missclassified)/nrep
+missclass[missclass > 50]
+
+x <- cbind(predicted[rownames(predicted) %in% names(missclass[missclass > 50]), 1:5],
+      reported=as.character(phenotype[names(phenotype) %in% names(missclass[missclass > 50])])
+)
+ids <- getView("getIds", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB, verbose=FALSE)
+subset(ids, uuid %in% rownames(x))
 
 ```
 
@@ -278,7 +287,6 @@ plot(pc$x, col=adjustcolor(cols, alpha.f=0.3), pch=16)
 ## Detect outliers ##
 
 ```{r, eval=FALSE}
-
 library(BiocParallel)
 register(MulticoreParam(10))
 nrep <- 100
@@ -287,14 +295,18 @@ predicted <- do.call('cbind', predicted)
 
 residuals <- predicted - phenotype
 
-popo <- which(rowSums(abs(residuals) > mean(residuals, na.rm=TRUE) + 3*sd(residuals, na.rm=TRUE)) > 10)
+popo <- which(rowSums(abs(residuals) > mean(residuals, na.rm=TRUE) + 3*sd(residuals, na.rm=TRUE)) > 50)
+
+names(residuals) <- colnames(features)
+
+names(residuals)[popo]
 
 library(matrixStats)
 mns <- rowMeans(predicted)
 sds <- rowSds(predicted)
 col <- rep(1, length(mns))
 col[popo] <- 2
-plot(phenotype, mns, pch=16, cex=sds, col=adjustcolor(col, alpha.f=0.3), bty="n")
+plot(phenotype, mns, pch=16, cex=sds, col=adjustcolor(col, alpha.f=0.3), bty="n", xlab="reported age", ylab="average predicted age")
 abline(0, 1, col=4, lwd=2, lty=2)
 grid(col=1)
 

@@ -103,15 +103,14 @@ max(relations$family_id)
 
 famSizes <- table(relations$family_id)
 table(famSizes)
-
 head(names(famSizes[famSizes==2]))
-subset(relations, family_id == 25)
+subset(relations, family_id == 1)
 head(names(famSizes[famSizes==4]))
-subset(relations, family_id == 3)
+subset(relations, family_id == 7)
 head(names(famSizes[famSizes==12]))
-subset(relations, family_id == 152)
+subset(relations, family_id == 163)
 head(names(famSizes[famSizes==28]))
-subset(relations, family_id == 246)
+subset(relations, family_id == 259)
 ```
 
 Now we can selected the maximal unrelated individuals e.g. in case of

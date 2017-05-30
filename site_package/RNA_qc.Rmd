@@ -16,55 +16,20 @@ bibliography: BBMRIomics.bib
 
 ## Quality control ##
 
-***add description***
 
 ```{r}
-"some code"
-```
-
-
-## Sample swap detection ##
-
-***add description***
-
-
-```{r, eval=FALSE}
 library(BBMRIomics)
 rna <- getView("getRNASeqRuns", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
 rna <- rna[!duplicated(rna$run_id),] ##drop overlapping freezes
-rna <- subset(rna, qc == "passed") ##keep those passing qc
-dim(rna)
-write.table(rna$run_id, file="~/runids.txt", row.names=FALSE, col.names=FALSE, quote=FALSE)
+table(rna$qc)
 
-runids <- read.table("~/runids.txt", header=FALSE)$V1
-length(runids)
-##run on shark variantcalling-script!
-## AC43B7ACXX-5-6 no snps called????
 
-source(file.path(path.package("BBMRIomics"), "scripts/Genotyping_Helpers.R"), verbose=FALSE)
-source(file.path(VM_BASE_ANALYSIS, "BBMRIomics/BBMRIomics/inst", "scripts/Genotyping_Helpers.R"), verbose=FALSE)
-source(file.path(VM_BASE_ANALYSIS, "BBMRIomics/BBMRIomics/R", "Genotype_Helpers.R"), verbose=FALSE)
-library(VariantAnnotation)
-library(BiocParallel)
+library(BBMRIomics)
+dnam <- getView("getMethylationRuns", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
+dnam <- dnam[!duplicated(dnam$run_id),] ##drop overlapping freezes
+table(dnam$qc)
 
-RNAFile <- file.path(VM_BASE_ANALYSIS, "rnasnp", "RNAsnps50.vcf")
-RNAFile <- file.path(VM_BASE_ANALYSIS, "rnasnp", "RNAsnps2600.vcf")
-
-rnaCalls <- RNACalls(RNAFile, verbose=TRUE)
-colnames(rnaCalls) <- gsub("\\.variant.*$", "", colnames(rnaCalls))
-setdiff(runids, colnames(rnaCalls)) ##why are these missing bad quality?
 
 
 ```
 
-
-```{r, eval=FALSE}
-
-RNAFile <- file.path(VM_BASE_ANALYSIS, "rnasnp", "RNAsnps50.vcf")
-
-genotyping(typex="RNA", typey="RNA",  filex=RNAFile, filey=NULL, cohort="ALL", out=NULL, verbose=FALSE)
-
-genotyping(typex="RNA", typey="HRC",  filex=RNAFile, filey=NULL, cohort="ALL", out=NULL, verbose=FALSE)
-
-
-```

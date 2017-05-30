@@ -8,7 +8,10 @@ URL="srm://srm.grid.sara.nl/pnfs/grid.sara.nl/data/bbmri.nl/RP3/GWAS_ImputationG
 BIOBANK=( PAN LL LLS RS CODAM NTR_B37_Aff6_Epigen NTR_B37_AC_Epigen_CAUT )
 DATE=( 20140306 20140306 20140402 20140306 20140306 20140606 20140606 )
 MAF=0.05
-INFO=0.4
+CER=0.4
+
+#Certificate. Needed to download bam files from srm storage.  
+export X509_USER_PROXY=/home/miterson/x509up_u34722
 
 ( 
 
@@ -18,78 +21,60 @@ INFO=0.4
 ##make
 ##cd ..
 
-for i in `seq 1 2 3 4 5 6 7`;
+for i in `seq 1 7`;
 do
     echo "Biobank ${BIOBANK[i]}"
-    if [[ "${BIOBANK[i]}" =~ "NTR" ]] ; then
-         INSFILE="${URL}/NTR/${BIOBANK[i]}-imputed-${DATE[i]}.sample"
-     else
-         INSFILE="${URL}/${BIOBANK[i]}/${BIOBANK[i]}-imputed-${DATE[i]}.sample"
-    fi
-    OUTSFILE="$( basename $INSFILE)"
-    srmcp --server_mode=passive $INSFILE "file:///$OUTSFILE"
-
     for CHR in `seq 1 22`;
     do
         echo "Chromosome ${CHR}"
         if [[ "${BIOBANK[i]}" =~ "NTR" ]] ; then
-            INGFILE="${URL}/NTR/${BIOBANK[i]}-imputed-chr$CHR-${DATE[i]}"
+            INFILE="${URL}/NTR/${BIOBANK[i]}-imputed-chr$CHR-${DATE[i]}"
         else
-            INGFILE="${URL}/${BIOBANK[i]}/${BIOBANK[i]}-imputed-chr$CHR-${DATE[i]}"
+            INFILE="${URL}/${BIOBANK[i]}/${BIOBANK[i]}-imputed-chr$CHR-${DATE[i]}"
         fi
-	OUTGFILE="$( basename $INGFILE)"
+	OUTFILE="$( basename $INFILE)"
 
-        echo "copy file: ${INGFILE}"      
-        echo "to file: ${OUTGFILE}"      
+        echo "copy file: ${INFILE}"      
+        echo "to file: ${OUTFILE}"      
 	
-	srmcp --server_mode=passive $INGFILE "file:///$OUTGFILE"                    #using srmcp from lsg UI
-	srmcp --server_mode=passive ${INGFILE}".md5" "file:///${OUTGFILE}.md5"
-	srmcp --server_mode=passive ${INGFILE}"_info" "file:///${OUTGFILE}_info"
-	srmcp --server_mode=passive ${INGFILE}"_info.md5" "file:///${OUTGFILE}_info.md5"
+	srmcp --server_mode=passive $INFILE "file:///$OUTFILE"                    #using srmcp from lsg UI
+	srmcp --server_mode=passive ${INFILE}".md5" "file:///${OUTFILE}.md5"
+	srmcp --server_mode=passive ${INFILE}"_info" "file:///${OUTFILE}_info"
+	srmcp --server_mode=passive ${INFILE}"_info.md5" "file:///${OUTFILE}_info.md5"
 
-	MD5ORIG=$( cut -d ' ' -f 1 ${OUTGFILE}".md5")
-	MD5COPY=$(md5sum $OUTGFILE | cut -d ' ' -f 1)	
+	MD5ORIG=$( cut -d ' ' -f 1 ${OUTFILE}".md5")
+	MD5COPY=$(md5sum $OUTFILE | cut -d ' ' -f 1)	
       
 	if [ "$MD5ORIG" != "$MD5COPY" ]
 	then
-	    echo "MD5 mismatch on file: $OUTGFILE"  ##redo copying?
+	    echo "MD5 mismatch on file: $FILE"  ##redo copying?
 	fi
 
-	MD5ORIG=$( cut -d ' ' -f 1 ${OUTGFILE}"_info.md5")
-	MD5COPY=$(md5sum ${OUTGFILE}"_info" | cut -d ' ' -f 1)	
+	MD5ORIG=$( cut -d ' ' -f 1 ${OUTFILE}"_info.md5")
+	MD5COPY=$(md5sum ${OUTFILE}"_info" | cut -d ' ' -f 1)	
       
 	if [ "$MD5ORIG" != "$MD5COPY" ]
 	then
-	    echo "MD5 mismatch on file: ${OUTGFILE}_info"  ##redo copying?
+	    echo "MD5 mismatch on file: ${OUTFILE}_info"  ##redo copying?
 	fi
+
+        paste ${OUTFILE}"_info" $OUTFILE > tmp ##combine info and genotypes
+	
+	##awk -v maf="$MAF" -v cer="$CER" -F' ' '{if($4>maf && $4 < 1-maf && $6>cer) print}' tmp > ${OUTFILE}	
 
 	awk -v chr="$CHR" '{
             printf chr"\t"$2"\t"$3"\t"$4"\t"$5; 
             for(i=6; i<NF; i+=3) {
                  printf "\t"$(i+0)*0+$(i+1)*1+$(i+2)*2
              }; 
-            printf "\n"}' $OUTGFILE > tmp                   
-	
-	##add sample info
-        tail -n +3 $OUTSFILE | cut -d ' ' -f2 > header
-	echo -e 'chr\nrsid\npos\nref\nalt' > header1
-	cat header >> header1
-	tr '\n' '\t' < header1 > header2
-	sed -i -e '$a\' header2
-	sed -i 's/\t$//g' header2
+            printf "\n"}' tmp > $OUTFILE                   
 
-	cat header2 tmp > tmp1
-	tr ' ' '\t' < ${OUTGFILE}"_info" > ${OUTGFILE}"_info.tmp"
 
-        paste ${OUTGFILE}"_info.tmp" tmp1 > $OUTGFILE ##combine info and genotypes
+        ##sort -n -k 3 tmp > $OUTFILE                                               
+        /home/miterson/tabix/bgzip $OUTFILE
+        /home/miterson/tabix/tabix ${OUTFILE}".gz" -s 1 -b 3 -e 3
 	
-	awk -v info="$INFO" -F' ' '{if($5>info) print}' $OUTGFILE > tmp ##filter on info	
-
-        sort -n -k 10 tmp > $OUTGFILE                                               
-        /home/miterson/tabix/bgzip $OUTGFILE
-        /home/miterson/tabix/tabix ${OUTGFILE}".gz" -s 8 -b 10 -e 10 -S 1
-	
-	rm *.md5 tmp* header* *info* 
+	rm *.md5 tmp
     done
 done
 
