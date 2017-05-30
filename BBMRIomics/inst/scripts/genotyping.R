@@ -64,8 +64,8 @@ suppressPackageStartupMessages({
 
 ## opt <- list()
 ## opt$typex <- "GoNL"
-## opt$typey <- "HRC"
-## opt$filex <- "/virdir/Scratch/RP3_analysis/SwapDetection/HighQualPositions.GCRh37.bed"
+## opt$typey <- "RNA"
+## opt$filex <- "/virdir/Scratch/RP3_analysis/SwapDetection/output_RNA_2600.vcf"
 ## opt$filey <- NULL
 ## opt$cohort <- "ALL"
 ## opt$verbose <- TRUE
@@ -76,9 +76,9 @@ register(MulticoreParam(22))
 
 genotyping(typex=opt$typex, typey=opt$typey, filex=opt$filex, filey=opt$filey, cohort=opt$cohort, out=opt$out, verbose=opt$verbose)
 
-## typex <- "HRC"
-## typey <- "HRC"
-## filex <- "/virdir/Scratch/RP3_analysis/SwapDetection/HighQualPositions.GCRh37.bed"
+## typex <- "GoNL"
+## typey <- "RNA"
+## filex <- "/virdir/Scratch/RP3_analysis/SwapDetection/output_RNA_2600.vcf"
 ## filey <- NULL
 ## cohort <- "ALL"
 ## verbose <- TRUE
