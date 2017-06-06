@@ -31,7 +31,7 @@ DNAmCalls <- function(cohort, verbose=FALSE, maxbatch=500){
 
     if(nrow(targets) > maxbatch) {
         betas <- lapply(split(targets, 1+(1:nrow(targets))%/%maxbatch), function(targetsbatch) {
-            RGset <- read.metharray.exp.par(targetsbatch, verbose=verbose)
+            RGset <- read.metharray.exp.par(targetsbatch, verbose=FALSE)
             beta <- getBeta(RGset)
             rbind(beta[rownames(beta) %in% cpgs, ], getSnpBeta(RGset))
         })
@@ -317,21 +317,20 @@ genotyping <- function(typex, typey, filex, filey, cohort, out, verbose) {
     relations <- getRelations(type, verbose=verbose)
 
    if(typex == typey) {
-        relations$relation_type <- relabelIntra(relations$relation_type)
-        rHash <- hashRelations(relations, idx.col="idx.x", idy.col="idx.y")
+       relations$relation_type <- relabelIntra(relations$relation_type)
+       colnames(relations) <- c("idx", "idy", "relation_type")
     } else {
         ##relations$relation_type <- relabelInter(relations$relation_type)
         relations$relation_type <- relabelIntra(relations$relation_type)
-        rHash <- hashRelations(relations, idx.col="idx", idy.col="idy")
     }
 
     message("Run allelesharing algorithm...")
 
     ##run allele sharing
     if(typex != typey & typex == "DNAm")
-        data <- alleleSharing(x=xCalls, y=yCalls, rHash=rHash, phasing=TRUE, verbose=verbose)
+        data <- alleleSharing(x=xCalls, y=yCalls, relations=relations, phasing=TRUE, verbose=verbose)
     else
-        data <- alleleSharing(x=xCalls, y=yCalls, rHash=rHash, verbose=verbose)
+        data <- alleleSharing(x=xCalls, y=yCalls, relations=relations, verbose=verbose)
 
     if(verbose)
         print(head(data))
@@ -345,12 +344,12 @@ genotyping <- function(typex, typey, filex, filey, cohort, out, verbose) {
 
     if(!is.null(out)) {
         pdf(paste0(fileName, ".pdf"))
-        mismatches <- predict(data)
+        mismatches <- inferRelations(data)
         title(paste(cohort, "(", type, ")", collapse=""))
         dev.off()
     }
     else {
-        mismatches <- predict(data)
+        mismatches <- inferRelations(data)
         title(paste(cohort, "(", type, ")", collapse=""))
     }
 
