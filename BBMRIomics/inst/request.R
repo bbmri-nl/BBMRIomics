@@ -360,7 +360,7 @@ geno2pheno[,c("imputation_id", "imputation_reference", "Sex", "ids")]
 
 
 ##Check sex
-##PB 
+##PB
 library(BBMRIomics)
 
 load(file.path(VM_BASE_DATA, "RNASeq/v2.1.3/gene_read/", paste0("rnaSeqData_ReadCounts_GoNL.RData")))
@@ -376,5 +376,33 @@ pdf("~/gonlxistandrps4y1.pdf")
 plot(log2(1+t(cnts)), col=adjustcolor(sex, alpha.f = 0.3), pch=16, cex=cex, ylab="XIST (ENSG00000229807)", xlab=" RPS4Y1 (ENSG00000129824)", main="log2(1+raw counts)")
 dev.off()
 
+
+
+##Red Blood Counts
+##Rene Luijk
+##Fri Jun 16 09:54:44 2017
+library(BBMRIomics)
+data(rnaSeqData_ReadCounts_BIOS_cleaned)
+counts
+library(edgeR)
+y <- DGEList(assays(counts)$data, remove.zeros=TRUE)
+y <- calcNormFactors(y)
+y <- cpm(y, log=TRUE)
+library(irlba)
+pc <- prcomp_irlba(t(y), n=25)
+summary(pc)
+plot(pc$x[,c(1,2)], col=ifelse(colData(counts)$Sex == "Female", 1, 2))
+
+library(pheatmap)
+
+cov <- as.data.frame(colData(counts))[, c("RBC", "MCH", "MCV", "MPV", "HGB", "RDW", "HCT", "Eos_Perc", "Lymph_Perc", "Mono_Perc", "Neut_Perc")]
+
+cxy1 <- cor(pc$x[, 1:25], cov, use="complete.obs")
+cxy2 <- cor(cov, use="complete.obs")
+
+pdf("inspect_RBC.pdf", onefile=TRUE)
+pheatmap(cxy1)
+pheatmap(cxy2)
+dev.off()
 
 

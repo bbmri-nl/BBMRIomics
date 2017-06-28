@@ -69,7 +69,7 @@ register(MulticoreParam(10, log=TRUE))
 path450k <- file.path(VM_BASE_DATA, "IlluminaHumanMethylation450k")
 
 ##for(biobank in unique(colData$biobank_id)) {
-biobank <- "CODAM"
+biobank <- "LL"
 targets <- subset(colData, biobank_id == biobank)
 targets$Basename <- with(targets,
                          file.path(path450k, "raw", Sentrix_Barcode,

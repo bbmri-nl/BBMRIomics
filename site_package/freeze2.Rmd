@@ -31,8 +31,7 @@ rna <- rna[!duplicated(rna$run_id),] ##drop overlapping freezes
 rna <- subset(rna, qc == "passed") ##keep those passing qc
 rna <- subset(rna, type != "replicate") ##drop replicated
 ##now we have still original, reruns and merged runs
-merged <- subset(rna, type == "merged") ##select
-merged <- subset(merged, !(run_id %in% c("BD1NYRACXX-5-27_AC1JL5ACXX-6-27", "AC1C40ACXX-6-15_BD2D5MACXX-6-15"))) ##these have were already merged in freeze one and have new merges so drop
+merged <- subset(rna, type == "merged" & freeze == 2) ##select
 original <- subset(rna, !(ids %in% merged$ids) & type == "original")
 rna <- rbind(merged, original)
 
