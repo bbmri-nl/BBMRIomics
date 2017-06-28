@@ -24,6 +24,8 @@ methylation samples that pass quality control.
 
 
 ```{r}
+knitr::opts_chunk$set(eval=TRUE)
+
 ids <- getView("getIds", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
 
 rna <- getView("getRNASeqRuns", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
