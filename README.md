@@ -87,7 +87,7 @@ persistently, i.e., out-side possibly temporarily VM storage-space.
 
 A clean installation of Ubuntu requires the installation of some
 additional headers and libraries. See
-[prerequisites](inst/configure/prerequisites.md) for additional
+[prerequisites](BBMRIomics/inst/configure/prerequisites.md) for additional
 instructions.
 
 In general R libraries are installed using: 
