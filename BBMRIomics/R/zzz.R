@@ -1,11 +1,11 @@
 .onAttach <- function(libname, pkgname) {
 
     packageStartupMessage("##########################################################################################\n",
-                          "##                                                                                      ##\n",                        
+                          "##                                                                                      ##\n",
                           "## FACILITATING BBMRIOMICS DOWNSTREAM ANALYSES USING R                                  ##\n",
                           "##                                                                                      ##\n",
                           "##  DOCUMENTATION :                                                                     ##\n",
-                          "##                  VIGNETTES : http://bios-vm.bbmrirp3-lumc.surf-hosted.nl/BBMRIomics/ ##\n",                          
+                          "##                  VIGNETTES : http://bios-vm.bbmrirp3-lumc.surf-hosted.nl/BBMRIomics/ ##\n",
                           "##                  WIKI      : http://wiki.bbmri.nl/wiki/BIOS_start-                   ##\n",
                           "##                                                                                      ##\n",
                           "##  QUESTIONS     :                                                                     ##\n",
@@ -16,13 +16,19 @@
                           "##########################################################################################\n")
 
     ##assign urls and directories
-    assign("VM_BASE_DATA", "/virdir/Scratch/RP3_data/", envir=as.environment(paste0("package:", pkgname)))
-    assign("VM_BASE_ANALYSIS", "/virdir/Scratch/RP3_analysis/", envir=as.environment(paste0("package:", pkgname)))    
-    assign("SRM_BASE", "https://webdav.grid.sara.nl:2882/pnfs/grid.sara.nl/data/bbmri.nl/", envir=as.environment(paste0("package:", pkgname)))        
-    assign("RP3_MDB", "https://metadatabase.bbmrirp3-lumc.surf-hosted.nl/bios/", envir=as.environment(paste0("package:", pkgname)))
-    assign("RP3_RDB", "https://metadatabase.bbmrirp3-lumc.surf-hosted.nl/rp3_analysis/", envir=as.environment(paste0("package:", pkgname)))
-    assign("RP4_DB", "https://db.metabolomicsdb-lumc.surf-hosted.nl:443/api/v1/", envir=as.environment(paste0("package:", pkgname)))
-    
+    configFile <- "../tools/bbmriomics.conf"
+
+    if(!file.exists(configFile))
+        stop(configFile, " doesn't exists!")
+
+    cfs <- read.dcf(configFile,
+                    fields=c("VM_BASE_DATA", "VM_BASE_ANALYSIS", "SRM_BASE", "RP3_MDB", "RP3_RDB", "RP4_DB"))[1,]
+
+    tmp <- mapply(FUN = function(key, value)
+        assign(key, as.character(value), envir = as.environment(paste0("package:", pkgname))),
+        key = names(cfs), value = cfs)
+
+    ##assuming this wil not change
     assign("RP3_BIOBANKS", c("RS", "PAN", "CODAM", "LLS", "LL", "NTR"), envir=as.environment(paste0("package:", pkgname)))
 
     ##TODO find a nicer way to show this information
@@ -41,13 +47,13 @@
     ##if exists assign usrpwd and proxy
     configFiles <- c("~/.bbmriomics", "~/.biosrutils") ##for backward compatibility BIOSRutils
     if(any(file.exists(configFiles))) {
-        configFile <- configFiles[file.exists(configFiles)]        
-        usrpwdrp3 <- read.dcf(configFile, fields="usrpwd") ##for backward compatibility                
+        configFile <- configFiles[file.exists(configFiles)]
+        usrpwdrp3 <- read.dcf(configFile, fields="usrpwd") ##for backward compatibility
         usrpwdrp3 <- read.dcf(configFile, fields="usrpwdrp3")
         usrpwdrp4 <- read.dcf(configFile, fields="usrpwdrp4")
 
         proxy <- read.dcf(configFile, fields="proxy")
-        
+
         assign("RP3_MDB_USRPWD", as.character(usrpwdrp3), envir=as.environment(paste0("package:", pkgname)))
         assign("RP4_DB_USRPWD", as.character(usrpwdrp4), envir=as.environment(paste0("package:", pkgname)))
         assign("GRID_PROXY", as.character(proxy), envir=as.environment(paste0("package:", pkgname)))
@@ -138,4 +144,3 @@ RP3_BIOBANKS <- NULL
 
 molgenis.login <- function(...) NULL
 molgenis.get <- function(...) NULL
-
