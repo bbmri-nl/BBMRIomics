@@ -3,69 +3,140 @@
 BBMRIomics is an R package that facilitates BBMRI-omics downstream
 analysis using R on surfSARA HCP virtual machines.
 
-For an introduction and examples, visit [BBMRIomics](http://bios-vm.bbmrirp3-lumc.surf-hosted.nl/BBMRIomics/).
+For an introduction and examples, visit
+[BBMRIomics](http://bios-vm.bbmrirp3-lumc.surf-hosted.nl/BBMRIomics/).
 
 ## Features
 
-* Easy access to BBMRI-omics data; RNAseq, DNAm, metabolomics and sequenced- and imputed-genotypes.
-* Contains a collection of preprocessed data sets so-called [`SummarizedExperiments`](http://bioconductor.org/packages/SummarizedExperiment/).
-* These `SummarizedExperiments` contain both the actual data, i.e. counts, beta-values, as well as metadata on feature- and sample-level.
-* Across omic-level integrated analysis is simplified by introducing an anonymized cross omic identifier.
-* Furthermore, links to BBMRI metabolomics or GoNL are provided as well.
-* Access to all BBMRI BRAINSHAKE metabolomics data is provided by an R-interface to molgenis RESTfull-API.
-* Interaction with BBMRIomics underlying metadatabase is provided through a `view`-function.
+* Easy access to BBMRI-omics data; RNAseq, DNAm, metabolomics and
+  sequenced- and imputed-genotypes.
+* Contains a collection of preprocessed data sets so-called
+  [`SummarizedExperiments`](http://bioconductor.org/packages/SummarizedExperiment/).
+* These `SummarizedExperiments` contain both the actual data,
+  i.e. counts, beta-values, as well as metadata on feature- and
+  sample-level.
+* Across omic-level integrated analysis is simplified by introducing
+  an anonymized cross omic identifier.
+* Furthermore, links to BBMRI metabolomics or GoNL are provided as
+  well.
+* Access to all BBMRI BRAINSHAKE metabolomics data is provided by an
+  R-interface to molgenis RESTfull-API.
+* Interaction with BBMRIomics underlying metadatabase is provided
+  through a `view`-function.
 
 ## User requirements
 
 Currently, access to the metadatabase and molgenis RESTfull-API
 requires additional accounts (contact Leon Mei). To avoid repeately
-typing of usernames and passwords BBMRIomics uses a configuration
-file (`~/.bbmriomics`) which should be place in your home-directory on
-the VM and containing the account of the metadatabase (`usrpwdrp3`) or
-molgenis metabolomics (`usrpwdrp4`) and optionally the location of
-your grid_proxy:
+typing of usernames and passwords BBMRIomics uses a configuration file
+(`~/.bbmriomics`) which should be placed in your home-directory on the
+VM and containing the account of the metadatabase (`usrpwdrp3`) or
+molgenis metabolomics database (`usrpwdrp4`) and optionally the
+location of your grid_proxy if you want to use the `SRM2VM`
+file-download function from within R. Finally, the configuration file
+(`~/.bbmriomics`) show look like this:
 
+```{bash}
 usrpwdrp3: '<usrname:password>'
 usrpwdrp4: '<usrname:password>'
-proxy: /tmp/grid_proxy
+proxy: /tmp/<grid_proxy>
+```
 
-One loading the **BBMRIomics** in R
+When loading the **BBMRIomics**- package in R
 
 ```r
 library(BBMRIomics)
 ```
 
-the configuration file will be loaded and your account setting will be
-store for easy use in this R session. For example, connecting to the
-molgenis metabolomics database:
+the configuration file will be loaded and your account settings will be
+stored for easy use in the current R session. For example, connecting to the
+molgenis metabolomics database using the stored `RP4_DB_USRPWD` read from 
+the configuration file, is done like this:
 
 ```r
 molgenis.connect(usrpwd=RP4_DB_USRPWD, url=RP4_DB)
 ```
 
-## Development notes
+> NOTE: urls and data-directories are stored in the package
+> subdirectory `inst/configure`. If urls or data directories change in
+> the future this file should be modified.
 
-This git repo contains three directories: 
-1. containing the BBMRIomics package
-2. the site_package containing code to generate the [BBMRIomics](bios-vm.bbmrirp3-lumc.surf-hosted.nl/BBMRIomics/index.html) web-site 
-3. and a directory containing the `couchdbapp` for easy interaction with the **BBMRIomics** underlying metadatabase.
+# For developers 
 
-### Installation **BBMRIomics**-package ###
+The **BBMRIomics** git repo contains three directories: 
 
-Installation of the BBMRIomics requires sudo-rights. Furthermore,
-use `sudo -i` to load the environmental variable `R_SITE_LIB` which
-should be `/opt/...` to install the package out-side the VM's storage
-space. Either use `R CMD build, R INSTALL` or from within R 
+1. `BBMRIomics`: containing the actual **BBMRIomics** package
+2. `site_package`: containing Rmarkdown code for generation of
+   [BBMRIomics](bios-vm.bbmrirp3-lumc.surf-hosted.nl/BBMRIomics/index.html)
+   vignettes collected as a web-site.
+3. `couchapp`: a directory containing the couchdb metadatabase
+   JSON-schema and some scripts to use
+   [couchapp](https://github.com/couchapp/couchapp) for interaction
+   with the metadatabase (IN DEVELOPMENT)
 
-```r
+In following sections describe the use and maintenance of each in
+detail.
+
+## Installation of the **BBMRIomics**-package ##
+
+Installation of the **BBMRIomics**-package on SURFsara VMs requires
+sudo-rights. Furthermore, use `sudo -i` to load the environmental
+variable `R_SITE_LIB`, which is for the current R installation
+`/opt/R/microsoft-r/3.3/lib64/R/library`, to install the package
+persistently, i.e., out-side possibly temporarily VM storage-space.
+
+A clean installation of Ubuntu requires the installation of some
+additional headers and libraries. See
+[prerequisites](inst/configure/prerequisites.md) for additional
+instructions.
+
+In general R libraries are installed using: 
+
+```{bash}
+sudo -i R
+```
+and then from within R:
+
+```{r}
+library(BiocInstaller)
+biocLite(<pkgName>)
+```
+
+This allows installation of packages from CRAN, BioConductor or
+github.
+
+### Installation from git clone locally ###
+
+Either use from the command-line: 
+
+```{bash}
+R CMD build BBMRIomics
+sudo -i R CMD INSTALL BBMRIomics_x.y.z.gz
+```
+
+or more easily from within R, started with `sudo -i R`:
+
+```{r}
 library(devtools)
 setwd("/BBMRIomics")
 install()
 ```
 
+### Installation from github directly ###
+
+```{r}
+library(devtools)
+install_github("bbmri-nl/BBMRIomics", subdir="BBMRIomics")
+```
+
 After installation the views need to be updated and the preprocessed
-datasets need linked for easy loading (using `data()`). The tools
-directory contains a `Makefile` to accomplish this.
+datasets need to be linked for easy loading the data i.e., using
+`data(<dataset>)`. The `inst/configure` or `configure` directory
+contains a `Makefile` to accomplish this.
+
+```bash
+sudo -i make -f /opt/R/microsoft-r/3.3/lib64/R/library/BBMRIomics/configure/Makefile USRPWD='<usrpwdrp3>'
+```
 
 ### Guidelines for contributing to the web-site ###
 

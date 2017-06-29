@@ -1,9 +1,11 @@
 #Makefile for linking datasets and extract data from databases
 #CONFIG_FILE should contain update urls and paths
 
-CONFIG_FILE=bbmriomics.conf
+ifndef USRPWD
+$(error USRPWD is not set)
+endif
 
-USRPWD=''
+CONFIG_FILE=bbmriomics.conf
 
 BIOBANKS=RS PAN CODAM LLS LL NTR
 
