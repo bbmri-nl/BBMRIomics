@@ -16,7 +16,7 @@
                           "##########################################################################################\n")
 
     ##assign urls and directories
-    configFile <- "../tools/bbmriomics.conf"
+    configFile <- file.path(libname, "BBMRIomics/configure", "bbmriomics.conf")
 
     if(!file.exists(configFile))
         stop(configFile, " doesn't exists!")
