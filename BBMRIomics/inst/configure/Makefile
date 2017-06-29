@@ -5,20 +5,24 @@ ifndef USRPWD
 $(error USRPWD is not set)
 endif
 
-CONFIG_FILE=bbmriomics.conf
+ROOT_DIR:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
+CONFIG_FILE = ${ROOT_DIR}/bbmriomics.conf
 
-BIOBANKS=RS PAN CODAM LLS LL NTR
+BIOBANKS = RS PAN CODAM LLS LL NTR
 
-VM_BASE_DATA=$(grep "^VM_BASE_DATA: " ${CONFIG_FILE} | cut -d":" -f2 | sed -e 's/^[[:space:]]*//')
-RP3_MDB=$(grep "^RP3_MDB: " ${CONFIG_FILE} | cut -d":" -f2 | sed -e 's/^[[:space:]]*//')
-RP3_RDB=$(grep "^RP3_RDB: " ${CONFIG_FILE} | cut -d":" -f2 | sed -e 's/^[[:space:]]*//')
+VM_BASE_DATA = $(shell grep "^VM_BASE_DATA: " ${CONFIG_FILE} | cut -d" " -f2 | sed -e 's/^[ \t]*//')
+RP3_MDB = $(shell grep "^RP3_MDB: " ${CONFIG_FILE} | cut -d" " -f2 | sed -e 's/^[ \t]*//')
+RP3_RDB = $(shell grep "^RP3_RDB: " ${CONFIG_FILE} | cut -d" " -f2 | sed -e 's/^[ \t]*//')
 
-R_PACKAGE_DIR=${R_SITE_LIB}/BBMRIomics
+R_PACKAGE_DIR = ${R_LIBS_SITE}/BBMRIomics
 
 all: init rp3 rp4 views
 
 init:
 	mkdir -p $(R_PACKAGE_DIR)/views
+	echo "VM_BASE_DATA=" $(VM_BASE_DATA)
+	echo "RP3_MDB=" $(RP3_MDB)
+	echo "RP3_RDB=" $(RP3_RDB)
 
 rp3: $(BIOBANKS) BIOS
 
