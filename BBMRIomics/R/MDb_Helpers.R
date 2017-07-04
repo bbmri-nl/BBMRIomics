@@ -152,7 +152,6 @@ getView <- function(view, url, usrpwd="anonymous", selection="?reduce=false", fo
 ##' @param verbose default TRUE
 ##' @return return list of lists
 ##' @author mvaniterson
-##' @export
 ##' @importFrom jsonlite fromJSON
 ##' @examples
 ##' \dontrun{
@@ -189,7 +188,6 @@ getView <- function(view, url, usrpwd="anonymous", selection="?reduce=false", fo
 ##' @param ... path of database schema
 ##' @return nothing
 ##' @author mvaniterson
-##' @export
 ##' @importFrom jsonlite toJSON
 ##' @examples
 ##' \dontrun{
