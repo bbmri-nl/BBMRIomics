@@ -34,22 +34,20 @@ get view from metadatabase
 TODO handle reduce options properly
 }
 \examples{
-\dontrun{
-##test all views
-VIEWS
-view <- getView("getIds")
+\dontrun{ 
+view <- getView("getIds", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
 head(view)
 colnames(view)
 dim(view)
-view <- getView("freeze1RNASeq")
+view <- getView("freeze1RNASeq", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
 head(view)
 colnames(view)
 dim(view)
-view <- getView("allPhenotypes")
+view <- getView("allPhenotypes", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
 head(view)
 dim(view)
 ##For example make a plot of the Age distribution in BIOS
-view <- getView("minimalPhenotypes")
+view <- getView("minimalPhenotypes", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
 library(ggplot2)
 view <- view[, c("biobank_id", "sex", "DNA_BloodSampling_Age")]
 ##convert to numeric

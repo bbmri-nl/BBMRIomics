@@ -2,6 +2,7 @@
 ##'
 ##' extract information from the metadatabase using predefined views
 ##' and a list function to convert json to csv.xx
+##' IN DEVELOPMENT using list functions and the readr-package
 ##' @title get view from metadatabase
 ##' @param viewname name of the view
 ##' @param db metadatabase url
@@ -42,22 +43,20 @@ view <- function(viewname, db="https://metadatabase.bbmrirp3-lumc.surf-hosted.nl
 ##' @return data.frame containing the view
 ##' @author mvaniterson
 ##' @examples
-##' \dontrun{
-##' ##test all views
-##' VIEWS
-##' view <- getView("getIds")
+##' \dontrun{ 
+##' view <- getView("getIds", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
 ##' head(view)
 ##' colnames(view)
 ##' dim(view)
-##' view <- getView("freeze1RNASeq")
+##' view <- getView("freeze1RNASeq", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
 ##' head(view)
 ##' colnames(view)
 ##' dim(view)
-##' view <- getView("allPhenotypes")
+##' view <- getView("allPhenotypes", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
 ##' head(view)
 ##' dim(view)
 ##' ##For example make a plot of the Age distribution in BIOS
-##' view <- getView("minimalPhenotypes")
+##' view <- getView("minimalPhenotypes", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
 ##' library(ggplot2)
 ##' view <- view[, c("biobank_id", "sex", "DNA_BloodSampling_Age")]
 ##' ##convert to numeric
@@ -141,6 +140,26 @@ getView <- function(view, url, usrpwd="anonymous", selection="?reduce=false", fo
     return(values)
 }
 
+
+##' extract document from couchdb database
+##'
+##' R-wrapper around curl to extract document from couchdb database
+##' convert JSON to list of lists
+##' @title extract document from couchdb database
+##' @param id doc._id
+##' @param url couchdb url
+##' @param usrpwd username:password
+##' @param verbose default TRUE
+##' @return return list of lists
+##' @author mvaniterson
+##' @export
+##' @importFrom jsonlite fromJSON
+##' @examples
+##' \dontrun{
+##' doc <- .getDoc("LLS-2749", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
+##' names(doc)
+##' str(doc)
+##' }
 .getDoc <- function(id, url, usrpwd, verbose=TRUE) {
     request <- paste0("curl -X GET ", url, id, " -u ", usrpwd, " -k -g")
 
@@ -157,6 +176,30 @@ getView <- function(view, url, usrpwd="anonymous", selection="?reduce=false", fo
     fromJSON(response)
 }
 
+##' put document in couchdb database
+##'
+##' converts R list of list to JSON (number of digits = 12)
+##' and validate according to JSON-schema
+##' and if validation succeeds puts document in database
+##' @title put document in couchdb database
+##' @param doc list of lists
+##' @param url couchdb url
+##' @param usrpwd username:password
+##' @param verbose default TRUE
+##' @param ... path of database schema
+##' @return nothing
+##' @author mvaniterson
+##' @export
+##' @importFrom jsonlite toJSON
+##' @examples
+##' \dontrun{
+##' doc <- .getDoc("LLS-2749", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
+##' ##modify or add something
+##' SCHEMA <- file.path(VM_BASE_ANALYSIS, "BBMRIomics/couchdbapp/schema/bios.json")
+##' .validateDoc(doc, SCHEMA=SCHEMA)
+##' ##BE REALLY CAREFUL WHAT YOU DO!!!
+##' ##.putDoc(doc, usrpwd=RP3_MDB_USRPWD, url=RP3_MDB, SCHEMA=SCHEMA) 
+##' }
 .putDoc <- function(doc,  url, usrpwd, verbose=TRUE, ...) {
 
     json <- toJSON(doc, digits = 12, auto_unbox = TRUE) ##set number of digits large than default of 6
@@ -175,22 +218,26 @@ getView <- function(view, url, usrpwd="anonymous", selection="?reduce=false", fo
     system(request, intern=TRUE)
 }
 
-## validate json document against schema
-##
-## uses jsonschema CLI Python script from Julian Berman:
-## https://github.com/Julian/jsonschema
-## validat json documents against schema
-## json R list representation of json document or json document
-## SCHEMA path to json schema: bios-schema/bios.json
-## error or NULL
-## mvaniterson
-## ids <- getView("getIds")
-## for(id in ids$ids) {
-##     print(id)
-##     doc <- .getDoc(id)
-##     val <- .validateDoc(doc, SCHEMA=file.path(VM_BASE_ANALYSIS, "BBMRIomics/couchdbapp/schema/bios.json"))
-##     if(!is.null(val))
-##         stop(val)
+##' validate json document against schema
+##'
+##' uses jsonschema CLI Python script from Julian Berman:
+##' https://github.com/Julian/jsonschema
+##' @title validate json documents against schema
+##' @param json R list representation of json document or json document
+##' @param SCHEMA path to json schema: bios-schema/bios.json
+##' @return error or NULL
+##' @author mvaniterson
+##' @examples
+##' \dontrun{ 
+##' ids <- getView("getIds", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
+##' for(id in ids$ids) {
+##'     print(id)
+##'     doc <- .getDoc(id, usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
+##'     val <- .validateDoc(doc, SCHEMA=file.path(VM_BASE_ANALYSIS, "BBMRIomics/couchdbapp/schema/bios.json"))
+##'     if(!is.null(val))
+##'         stop(val)
+##' }
+##' }
 .validateDoc <- function(json, SCHEMA) {
 
     if(system2("jsonschema") == 127)

@@ -143,7 +143,7 @@ contains a `Makefile` to accomplish this.
 sudo -i make -f /opt/R/microsoft-r/3.3/lib64/R/library/BBMRIomics/configure/Makefile USRPWD='<usrpwdrp3>'
 ```
 
-### Guidelines for contributing to the web-site ###
+## Guidelines for contributing to the web-site ##
 
 We welcome contributions to the
 [BBMRIomics](bios-vm.bbmrirp3-lumc.surf-hosted.nl/BBMRIomics/index.html)
@@ -154,7 +154,7 @@ complete web-site from a few Rmarkdown -files. This Rmarkdown
 [section](http://rmarkdown.rstudio.com/rmarkdown_websites.html) shows
 how easy it is to generate a web-site using rmarkdown. x
 
-#### Adding a use-case ####
+### Adding a use-case ###
 
 Modify `_site.yml` by adding a new use-case under the use-case items, e.g. 
 
@@ -187,8 +187,11 @@ and if successfully run
 sudo make publish
 ```
 
-### Interaction with the metadatabase ###
+## Interaction with the metadatabase ##
 
-## TODO's ##
+
+
+
+
 
 
