@@ -1,5 +1,10 @@
 # BBMRIomics
 
+last editted by: Maarten van Iterson
+
+date: 30 June 2017
+
+
 BBMRIomics is an R package that facilitates BBMRI-omics downstream
 analysis using R on surfSARA HCP virtual machines.
 
@@ -34,7 +39,7 @@ VM and containing the account of the metadatabase (`usrpwdrp3`) or
 molgenis metabolomics database (`usrpwdrp4`) and optionally the
 location of your grid_proxy if you want to use the `SRM2VM`
 file-download function from within R. Finally, the configuration file
-(`~/.bbmriomics`) show look like this:
+(`~/.bbmriomics`) should look like this:
 
 ```{bash}
 usrpwdrp3: '<usrname:password>'
@@ -74,7 +79,7 @@ The **BBMRIomics** git repo contains three directories:
    [couchapp](https://github.com/couchapp/couchapp) for interaction
    with the metadatabase (IN DEVELOPMENT)
 
-In following sections describe the use and maintenance of each in
+The following sections describe the use and maintenance of each in
 detail.
 
 ## Installation of the **BBMRIomics**-package ##
