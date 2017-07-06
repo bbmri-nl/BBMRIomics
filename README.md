@@ -1,5 +1,10 @@
 # BBMRIomics
 
+last editted by: Maarten van Iterson
+
+date: 30 June 2017
+
+
 BBMRIomics is an R package that facilitates BBMRI-omics downstream
 analysis that is availabe at [BBMRI BIOS virtual machine](http://www.bbmriwiki.nl/wiki/BIOS_VirtualMachine)
 running at surfSARA HPC Cloud.
@@ -76,7 +81,7 @@ The **BBMRIomics** git repo contains three directories:
    [couchapp](https://github.com/couchapp/couchapp) for interaction
    with the metadatabase (IN DEVELOPMENT)
 
-In following sections describe the use and maintenance of each in
+The following sections describe the use and maintenance of each in
 detail.
 
 ## Installation of the **BBMRIomics**-package ##
@@ -140,7 +145,7 @@ contains a `Makefile` to accomplish this.
 sudo -i make -f /opt/R/microsoft-r/3.3/lib64/R/library/BBMRIomics/configure/Makefile USRPWD='<usrpwdrp3>'
 ```
 
-### Guidelines for contributing to the web-site ###
+## Guidelines for contributing to the web-site ##
 
 We welcome contributions to the
 [BBMRIomics](bios-vm.bbmrirp3-lumc.surf-hosted.nl/BBMRIomics/index.html)
@@ -151,7 +156,7 @@ complete web-site from a few Rmarkdown -files. This Rmarkdown
 [section](http://rmarkdown.rstudio.com/rmarkdown_websites.html) shows
 how easy it is to generate a web-site using rmarkdown.
 
-#### Adding a use-case ####
+### Adding a use-case ###
 
 Modify `_site.yml` by adding a new use-case under the use-case items, e.g. 
 
@@ -184,8 +189,11 @@ and if successfully run
 sudo make publish
 ```
 
-### Interaction with the metadatabase ###
+## Interaction with the metadatabase ##
 
-## TODO's ##
+
+
+
+
 
 

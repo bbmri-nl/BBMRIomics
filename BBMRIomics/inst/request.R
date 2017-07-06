@@ -406,3 +406,51 @@ pheatmap(cxy2)
 dev.off()
 
 
+##Adding HRCv1.1
+##Joost Verlouw
+##Tue Jul  4 2017
+
+##data.frame with between bios-ids and HRCv1.1 imputation ID's
+
+##this is an small example for adding one document
+##for example adding HRCv1.1 to LLS-2447
+
+library(BBMRIomics)
+##functions that interact directly with the metadatabase and can
+##modify data are not exported, for savety, therefore you need to use
+##`:::` the triple-colon operator (which is not known to regular R users)
+
+##extract the document (this could be based on your mapping file/data.frame)
+doc <- BBMRIomics:::.getDoc("LLS-2447", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
+
+##we need to add to files, genotype, imputation
+
+str(doc$files$genotype$imputation) ##this is a data.frame
+
+##extract the current information
+imputation <- doc$files$genotype$imputation
+
+##add new information (possibly extracted from your data.frame)
+imputation <- rbind(imputation,
+                    data.frame(reference="HRCv1.1",
+                               id = "2447_2447"))
+##check it
+imputation
+
+##replace old with new
+doc$files$genotype$imputation <- imputation
+
+##check again
+doc$files$genotype$imputation
+
+##a dry run only validation
+SCHEMA <- file.path(VM_BASE_ANALYSIS, "BBMRIomics/couchdbapp/schema/bios.json")
+BBMRIomics:::.validateDoc(doc, SCHEMA=SCHEMA)
+
+##now add to database also validation is performed
+BBMRIomics:::.putDoc(doc, usrpwd=RP3_MDB_USRPWD, url=RP3_MDB, SCHEMA=SCHEMA)
+##if its returns ok your document is updated
+
+##NOW IT IS REALLY ADDED EITHER USE FUTON TO REMOVE THE EXAMPLE OR
+##RERUN AND REMOVE THE ADDED SECTION
+

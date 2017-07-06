@@ -26,6 +26,7 @@ get view from metadatabase
 \details{
 extract information from the metadatabase using predefined views
 and a list function to convert json to csv.xx
+IN DEVELOPMENT using list functions and the readr-package
 }
 \author{
 mvaniterson

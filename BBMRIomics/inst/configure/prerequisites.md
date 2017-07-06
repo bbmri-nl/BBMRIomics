@@ -3,7 +3,8 @@ RStudio server/shiny server and R packages on the surfSARA HPC Virtual
 Machines
 
 last editted by: Maarten van Iterson
-date: 15 March 2017
+
+date: 30 June 2017
 
 # Install R packages #
 
@@ -37,7 +38,16 @@ add to `/etc/rstudio/rsession.conf`
 r-libs-user=/opt/R/microsoft-r/3.3/lib64/R/library
 ```
 
-add to `R.home()/etc/Rprofile.site`
+The current installation of R is the enhanced version from
+[Microsoft R Open](https://mran.microsoft.com/open/) that contains
+optimized MKL libraries for fast linear algebra and
+multithreading. However, by default a R session will use all available
+cores which is not useful on a multi-user system. The following code
+show how to change these defaults (i.e. this has been useful for
+teaching were many user where on the same machine optionally it is
+even possible to set a user memory limit).
+
+Add to `R.home()/etc/Rprofile.site`
 
 ```bash
 export R_LIBS_SITE=/opt/R/microsoft-r/3.3/lib64/R/library
@@ -46,7 +56,7 @@ export R_LIBS_SITE=/opt/R/microsoft-r/3.3/lib64/R/library
 cat("\n   setting MKL threads to 2!\n\n")
 RevoUtilsMath::setMKLthreads(2)
 ##optionally set user memory limit
-ulimit::memory_limit(10240) ##in MiB = 10Gb
+##ulimit::memory_limit(10240) ##in MiB = 10Gb
 }
 
 #do not ask for saving and prevent load .RData/.Rhistory
@@ -64,6 +74,8 @@ utils::assignInNamespace("quit",
 
 
 # Shiny Server configuration #
+
+Shiny Server default port was not open @LUMC!
 
 TODO
 

@@ -18,8 +18,11 @@
     ##assign urls and directories
     configFile <- file.path(libname, "BBMRIomics/configure", "bbmriomics.conf")
 
-    if(!file.exists(configFile))
-        stop(configFile, " doesn't exists!")
+    if(!file.exists(configFile)) {
+        configFile <- file.path(libname, "BBMRIomics/inst/configure", "bbmriomics.conf")
+        if(!file.exists(configFile))
+            stop(configFile, " doesn't exists!")
+    }
 
     cfs <- read.dcf(configFile,
                     fields=c("VM_BASE_DATA", "VM_BASE_ANALYSIS", "SRM_BASE", "RP3_MDB", "RP3_RDB", "RP4_DB"))[1,]
