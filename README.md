@@ -6,7 +6,8 @@ date: 30 June 2017
 
 
 BBMRIomics is an R package that facilitates BBMRI-omics downstream
-analysis using R on surfSARA HCP virtual machines.
+analysis that is availabe at [BBMRI BIOS virtual machine](http://www.bbmriwiki.nl/wiki/BIOS_VirtualMachine)
+running at surfSARA HPC Cloud.
 
 For an introduction and examples, visit
 [BBMRIomics](http://bios-vm.bbmrirp3-lumc.surf-hosted.nl/BBMRIomics/).
@@ -20,19 +21,20 @@ For an introduction and examples, visit
 * These `SummarizedExperiments` contain both the actual data,
   i.e. counts, beta-values, as well as metadata on feature- and
   sample-level.
-* Across omic-level integrated analysis is simplified by introducing
+* Multiomics integrated analysis is simplified by introducing
   an anonymized cross omic identifier.
 * Furthermore, links to BBMRI metabolomics or GoNL are provided as
   well.
 * Access to all BBMRI BRAINSHAKE metabolomics data is provided by an
-  R-interface to molgenis RESTfull-API.
+  R-interface to molgenis RESTful-API.
 * Interaction with BBMRIomics underlying metadatabase is provided
   through a `view`-function.
 
 ## User requirements
 
-Currently, access to the metadatabase and molgenis RESTfull-API
-requires additional accounts (contact Leon Mei). To avoid repeately
+Currently, access to the metadatabase and molgenis RESTful-API
+requires additional accounts (please check [BBMRI-BIOS wiki](http://www.bbmriwiki.nl/wiki/BIOS_VirtualMachine#BIOSVMAccess)
+for instructions). To avoid repeately
 typing of usernames and passwords BBMRIomics uses a configuration file
 (`~/.bbmriomics`) which should be placed in your home-directory on the
 VM and containing the account of the metadatabase (`usrpwdrp3`) or
@@ -84,7 +86,7 @@ detail.
 
 ## Installation of the **BBMRIomics**-package ##
 
-Installation of the **BBMRIomics**-package on SURFsara VMs requires
+Installation of the **BBMRIomics**-package on BIOS VMs requires
 sudo-rights. Furthermore, use `sudo -i` to load the environmental
 variable `R_SITE_LIB`, which is for the current R installation
 `/opt/R/microsoft-r/3.3/lib64/R/library`, to install the package
@@ -152,7 +154,7 @@ completely build using R. Especially,
 [Rmarkdown](http://rmarkdown.rstudio.com/) is used to generate the
 complete web-site from a few Rmarkdown -files. This Rmarkdown
 [section](http://rmarkdown.rstudio.com/rmarkdown_websites.html) shows
-how easy it is to generate a web-site using rmarkdown. x
+how easy it is to generate a web-site using rmarkdown.
 
 ### Adding a use-case ###
 
