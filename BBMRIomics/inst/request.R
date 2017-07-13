@@ -454,3 +454,14 @@ BBMRIomics:::.putDoc(doc, usrpwd=RP3_MDB_USRPWD, url=RP3_MDB, SCHEMA=SCHEMA)
 ##NOW IT IS REALLY ADDED EITHER USE FUTON TO REMOVE THE EXAMPLE OR
 ##RERUN AND REMOVE THE ADDED SECTION
 
+
+
+library(BBMRIomics)
+gonl <- c("gonl-186c", "gonl-228c", "gonl-231c", "gonl-24c")          
+ids <- getView("getIds", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
+
+colnames(ids)
+
+gonl <- subset(ids, !is.na(gonl_id) | !is.na(old_gonl_id))
+
+write.table(gonl[, 11:12], file="gonl_old_new.csv", sep="\t", row.names=FALSE, quote=FALSE)
