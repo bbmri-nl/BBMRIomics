@@ -105,15 +105,13 @@ DNACalls <- function(cohort, snps=NULL, DNAFile, type, verbose){
 
 relabelIntra <- function(x) {
     x <- gsub("original|has monozygotic twin|has repeated measurements|merged|replicate|rerun", "identical", x)
-    ##x <- gsub("has child|has parent", "parentoffspring", x)
-    ##x <- gsub("has dizygotic twin|has sib", "sibship", x)
-    x <- gsub("inferred 1st degree family|2nd degree family|has child|has parent|has dizygotic twin|has sib", "family", x)    
+    x <- gsub("genetical 1st degree family|inferred 1st degree family|2nd degree family|has child|has parent|has dizygotic twin|has sib", "family", x)    
     as.character(x)
 }
 
 relabelInter <- function(x) {
     x <- gsub("original|has monozygotic twin|has repeated measurements|merged|replicate|rerun", "identical", x)
-    x <- gsub("has dizygotic twin|has sib|has child|has parent", "unrelated", x)
+    x <- gsub("genetical 1st degree family|inferred 1st degree family|2nd degree family|has dizygotic twin|has sib|has child|has parent", "unrelated", x)
     as.character(x)
 }
 

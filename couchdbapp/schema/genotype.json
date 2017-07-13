@@ -10,8 +10,8 @@
 
                 "relation_type": {
                     "type": "string",
-                    "description": "has child, child of, has dizygotic twin, has monozygotic twin within the BIOS data",
-                    "enum": ["none", "has child", "has parent", "has dizygotic twin", "has monozygotic twin", "has repeated measurements"]
+                    "description": "various family relations that can occur within the BIOS data",
+                    "enum": ["none", "genetical 1st degree family", "inferred 1st degree family", "2nd degree family", "has child", "has parent", "has dizygotic twin", "has monozygotic twin", "has repeated measurements"]
                 },
 
                 "relation_id": {
