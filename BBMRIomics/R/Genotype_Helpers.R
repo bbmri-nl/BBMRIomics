@@ -144,7 +144,7 @@ read.dosages <- function(file,  yieldSize=NULL, colClassesInfo = c("character", 
 ##' @param imputation_id imputation identifier
 ##' @param biobank biobank_id
 ##' @param snps GRanges with snps
-##' @param type imputation type either "GoNL", "HRC" or "GoNLv5"
+##' @param type imputation type either "GoNL", "HRC", "HRCv1.1" or "GoNLv5"
 ##' @param geno extract either genotypes, dosages, genotype likelihoods or as snpMatrix
 ##' @param BASE genotype data location default e.g. VM_BASE_DATA
 ##' @param ... optional BPPARAM arguments
@@ -156,7 +156,7 @@ read.dosages <- function(file,  yieldSize=NULL, colClassesInfo = c("character", 
 ##' @importFrom GenomicRanges split
 ##' @importFrom GenomeInfoDb mapSeqlevels seqlevels seqlevels<-
 ##' @export
-getGenotypes <- function(imputation_id, biobank=c("ALL", "CODAM", "LL", "LLS", "NTR", "RS", "PAN"), snps, type=c("GoNL", "HRC", "GoNLv5"), geno=c("GT", "DS", "GP", "SM"), BASE, ...){
+getGenotypes <- function(imputation_id, biobank=c("ALL", "CODAM", "LL", "LLS", "NTR", "RS", "PAN"), snps, type=c("GoNL", "HRC", "HRCv1.1", "GoNLv5"), geno=c("GT", "DS", "GP", "SM"), BASE, ...){
 
     type <- match.arg(type)
     biobank <- match.arg(biobank)
@@ -189,7 +189,7 @@ getGenotypes <- function(imputation_id, biobank=c("ALL", "CODAM", "LL", "LLS", "
         genotypes <- bplapply(snps, .getGONL, files=vcfs, imputation_id = as.character(imputation_id), genotype = geno)
         genotypes <- do.call("rbind", genotypes)
     }
-    else if(type == "GoNLv5")
+    else if(type == "GoNLv5" | type == "HRCv1.1")
         stop("Not implemented yet!")
 
     genotypes

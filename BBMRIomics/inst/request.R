@@ -454,10 +454,29 @@ BBMRIomics:::.putDoc(doc, usrpwd=RP3_MDB_USRPWD, url=RP3_MDB, SCHEMA=SCHEMA)
 ##NOW IT IS REALLY ADDED EITHER USE FUTON TO REMOVE THE EXAMPLE OR
 ##RERUN AND REMOVE THE ADDED SECTION
 
+RS
+
+for(i in 1:nrow(RS)){
+    biosid <- RS[i,1]
+    id <- RS[i,2]
+    doc <- BBMRIomics:::.getDoc(biosid, usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
+    ##extract the current information
+    imputation <- doc$files$genotype$imputation
+
+    ##add new information (possibly extracted from your data.frame)
+    imputation <- rbind(imputation,
+                        data.frame(reference="HRCv1.1",
+                                   id = id))   
+    ##replace old with new
+    doc$files$genotype$imputation <- imputation
+    BBMRIomics:::.putDoc(doc, usrpwd=RP3_MDB_USRPWD, url=RP3_MDB, SCHEMA=SCHEMA)    
+
+}
+
 
 
 library(BBMRIomics)
-gonl <- c("gonl-186c", "gonl-228c", "gonl-231c", "gonl-24c")          
+gonl <- c("gonl-186c", "gonl-228c", "gonl-231c", "gonl-24c")
 ids <- getView("getIds", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
 
 colnames(ids)
@@ -465,3 +484,19 @@ colnames(ids)
 gonl <- subset(ids, !is.na(gonl_id) | !is.na(old_gonl_id))
 
 write.table(gonl[, 11:12], file="gonl_old_new.csv", sep="\t", row.names=FALSE, quote=FALSE)
+
+
+
+##BAS
+##Numbers
+##2017-07-13
+
+1. Aantal unrelated met 450k
+2. Aantal unrelated met 450k & RNA-seq
+3. Aantal unrelated met 450k & SNPs
+4. Aantal unrelated met 450k & RNA-seq & SNPs
+5. Aantal unrelated met RNA-seq & SNPs
+6. Aantal MZ tweeling paren met 450k
+7. Aantal MZ tweeling paren met RNA-seq
+
+8. Aantal CpGs voor analyse dat overblijft na QC 450k arrays.
