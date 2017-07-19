@@ -18,11 +18,17 @@ Preprocess metadata including phenotype harmonization.
 
 ```{r}
 library(BBMRIomics)
-colData <- read.table(file=file.path(VM_BASE_ANALYSIS, "BBMRIomics/BBMRIomics/data", "freeze2_dnam_identifiers.csv"), header=TRUE, sep=",", as.is=TRUE)
 
 samplesheets <- getView("methylationSamplesheet", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
 samplesheets <- samplesheets[!duplicated(samplesheets$run_id),]
+
+##for unrelated sets else skip
+colData <- read.table(file=file.path(VM_BASE_ANALYSIS, "BBMRIomics/BBMRIomics/data", "freeze2_dnam_identifiers.csv"), header=TRUE, sep=",", as.is=TRUE)
 colData <- merge(colData, samplesheets, by=c("run_id", "ids"))
+
+##qc
+
+
 
 ##harmonize phenotypes
 source(file.path(path.package("BBMRIomics"), "scripts/Phenotype_Helpers.R"), verbose=FALSE)
@@ -68,7 +74,7 @@ register(MulticoreParam(16, log=TRUE))
 path450k <- file.path(VM_BASE_DATA, "IlluminaHumanMethylation450k")
 
 for(biobank in unique(colData$biobank_id)[-1]) {
-    biobank <- "PAN"
+    biobank <- "RS"
     targets <- subset(colData, biobank_id == biobank)
     targets$Basename <- with(targets,
                              file.path(path450k, "raw", Sentrix_Barcode,
@@ -122,6 +128,27 @@ single `SummarizedExperiment`.
 > Bioconductor-developers who proposed to fix it!
 
 ```{r, eval=FALSE}
+path450k <- file.path(VM_BASE_DATA, "IlluminaHumanMethylation450k")
+biobank <- "PAN"
+load(file.path(path450k, "450k", biobank, paste0("methData_Betas_", biobank, "_F2_cleaned.RData")))
+b <- betas
+library(GenomicRanges)
+for(biobank in c("CODAM", "LLS", "LL", "RS", "NTR")) {
+    load(file.path(path450k, "450k", biobank, paste0("methData_Betas_", biobank, "_F2_cleaned.RData")))
+    betas <- subsetByOverlaps(betas, b)
+    b <- subsetByOverlaps(b, betas)
+    rowData(betas) <- NULL
+    b <- SummarizedExperiment::cbind(b, betas)
+    gc()
+    print(b)
+}
+betas <- b
+save(betas, file=file.path(path450k, "450k", paste0("methData_Betas_BIOS_F2_cleaned.RData")))
+##can we reduce the size?
+tools::checkRdaFiles(file.path(path450k, "450k", paste0("methData_Betas_BIOS_F2_cleaned.RData")))
+
+
+##Now mvalues-values
 path450k <- file.path(VM_BASE_DATA, "IlluminaHumanMethylation450k")
 biobank <- "PAN"
 load(file.path(path450k, "450k", biobank, paste0("methData_Mvalues_", biobank, "_F2_cleaned.RData")))
