@@ -10,7 +10,7 @@
                           "##                                                                                      ##\n",
                           "##  QUESTIONS     :                                                                     ##\n",
                           "##                  FORUM : https://www.biostars.org/t/bbmri-nl-bios/                   ##\n",
-                          "##                  EMAIL : m.van_iterson@lumc.nl or h.mei@lumc.nl                      ##\n",
+                          "##                  EMAIL : h.mei@lumc.nl                                               ##\n",
                           "##                                                                                      ##\n",
                           "## ", pkgname, " (", packageVersion(pkgname), ")                                                                   ##\n",
                           "##########################################################################################\n")
