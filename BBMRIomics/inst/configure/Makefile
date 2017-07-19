@@ -35,6 +35,7 @@ BIOS:
 	ln -fs $(VM_BASE_DATA)/IlluminaHumanMethylation450k/450k/methData_Betas_BIOS_F2_cleaned.RData $(R_PACKAGE_DIR)/data/methData_Betas_BIOS_F2_cleaned.RData
 	ln -fs $(VM_BASE_DATA)/IlluminaHumanMethylation450k/450k/methData_Mvalues_BIOS_F2_cleaned.RData $(R_PACKAGE_DIR)/data/methData_Mvalues_BIOS_F2_cleaned.RData
 	ln -fs $(VM_BASE_DATA)/RNASeq/v2.1.3/gene_read/rnaSeqData_ReadCounts_BIOS_cleaned.RData $(R_PACKAGE_DIR)/data/rnaSeqData_ReadCounts_BIOS_cleaned.RData
+	ln -fs $(VM_BASE_DATA)/RNASeq/v2.1.3/gene_read/rnaSeqData_ReadCounts_GoNL.RData $(R_PACKAGE_DIR)/data/rnaSeqData_ReadCounts_GoNL.RData
 
 rp4:
 	ln -fs $(VM_BASE_DATA)/RP4/metabolomics_RP3RP4_overlap.RData $(R_PACKAGE_DIR)/data/metabolomics_RP3RP4_overlap.RData
