@@ -7,15 +7,22 @@ R has several ways to incorporate unit-tests to packages which can
 even be added to GitHub CI hook on pushing. 
 
 We could think of checking existence of data files and the
-accesibility of the database urls.
+accessibility of the database urls.
 
 ### Using couchapp for interaction with the metadatabase ###
 
 The current use of couchDBs' functionality is very limited this could
 be extended to leverage the stability and ease of use of the
 metadatabase. For example, using the
-[couchapp python module](https://github.com/couchapp/couchapp)
+[couchapp python module](https://github.com/couchapp/couchapp). One
+useful extentions would be using so-called `list`-functions that can
+transform JSON to csv and no R-parsing is required. See the couchapp
+_design view already available in the metadatabase for beta-testing.
 
+
+There are currently too many views and not all information is directly
+useful. Reducing the number of views and reevaluating the information
+returned could be useful.
 
 ### Improve/Extend Molgenis R-API ###
 

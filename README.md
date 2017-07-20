@@ -2,8 +2,7 @@
 
 last editted by: Maarten van Iterson
 
-date: 30 June 2017
-
+date: 20 July 2017
 
 BBMRIomics is an R package that facilitates BBMRI-omics downstream
 analysis that is availabe at [BBMRI BIOS virtual machine](http://www.bbmriwiki.nl/wiki/BIOS_VirtualMachine)
@@ -11,6 +10,8 @@ running at surfSARA HPC Cloud.
 
 For an introduction and examples, visit
 [BBMRIomics](http://bios-vm.bbmrirp3-lumc.surf-hosted.nl/BBMRIomics/).
+
+See also the [TODO-list](TODO.md).
 
 ## Features
 
@@ -189,10 +190,18 @@ and if successfully run
 sudo make publish
 ```
 
+### Creating datasets ###
+
+The `developers`-section of the web-site presents reproducible
+vignettes to construct the datasets available via the
+*BBMRIomics*-package. These vignettes use a different setup-mechanism,
+compared to the example and use-case vignettes, to ensure they are
+only build once or specifically if the code-chunk option `eval` is set
+to `TRUE` by a developer.
+
 ## Interaction with the metadatabase ##
 
 [see](http://bios-vm.bbmrirp3-lumc.surf-hosted.nl/BBMRIomics/metadatabase.html)
-
 
 
 

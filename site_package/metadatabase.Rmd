@@ -28,13 +28,13 @@ from the GRID, e.g, the bios alignment pipeline.
 Each record or document is a sample (individual) within the BIOS
 project and has a unique identifier. 
 
-***UPDATE REQUIRED*** Each document has a predefined structure
-according to our database schema
-(https://git.lumc.nl/rp3/bios-schema). Custom Python scripts are use
-to update or modify the database (https://git.lumc.nl/rp3/bios-mdb).
+Each document has a predefined structure according to our database
+schema (https://git.lumc.nl/rp3/bios-schema). Custom Python scripts
+are use to update or modify the database
+(https://git.lumc.nl/rp3/bios-mdb).
 
 Access to the metadatabase (MDb) is restricted; please contact (Leon
-Mei or Maarten van Iterson).
+Mei).
 
 ## Description of MDb content ##
 
@@ -76,7 +76,7 @@ DNAm         Idat, DNAmRuns, DNAmSamplesheet
 DNA          Imputations
 EGA          freeze1RNA, freeze1DNAm, freeze2RNA, freeze2DNAm
 
-> Note: We can always add views if necessary; please contact Maarten van Iterson.
+> Note: We can always add views if necessary; please contact Leon Mei.
 
 ## Accessing the MDb ##
 
@@ -86,20 +86,19 @@ requests and to transform JSON documents. Some programming languages
 have an API for CouchDB e.g. JAVA and Python. There are several online
 tools available for transforming JSON documents to csv files. 
 
-***UPDATE REQUIRED*** couchdb with _list-function to transform directly to csv
-
-```{r, eval=FALSE}
+```{r}
 head(getView("getIds", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB))
-head(getView("Phenotypes", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB))
-head(getView("Fastq", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB))
-head(getView("Idat", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB))
-head(getView("getIds", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB))
-head(getView("getIds", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB))
-head(getView("getIds", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB))
-
-
+head(getView("getallPhenotypes", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB))
+head(getView("getFastq", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB))
+head(getView("getIdat", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB))
+head(getView("getRNASeqRuns", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB))
+head(getView("getMethylationRuns", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB))
+head(getView("getGenotypes", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB))
+head(getView("getImputations", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB))
+head(getView("getRelations", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB))
+head(getView("rnaseqSamplesheet", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB))
+head(getView("methylationSamplesheet", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB))
 ```
-
 
 ### Access the metadatabase using R ###
 
@@ -136,13 +135,4 @@ is possible through the `getView`-function.
 ```{r}
 stats <- getView("getStats", usrpwd=RP3_MDB_USRPWD, url=RP3_RDB)
 ```
-
-
-## Putting data in the MDb ##
-
-***UPDATE REQUIRED*** 
-
-Currently, the are R and python scripts available, however, I'm
-looking into [couchdbapp](https://github.com/couchapp/couchapp) a
-python interface that is specifically design to update/views etc.
 

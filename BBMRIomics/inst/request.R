@@ -487,16 +487,70 @@ write.table(gonl[, 11:12], file="gonl_old_new.csv", sep="\t", row.names=FALSE, q
 
 
 
-##BAS
-##Numbers
+##Bas
+##Freeze2 numbers
 ##2017-07-13
+library(BBMRIomics)
+packageVersion("BBMRIomics")
+##[1] ‘2.0.1’
 
-1. Aantal unrelated met 450k
-2. Aantal unrelated met 450k & RNA-seq
-3. Aantal unrelated met 450k & SNPs
-4. Aantal unrelated met 450k & RNA-seq & SNPs
-5. Aantal unrelated met RNA-seq & SNPs
-6. Aantal MZ tweeling paren met 450k
-7. Aantal MZ tweeling paren met RNA-seq
+data(package="BBMRIomics")
 
-8. Aantal CpGs voor analyse dat overblijft na QC 450k arrays.
+##1. Aantal unrelated met 450k
+data(methData_Betas_BIOS_F2_cleaned)
+ncol(betas)
+##[1] 4386
+
+##2. Aantal unrelated met 450k & RNA-seq
+data(methData_Betas_BIOS_F2_cleaned)
+data(rnaSeqData_ReadCounts_BIOS_cleaned)
+length(intersect(colData(betas)$uuid, colData(counts)$uuid))
+##[1] 3400
+
+##3. Aantal unrelated met 450k & SNPs
+sum(!is.na(colData(betas)$imputation_id))
+##[1] 4025
+
+##4. Aantal unrelated met 450k & RNA-seq & SNPs
+betas <- betas[,!is.na(betas$imputation_id)]
+ncol(betas) ##same as 3.
+length(intersect(colData(betas)$uuid, colData(counts)$uuid))
+##3219
+
+##5. Aantal unrelated met RNA-seq & SNPs
+data(rnaSeqData_ReadCounts_BIOS_cleaned)
+sum(!is.na(colData(counts)$imputation_id))
+##[1] 3357
+
+##6. Aantal MZ tweeling paren met 450k
+runs <- getView("getMethylationRuns", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
+runs <- subset(runs, qc == "passed" & biobank_id == "NTR")
+relations <- getView("getRelations", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
+mz <- subset(relations, relation_type == "has monozygotic twin")
+[1] 1881    7
+mz <- mz[mz$ids %in% runs$ids & mz$relation_id %in% runs$ids,]
+##[1] 1719    7 ##twin pairs
+
+##7. Aantal MZ tweeling paren met RNA-seq
+runs <- getView("getRNASeqRuns", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
+runs <- runs[!duplicated(runs$run_id),] ##drop overlapping freezes
+runs <- subset(runs, qc == "passed") ##keep those passing qc
+runs <- subset(runs, type != "replicate") ##drop replicated
+##now we have still original, reruns and merged runs
+merged <- subset(runs, type == "merged" & freeze == 2) ##select
+original <- subset(runs, !(ids %in% merged$ids) & type == "original")
+runs <- rbind(merged, original)
+
+runs <- subset(runs, qc == "passed" & biobank_id == "NTR")
+relations <- getView("getRelations", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
+mz <- subset(relations, relation_type == "has monozygotic twin")
+dim(mz)
+[1] 1881    7
+mz <- mz[mz$ids %in% runs$ids & mz$relation_id %in% runs$ids,]
+dim(mz)
+##[1] 1090    7 ##twin pairs
+
+##8. Aantal CpGs voor analyse dat overblijft na QC 450k arrays.
+nrow(betas)
+##this depends on the number of samples as well since we use filter criteria that depend on the number of samples!
+##[1] 481388 ##no SNPs or sex-chromosomes removed

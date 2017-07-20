@@ -23,12 +23,10 @@ rna <- getView("getRNASeqRuns", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
 rna <- rna[!duplicated(rna$run_id),] ##drop overlapping freezes
 table(rna$qc)
 
-
 library(BBMRIomics)
 dnam <- getView("getMethylationRuns", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
 dnam <- dnam[!duplicated(dnam$run_id),] ##drop overlapping freezes
 table(dnam$qc)
-
 
 
 ```
