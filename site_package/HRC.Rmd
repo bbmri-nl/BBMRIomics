@@ -1,3 +1,4 @@
+
 ---
 title: "Working with HRC imputed genotypes"
 output:
@@ -30,8 +31,6 @@ Example eQTL from Zhernakova et al. [@Zhernakova2017] (see Figure 2:
 Identification of the strongest modifiers of eQTL effects).
 
 ```{r, annotation}
-library(org.Hs.eg.db)
-select(org.Hs.eg.db, keys="NOD2", keytype="SYMBOL", columns="ENSEMBL")
 library(SNPlocs.Hsapiens.dbSNP142.GRCh37)
 gr <- rsidsToGRanges("rs1981760")
 ```

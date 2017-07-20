@@ -158,7 +158,7 @@ for(biobank in unique(tmp$biobank_id)) {
 
 ## Prepare sample metadata ##
 
-```{r, coldatarna, eval=FALSE}
+```{r, coldatarna1, eval=FALSE}
 library(BBMRIomics)
 ids <- getView("getIds", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
 gonl <- subset(ids, !is.na(gonl_id))
@@ -210,7 +210,7 @@ table(!is.na(colData$gonl_id))
 
 ## Prepare count table ##
 
-```{r, countdata, eval=FALSE}
+```{r, countdata1, eval=FALSE}
 library(BiocParallel)
 register(MulticoreParam(16, log=TRUE))
 files <- list.files(file.path(VM_BASE_DATA, "RNASeq/v2.1.3/", "gene_read"), full.names=TRUE, pattern="gene.read.count.gz$")
@@ -235,7 +235,7 @@ mid <- match(colnames(counts), colData$run_id)
 colnames(counts) <- colData$uuid[mid]
 ```
 
-```{r, rowdatarna, eval=FALSE}
+```{r, rowdatarna1, eval=FALSE}
 library(TxDb.Hsapiens.Ensembl.v71)
 rowRanges <- genes(TxDb.Hsapiens.Ensembl.v71)
 library(GenomeInfoDb)
