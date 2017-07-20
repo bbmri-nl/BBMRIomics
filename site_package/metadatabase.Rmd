@@ -29,9 +29,8 @@ Each record or document is a sample (individual) within the BIOS
 project and has a unique identifier. 
 
 Each document has a predefined structure according to our database
-schema (https://git.lumc.nl/rp3/bios-schema). Custom Python scripts
-are use to update or modify the database
-(https://git.lumc.nl/rp3/bios-mdb).
+[schema](couchdbapp/schema/bios.json). Custom R scripts are used to
+update or modify the database ([see](BBMRIomics/R/MDb_Helpers.R)).
 
 Access to the metadatabase (MDb) is restricted; please contact (Leon
 Mei).
