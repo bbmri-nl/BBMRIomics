@@ -23,3 +23,5 @@
 .couchapprc
 
 data/*
+
+couchapp/data/*
