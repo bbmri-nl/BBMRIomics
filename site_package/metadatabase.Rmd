@@ -87,7 +87,6 @@ tools available for transforming JSON documents to csv files.
 
 ```{r}
 head(getView("getIds", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB))
-head(getView("getallPhenotypes", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB))
 head(getView("getFastq", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB))
 head(getView("getIdat", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB))
 head(getView("getRNASeqRuns", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB))
@@ -95,6 +94,7 @@ head(getView("getMethylationRuns", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB))
 head(getView("getGenotypes", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB))
 head(getView("getImputations", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB))
 head(getView("getRelations", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB))
+head(getView("allPhenotypes", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB))
 head(getView("rnaseqSamplesheet", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB))
 head(getView("methylationSamplesheet", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB))
 ```
