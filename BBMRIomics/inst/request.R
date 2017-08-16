@@ -554,3 +554,84 @@ dim(mz)
 nrow(betas)
 ##this depends on the number of samples as well since we use filter criteria that depend on the number of samples!
 ##[1] 481388 ##no SNPs or sex-chromosomes removed
+
+
+##EGA upload
+library(BBMRIomics)
+data(package="BBMRIomics")
+
+##EGA_upload_unrelated_DNAm
+data(methData_Betas_BIOS_F2_cleaned)
+
+idat <- getView("getIdat", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
+head(idat)
+
+idat$idat <- apply(idat[, c("Red", "Grn")], 1, paste, collapse=", ")
+
+metadata <- as.data.frame(colData(betas)[, c("Sex", "Sampling_Age", "Baso_Perc", "Eos_Perc", "Neut_Perc", "LUC_Perc", "Lymph_Perc", "Mono_Perc", "Baso", "Eos", "Neut", "LUC", "Lymph", "Mono", "run_id", "gonl_id")])
+
+metadata$uuid <- colnames(betas)
+head(metadata)
+metadata <- merge(metadata, idat[,c("idat", "run_id")], by="run_id")
+str(metadata)
+
+metadata$set <- "unrelated"
+
+write.table(metadata, "EGA_upload_DNAm.csv", row.names=FALSE, quote=FALSE, sep="\t")
+
+##EGA_upload_unrelated_RNA
+data(rnaSeqData_ReadCounts_BIOS_cleaned)
+
+##for fastq path and  insert size
+fastq <- getView("getFastq", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
+fastq <- fastq[!duplicated(fastq$run_id),]
+dim(fastq)
+
+fastq$fastq <- apply(fastq[, c("R1", "R2")], 1, paste, collapse=", ")
+
+bam <- getView("getBAM", usrpwd=RP3_MDB_USRPWD, url=RP3_RDB)
+bam <- bam[grepl("v2.1.3", bam$path),] ##freeze 2 alignments
+
+run <- merge(fastq[, c("run_id", "fastq", "insert_size")], bam[, c("run_id", "path")], by="run_id")
+colnames(run)[4] <- "bam"
+head(run)
+
+dim(run)
+
+metadata <- as.data.frame(colData(counts)[, c("Sex", "Sampling_Age", "Baso_Perc", "Eos_Perc", "Neut_Perc", "LUC_Perc", "Lymph_Perc", "Mono_Perc", "Baso", "Eos", "Neut", "LUC", "Lymph", "Mono", "run_id", "gonl_id")])
+
+metadata$uuid <- colnames(counts)
+metadata[1:5,]
+metadata <- merge(metadata, run, by="run_id")
+metadata[1:5,]
+dim(metadata)
+
+##some how this run escaped should not be merged
+setdiff(metadata$run_id, run$run_id)
+subset(metadata, run_id == "BD1P0GACXX-4-4_BC52YAACXX-8-4")
+ids <- getView("getIds", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
+subset(ids, uuid == "BIOSB6925833")
+
+metadata$set <- "unrelated"
+colnames(metadata)
+
+##EGA_upload_GoNL_RNA
+data(rnaSeqData_ReadCounts_GoNL)
+
+md <- as.data.frame(colData(counts)[, c("Sex", "Sampling_Age", "Baso_Perc", "Eos_Perc", "Neut_Perc", "LUC_Perc", "Lymph_Perc", "Mono_Perc", "Baso", "Eos", "Neut", "LUC", "Lymph", "Mono", "run_id", "gonl_id")])
+
+md$uuid <- colnames(counts)
+
+md <- merge(md, run, by="run_id")
+md[1:5,]
+
+md$set <- "GoNL"
+
+colnames(md)
+
+metadata <- rbind(metadata, md)
+
+dim(metadata)
+
+write.table(metadata, "EGA_upload_RNA.csv", row.names=FALSE, quote=FALSE, sep="\t")
+
