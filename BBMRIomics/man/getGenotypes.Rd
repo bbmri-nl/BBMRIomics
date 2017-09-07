@@ -5,8 +5,8 @@
 \title{extract genotypes from vcf-files}
 \usage{
 getGenotypes(imputation_id, biobank = c("ALL", "CODAM", "LL", "LLS", "NTR",
-  "RS", "PAN"), snps, type = c("GoNL", "HRC", "GoNLv5"), geno = c("GT",
-  "DS", "GP", "SM"), BASE, ...)
+  "RS", "PAN"), snps, type = c("GoNL", "HRC", "HRCv1.1", "GoNLv5"),
+  geno = c("GT", "DS", "GP", "SM"), BASE, ...)
 }
 \arguments{
 \item{imputation_id}{imputation identifier}
@@ -15,7 +15,7 @@ getGenotypes(imputation_id, biobank = c("ALL", "CODAM", "LL", "LLS", "NTR",
 
 \item{snps}{GRanges with snps}
 
-\item{type}{imputation type either "GoNL", "HRC" or "GoNLv5"}
+\item{type}{imputation type either "GoNL", "HRC", "HRCv1.1" or "GoNLv5"}
 
 \item{geno}{extract either genotypes, dosages, genotype likelihoods or as snpMatrix}
 

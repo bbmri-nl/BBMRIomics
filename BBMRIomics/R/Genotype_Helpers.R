@@ -118,6 +118,29 @@ read.dosages <- function(file,  yieldSize=NULL, colClassesInfo = c("character", 
     m
 }
 
+.getHRCv1.1 <- function(param, files, imputation_id, genotype){
+
+    chr <- unique(as.character(seqnames(param)))
+    fls <- grep(paste0("chr", chr, ".dose.vcf.gz"), files, value=TRUE)
+    if(length(param) == 0 | is.null(fls))
+        stop("No files found or no SNPs in input!")
+
+    m <- lapply(fls, function(fl) { ##optionally multiple files per chromosome
+        vcf <- readVcf(TabixFile(fl), "hg19", param=param)
+        if(genotype=="SM") {
+            m <- genotypeToSnpMatrix(vcf)$genotypes
+            m <- t(matrix(as.numeric(m), nrow=nrow(m), ncol=ncol(m), dimnames=dimnames(m)))
+        }
+        else
+            m <- geno(vcf)[[genotype]]
+        m
+    })
+    m <- do.call("cbind", m)
+    m <- m[, match(imputation_id, colnames(m)), drop=FALSE] ##return in proper order
+    m
+}
+
+
 .getGONL <- function(param, files, imputation_id, genotype){
 
     chr <- unique(as.character(seqnames(param)))
@@ -179,6 +202,23 @@ getGenotypes <- function(imputation_id, biobank=c("ALL", "CODAM", "LL", "LLS", "
 
         if(length(snps) > 1) {
             genotypes <- bplapply(snps, .getHRC, files=vcfs, imputation_id = as.character(imputation_id), genotype = geno, ...)
+            genotypes <- do.call("rbind", genotypes)
+        } else {
+            genotypes <- .getHRC(snps[[1]], files=vcfs, imputation_id = as.character(imputation_id), genotype = geno, ...)
+        }
+    } else  if(type == "HRCv1.1") {
+
+        if(biobank == "ALL")
+            vcfs <- dir(file.path(BASE, "HRCv1.1_Imputation"), pattern="dose.vcf.gz$", full.names=TRUE, recursive=TRUE)
+        else
+            vcfs <- dir(file.path(BASE, "HRCv1.1_Imputation", biobank), pattern="dose.vcf.gz$", full.names=TRUE, recursive=TRUE)
+
+
+        ##for(fl in vcfs) indexTabix(fl, format="vcf") ##if vcf are not indexed!
+        ##TODO Bioconductor devel (bioc-3.4/R-3.3.0) contains `GenomicFiles` with vcfstack a nicer solution?
+
+        if(length(snps) > 1) {
+            genotypes <- bplapply(snps, .getHRCv1.1, files=vcfs, imputation_id = as.character(imputation_id), genotype = geno, ...)
             genotypes <- do.call("rbind", genotypes)
         } else {
             genotypes <- .getHRC(snps[[1]], files=vcfs, imputation_id = as.character(imputation_id), genotype = geno, ...)
