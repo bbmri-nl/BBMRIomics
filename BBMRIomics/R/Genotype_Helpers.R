@@ -121,7 +121,7 @@ read.dosages <- function(file,  yieldSize=NULL, colClassesInfo = c("character", 
 .getHRCv1.1 <- function(param, files, imputation_id, genotype){
 
     chr <- unique(as.character(seqnames(param)))
-    fls <- grep(paste0("chr", chr, ".dose.vcf.gz"), files, value=TRUE)
+    fls <- grep(paste0("chr", chr, "(.no.auto_male|.no.auto_female|).dose.vcf.gz"), files, value=TRUE)
     if(length(param) == 0 | is.null(fls))
         stop("No files found or no SNPs in input!")
 
@@ -221,7 +221,7 @@ getGenotypes <- function(imputation_id, biobank=c("ALL", "CODAM", "LL", "LLS", "
             genotypes <- bplapply(snps, .getHRCv1.1, files=vcfs, imputation_id = as.character(imputation_id), genotype = geno, ...)
             genotypes <- do.call("rbind", genotypes)
         } else {
-            genotypes <- .getHRC(snps[[1]], files=vcfs, imputation_id = as.character(imputation_id), genotype = geno, ...)
+            genotypes <- .getHRCv1.1(snps[[1]], files=vcfs, imputation_id = as.character(imputation_id), genotype = geno, ...)
         }
 
     } else if(type == "GoNL") {
