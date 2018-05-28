@@ -10,7 +10,7 @@
                           "##                                                                                      ##\n",
                           "##  QUESTIONS     :                                                                     ##\n",
                           "##                  FORUM : https://www.biostars.org/t/bbmri-nl-bios/                   ##\n",
-                          "##                  EMAIL : h.mei@lumc.nl                                               ##\n",
+                          "##                  EMAIL : h.mei@lumc.nl, d.cats@lumc.nl                               ##\n",
                           "##                                                                                      ##\n",
                           "## ", pkgname, " (", packageVersion(pkgname), ")                                                                   ##\n",
                           "##########################################################################################\n")
@@ -25,7 +25,7 @@
     }
 
     cfs <- read.dcf(configFile,
-                    fields=c("VM_BASE_DATA", "VM_BASE_ANALYSIS", "SRM_BASE", "RP3_MDB", "RP3_RDB", "RP4_DB"))[1,]
+                    fields=c("VM_BASE_DATA", "VM_BASE_ANALYSIS", "SRM_BASE", "RP3_MDB", "RP3_RDB", "RP4_DB", "SQL_DB"))[1,]
 
     tmp <- mapply(FUN = function(key, value)
         assign(key, as.character(value), envir = as.environment(paste0("package:", pkgname))),
@@ -88,6 +88,14 @@ RP3_MDB_USRPWD <- NULL
 ##' @author mvaniterson
 ##' @keywords data
 RP4_DB <- NULL
+
+##' Global variable
+##'
+##' @name SQL_DB
+##' @docType data
+##' @author dcats
+##' @keywords data
+SQL_DB <- NULL
 
 ##' Global variable
 ##'

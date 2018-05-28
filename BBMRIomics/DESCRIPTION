@@ -1,8 +1,8 @@
-Package: BBMRIomics
+Package: BBMRIomicsTest
 Type: Package
 Title: R utilities for BBMRI omics data analysis
-Version: 2.0.3
-Date: 2017-09-11
+Version: 2.1.0
+Date: 2018-05-28
 Author: Maarten van Iterson, Davy Cats
 Maintainer: D. Cats <D.cats@lumc.nl>
 Description: R helper functions for BBMRI omics, DNA methylation, RNA
@@ -23,11 +23,13 @@ Imports:
     Rsamtools,
     readr,
     S4Vectors,
-    VariantAnnotation
+    VariantAnnotation,
+    RPostgreSQL
 Collate:
     'zzz.R'
     'Genotype_Helpers.R'
     'MDb_Helpers.R'
+    'Sql_MDb_Helpers.R'
     'Overlap_Helpers.R'
     'RP4_Helpers.R'
     'utils.R'
