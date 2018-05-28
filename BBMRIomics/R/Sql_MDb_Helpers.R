@@ -66,6 +66,7 @@ getSQLview <- function(view, url, usrpwd="anonymous", port=5432,
 ##' Defaults to "rp3_rp4_meta".
 ##' @author dcats
 ##' @importFrom RPostgreSQL PostgreSQL dbConnect dbGetQuery dbDisconnect
+##' @export
 updateViews <- function(url, usrpwd, port=5432, db="rp3_rp4_meta") {
     views <- c("getfastq", "persontogwas_includingmztwins", "getidat",
                "freeze1rnaseq", "freeze2rnaseq", "freeze1methylation",
