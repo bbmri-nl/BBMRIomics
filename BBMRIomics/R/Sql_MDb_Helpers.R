@@ -9,7 +9,7 @@
 ##' @param port The port to be used to connect to the database. Defaults to 
 ##' 5432.
 ##' @param db The database to be connected to. Defaults to rp3_rp4_meta.
-##' @importFrom RPostgreSQL dbDriver dbConnect dbGetQuery dbDisconnect
+##' @importFrom RPostgreSQL PostgreSQL dbConnect dbGetQuery dbDisconnect
 ##' @export
 ##' @return data.frame containing the view
 ##' @author dcats
@@ -33,7 +33,7 @@ getSQLview <- function(view, url, usrpwd="anonymous", port=5432,
     
     if(usrpwd != "anonymous") {
         usrpwd <- strsplit(usrpwd, ":")[[1]]
-        drv <- dbDriver("PostgreSQL")
+        drv <- PostgreSQL()
         con <- dbConnect(drv, dbname=db, host=url, port=port, user=usrpwd[1], 
                          password=usrpwd[2])
         tbl <- dbGetQuery(con, paste0("SELECT * FROM ", view))
@@ -65,7 +65,7 @@ getSQLview <- function(view, url, usrpwd="anonymous", port=5432,
 ##' @param db Name of the database from which the views will be retrieved.
 ##' Defaults to "rp3_rp4_meta".
 ##' @author dcats
-##' @importFrom RPostgreSQL dbDriver dbConnect dbGetQuery dbDisconnect
+##' @importFrom RPostgreSQL PostgreSQL dbConnect dbGetQuery dbDisconnect
 updateViews <- function(url, usrpwd, port=5432, db="rp3_rp4_meta") {
     views <- c("getfastq", "persontogwas_includingmztwins", "getidat",
                "freeze1rnaseq", "freeze2rnaseq", "freeze1methylation",
@@ -76,7 +76,7 @@ updateViews <- function(url, usrpwd, port=5432, db="rp3_rp4_meta") {
     
     usrpwd <- strsplit(usrpwd, ":")[[1]]
     
-    drv <- dbDriver("PostgreSQL")
+    drv <- PostgreSQL()
     con <- dbConnect(drv, dbname=db, host=url, port=port, user=usrpwd[1],
                      password=usrpwd[2])
     
@@ -104,7 +104,7 @@ updateViews <- function(url, usrpwd, port=5432, db="rp3_rp4_meta") {
 ##' @param db Name of the database from which the views will be retrieved.
 ##' Defaults to "rp3_rp4_meta".
 ##' @author dcats
-##' @importFrom RPostgreSQL dbDriver dbConnect dbGetQuery dbDisconnect
+##' @importFrom RPostgreSQL PostgreSQL dbConnect dbGetQuery dbDisconnect
 ##' @examples 
 ##' \dontrun{
 ##' visits <- .runQuery("SELECT * FROM visit;", RP3_MDB, RP3_MDB_USRPWD)
@@ -112,7 +112,7 @@ updateViews <- function(url, usrpwd, port=5432, db="rp3_rp4_meta") {
 .runQuery <- function(query, url, usrpwd, port=5432, db="rp3_rp4_meta"){
     usrpwd <- strsplit(usrpwd, ":")[[1]]
     
-    drv <- dbDriver("PostgreSQL")
+    drv <- PostgreSQL()
     con <- dbConnect(drv, dbname=db, host=url, port=port, user=usrpwd[1],
                      password=usrpwd[2])
     out <- dbGetQuery(con, query)
