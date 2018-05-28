@@ -42,7 +42,7 @@ getSQLview <- function(view, url, usrpwd="anonymous", port=5432,
     } else {
         message("No username and password provided for the MDB, using stored views!")
         
-        pckg.path <- path.package("BBMRIomics")
+        pckg.path <- path.package("BBMRIomicsTest")
         #pckg.path <- "~/testDataFolder"
         
         load(paste0(pckg.path, "/", tolower(view), ".Rdata"))
@@ -80,7 +80,7 @@ updateViews <- function(url, usrpwd, port=5432, db="rp3_rp4_meta") {
     con <- dbConnect(drv, dbname=db, host=url, port=port, user=usrpwd[1],
                      password=usrpwd[2])
     
-    pckg.path <- path.package("BBMRIomics")
+    pckg.path <- path.package("BBMRIomicsTest")
     #pckg.path <- "~/testDataFolder"
     
     for (view in views){
