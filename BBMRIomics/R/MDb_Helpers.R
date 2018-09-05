@@ -13,7 +13,7 @@
 ##' @importFrom readr read_csv
 ##' @importFrom httr set_config config GET authenticate content
 view <- function(viewname, db="https://metadatabase.bbmrirp3-lumc.surf-hosted.nl:6984/bios-test/", converter="json2csv", usrpwd=NULL) {
-
+    warning("This function is deprecated, please use getSQLview instead.")
     set_config(config(ssl_verifypeer = 0L, ssl_verifyhost = 0L))
     url <- file.path(db, "_design/couchdbapp/_list", converter, viewname)
     request <- paste0(url, "?reduce=false")
@@ -70,7 +70,8 @@ view <- function(viewname, db="https://metadatabase.bbmrirp3-lumc.surf-hosted.nl
 ##' g
 ##' }
 getView <- function(view, url, usrpwd="anonymous", selection="?reduce=false", force.keys=FALSE, row.names=FALSE, verbose = FALSE){
-    
+    warning("This function is deprecated, please use getSQLview instead.")
+
     ##views/designs
     views <- list()
     views[["Metadatabase"]] <- list(EGA = c("freeze1RNASeq","freeze1Methylation", "freeze2RNASeq","freeze2Methylation"),

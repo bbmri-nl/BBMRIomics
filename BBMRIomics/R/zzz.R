@@ -34,19 +34,6 @@
     ##assuming this wil not change
     assign("RP3_BIOBANKS", c("RS", "PAN", "CODAM", "LLS", "LL", "NTR"), envir=as.environment(paste0("package:", pkgname)))
 
-    ##TODO find a nicer way to show this information
-    ##views/designs
-    ## views <- list("freeze1RNASeq","freeze1Methylation", "freeze2RNASeq","freeze2Methylation",
-    ##               "getFastq", "getIdat",
-    ##               "getIds",
-    ##               "allPhenotypes", "cellCounts", "minimalPhenotypes",
-    ##               "getGenotypes", "getMethylationRuns", "getRNASeqRuns",
-    ##               "rnaseqSamplesheet", "methylationSamplesheet",
-    ##               "md5sum",
-    ##               "getStats")
-
-    ## assign("VIEWS", views, envir=globalenv())
-
     ##if exists assign usrpwd and proxy
     configFiles <- c("~/.bbmriomics", "~/.biosrutils") ##for backward compatibility BIOSRutils
     if(any(file.exists(configFiles))) {

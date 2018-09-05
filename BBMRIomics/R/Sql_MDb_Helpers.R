@@ -1,120 +1,126 @@
-##' get view from metadatabase
+##' get a view from the metadatabase
 ##'
-##' @title get view from metadatabase
-##' @param view Name of the to be retrieved view.
-##' @param url Unique resource location of the metadatabase.
-##' @param usrpwd Username and password concatenated by colon 'usr:pwd'.
-##' This defaults to 'anonymous', which will cause a locally stored versions 
-##' of the view to be retrieved.
-##' @param port The port to be used to connect to the database. Defaults to 
-##' 5432.
-##' @param db The database to be connected to. Defaults to rp3_rp4_meta.
+##' @title get a view from the metadatabase
+##' @param view The name of the to be retrieved view.
+##' @param usrpwd The username and password concatenated by a colon.
+##' This defaults to "guest:guest".
+##' @param url The URL through which the database can be accessed. This
+##' defaults to "localhost".
+##' @param port The port to be used to connect to the database. This defaults
+##' to 5432.
+##' @param db The name of database to be connected to. This defaults to
+##' "rp3_rp4_meta".
 ##' @importFrom RPostgreSQL PostgreSQL dbConnect dbGetQuery dbDisconnect
 ##' @export
-##' @return data.frame containing the view
-##' @author dcats
+##' @return A data.frame containing the view.
+##' @author Davy Cats
 ##' @examples
 ##' \dontrun{ 
-##' #This example will not work yet, as RP3_MDB does not point at the SQL MDB.
-##' view <- getSQLview("minimalphenotypes", url=RP3_MDB, usrpwd=RP3_MDB_USRPWD)
+##' view <- getSQLview("minimalphenotypes")
 ##' }
-getSQLview <- function(view, url, usrpwd="anonymous", port=5432, 
+getSQLview <- function(view, usrpwd="guest:guest", url="localhost", port=5432,
                        db="rp3_rp4_meta") {
-    views <- c("getfastq", "persontogwas_includingmztwins", "getidat",
-               "freeze1rnaseq", "freeze2rnaseq", "freeze1methylation",
-               "freeze2methylation", "getids", "allphenotypes", "cellcounts",
-               "minimalphenotypes", "getimputatins", "getmethylationruns",
-               "getrnaseqruns", "methylationsamplesheet", "rnaseqsamplesheet",
-               "getrelations")
+    views <- getViews(usrpwd=usrpwd, url=url, port=port, db=db)
     
     if (! tolower(view) %in% views){
-        stop(view, " not known!")
+        stop(view, " is not a known view!")
     }
-    
-    if(usrpwd != "anonymous") {
-        usrpwd <- strsplit(usrpwd, ":")[[1]]
-        drv <- PostgreSQL()
-        con <- dbConnect(drv, dbname=db, host=url, port=port, user=usrpwd[1], 
-                         password=usrpwd[2])
-        tbl <- dbGetQuery(con, paste0("SELECT * FROM ", view))
-        dbDisconnect(con)
-        return(tbl)
-    } else {
-        message("No username and password provided for the MDB, using stored views!")
-        
-        pckg.path <- path.package("BBMRIomicsTest")
-        #pckg.path <- "~/testDataFolder"
-        
-        load(paste0(pckg.path, "/", tolower(view), ".Rdata"))
-        return(tbl)
-    }
-}
-
-
-##' update locally stored views
-##'
-##' Retrieve the views from the metadatabase and store them locally
-##' as data.frames in Rdata files. Files will be stored in the 
-##' BBMRIomics installation directory.
-##' @title update locally stored views
-##' @param url The url on which the metadatabase is hosted.
-##' @param usrpwd The metadatabase username and password. Formatted as 
-##' <username>:<password>.
-##' @param port The port though which the database can be accessed. 
-##' Defaults to 5432.
-##' @param db Name of the database from which the views will be retrieved.
-##' Defaults to "rp3_rp4_meta".
-##' @author dcats
-##' @importFrom RPostgreSQL PostgreSQL dbConnect dbGetQuery dbDisconnect
-##' @export
-updateViews <- function(url, usrpwd, port=5432, db="rp3_rp4_meta") {
-    views <- c("getfastq", "persontogwas_includingmztwins", "getidat",
-               "freeze1rnaseq", "freeze2rnaseq", "freeze1methylation",
-               "freeze2methylation", "getids", "allphenotypes", "cellcounts",
-               "minimalphenotypes", "getimputatins", "getmethylationruns",
-               "getrnaseqruns", "methylationsamplesheet", "rnaseqsamplesheet",
-               "getrelations") #TODO make this automatic (and store list somewhere)?
     
     usrpwd <- strsplit(usrpwd, ":")[[1]]
-    
     drv <- PostgreSQL()
     con <- dbConnect(drv, dbname=db, host=url, port=port, user=usrpwd[1],
                      password=usrpwd[2])
-    
-    pckg.path <- path.package("BBMRIomicsTest")
-    #pckg.path <- "~/testDataFolder"
-    
-    for (view in views){
-        tbl <- dbGetQuery(con, paste0("SELECT * FROM ", view))
-        save(tbl, file=paste0(pckg.path, "/", view, ".Rdata"))
-    }
-    
+    tbl <- dbGetQuery(con, paste0("SELECT * FROM ", view))
     dbDisconnect(con)
-    return()
+    tbl
+}
+
+
+##' retrieve view names
+##'
+##' @title retrieve view names
+##' @param usrpwd The username and password concatenated by a colon.
+##' This defaults to "guest:guest".
+##' @param url The URL through which the database can be accessed. This
+##' defaults to "localhost".
+##' @param port The port to be used to connect to the database. This defaults
+##' to 5432.
+##' @param db The name of database to be connected to. This defaults to
+##' "rp3_rp4_meta".
+##' @author Davy Cats
+##' @importFrom RPostgreSQL PostgreSQL dbConnect dbGetQuery dbDisconnect
+##' @export
+##' @return A vector containing the view names.
+##' @examples
+##' \dontrun{
+##' tables <- getViews()
+##' }
+getViews <- function(usrpwd="guest:guest", url="localhost", port=5432,
+                     db="rp3_rp4_meta") {
+    out <- .runQuery(paste0("SELECT table_name ",
+                            "FROM information_schema.views ",
+                            "WHERE table_schema = 'views'"),
+                     usrpwd=usrpwd, url=url, port=port, db=db)
+    out$table_name
+}
+
+##' retrieve table names
+##'
+##' @title retrieve table names
+##' @param usrpwd The username and password concatenated by a colon.
+##' This defaults to "guest:guest".
+##' @param url The URL through which the database can be accessed. This
+##' defaults to "localhost".
+##' @param port The port to be used to connect to the database. This defaults
+##' to 5432.
+##' @param db The name of database to be connected to. This defaults to
+##' "rp3_rp4_meta".
+##' @author Davy Cats
+##' @importFrom RPostgreSQL PostgreSQL dbConnect dbGetQuery dbDisconnect
+##' @export
+##' @return A vector containing the table names.
+##' @examples
+##' \dontrun{
+##' tables <- getTables()
+##' }
+getTables <- function(usrpwd="guest:guest", url="localhost", port=5432,
+                     db="rp3_rp4_meta") {
+    out <- .runQuery(paste0("SELECT tablename ",
+                            "FROM pg_catalog.pg_tables ",
+                            "WHERE schemaname = 'tables'"),
+                     usrpwd=usrpwd, url=url, port=port, db=db)
+    out$tablename
 }
 
 ##' send a query to the database
 ##'
 ##' @title send a query to the database
 ##' @param query The query to be send to the database.
-##' @param url The url on which the database is hosted.
-##' @param usrpwd The database username and password. Formatted as 
-##' <username>:<password>.
-##' @param port The port though which the database can be accessed. 
-##' Defaults to 5432.
-##' @param db Name of the database from which the views will be retrieved.
-##' Defaults to "rp3_rp4_meta".
-##' @author dcats
+##' @param usrpwd The username and password concatenated by a colon.
+##' This defaults to "guest:guest".
+##' @param url The URL through which the database can be accessed. This
+##' defaults to "localhost".
+##' @param port The port to be used to connect to the database. This defaults
+##' to 5432.
+##' @param db The name of database to be connected to. This defaults to
+##' "rp3_rp4_meta".
+##' @author Davy Cats
 ##' @importFrom RPostgreSQL PostgreSQL dbConnect dbGetQuery dbDisconnect
+##' @return A data.frame with the query results.
 ##' @examples 
 ##' \dontrun{
-##' visits <- .runQuery("SELECT * FROM visit;", RP3_MDB, RP3_MDB_USRPWD)
+##' visits <- .runQuery("SELECT * FROM visit;", RP3_MDB_USRPWD, RP3_MDB)
 ##' }
-.runQuery <- function(query, url, usrpwd, port=5432, db="rp3_rp4_meta"){
+.runQuery <- function(query, usrpwd="guest:guest", url="localhost", port=5432,
+                      db="rp3_rp4_meta"){
     usrpwd <- strsplit(usrpwd, ":")[[1]]
+    if (usrpwd[1] == "guest") {
+        message("Accesing the database as 'guest' user, which was limited ",
+            "read access.")   
+    }
     
     drv <- PostgreSQL()
-    con <- dbConnect(drv, dbname=db, host=url, port=port, user=usrpwd[1],
+    con <- dbConnect(drsv, dbname=db, host=url, port=port, user=usrpwd[1],
                      password=usrpwd[2])
     out <- dbGetQuery(con, query)
     dbDisconnect(con)
