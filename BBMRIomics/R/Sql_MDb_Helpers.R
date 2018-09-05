@@ -115,7 +115,7 @@ getTables <- function(usrpwd="guest:guest", url="localhost", port=5432,
                       db="rp3_rp4_meta"){
     usrpwd <- strsplit(usrpwd, ":")[[1]]
     if (usrpwd[1] == "guest") {
-        message("Accesing the database as 'guest' user, which was limited ",
+        message("Accessing the database as 'guest' user, which was limited ",
             "read access.")   
     }
     
