@@ -58,6 +58,8 @@ navbar:
         - text: "Miscellaneous" 
         - text: "Accessing the metadatabase"
           href: metadatabase.html
+        - text: "Accessing the metadatabase (legacy)"
+          href: metadatabase_legacy.html
         - text: "Phenotyping"
         - text: "Using RNAseq"
           href: phenotyping_rnaseq.html

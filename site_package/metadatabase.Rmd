@@ -1,6 +1,6 @@
 ---
 title: "Accessing the BIOS metadatabase"
-output: 
+output:
   html_document:
     highlight: tango
     toc: true
@@ -12,126 +12,67 @@ bibliography: BBMRIomics.bib
 ```{r, child="_setup.Rmd"}
 ```
 
-The BIOS project has generated for over 4000 individuals
-RNA-sequencing and DNA methylation data. A part from these data, GoNL
-imputed genotypes were generated from existing genotypes and several
-phenotypes/demographic variables were collected for the same set of
-samples. A highly flexible sample-oriented metadatabase (MDb) was
-created in order to manage the dynamic generation of this large-scale
-multiple-omic data set.
+The BIOS project has generated RNA-sequencing and DNA methylation data for over
+4000 individuals. As part of these data, GoNL imputed genotypes were generated
+from existing genotypes and several phenotypes/demographic variables were
+collected for the same set of samples. A relational, SQL-based (Postgres)
+metadatabase (MDb) was created to store the large-scale multiple-omic data
+collected, in a structured way. Metadata and quantifications from the RP4
+metabolomics project were also added to this database.
 
-The MDb is a non-relation database (http://couchdb.apache.org/) that
-uses JSON to store records and JavaScript for querying. Furthermore,
-it has an HTTP API suitable to programmatically access the database
-from the GRID, e.g, the bios alignment pipeline.
+The metadatabase is available on the BIOS-VM.
 
-Each record or document is a sample (individual) within the BIOS
-project and has a unique identifier. 
+## MDb contents ##
+The MDb contains as much meta-information as possible from all samples and
+datatypes: location of (raw) data on srm, md5 checksum verification,
+quality control information, links between the different identifiers used
+(person_id, dna_id, etc) and phenotype information.
+The data has been seperated into a number of entities, as described below:
 
-Each document has a predefined structure according to our database
-[schema](couchdbapp/schema/bios.json). Custom R scripts are used to
-update or modify the database ([see](BBMRIomics/R/MDb_Helpers.R)).
+| Table:                      | Description:                                                                    |
+| --------------------------- | ------------------------------------------------------------------------------- |
+| person                      | Information about persons (including associated ids)                            |
+| relation                    | Relationship information between persons                                        |
+| gwas                        | Information about GWAS runs                                                     |
+| imputation                  | Information about preformed genotype imputations                                |
+| visit                       | Phenotypes and other information related to the collection of samples           |
+| dna_sample                  | Information about DNA samples                                                   |
+| methylation_450k_run        | Information about Illumina 450k methylation array runs                          |
+| methylation_450k_freeze     | Which methylation runs are included in which data freezes (and freeze subsets)  |
+| rna_sample                  | Information about RNA samples                                                   |
+| rna_run                     | Information about RNAseq runs                                                   |
+| rna_merged_run              | Which RNAseq runs are included in merged RNA runs                               |
+| rna_freeze                  | Which RNAseq runs are included in which data freezes (and freeze subsets)       |
+| nightingale_run             | Information regarding nightingale runs                                          |
+| nightingale_quantification  | Metabolomics quantification measurements                                        |
 
-Access to the metadatabase (MDb) is restricted; please contact (Leon
-Mei).
-
-## Description of MDb content ##
-
-The MDb contains as much as meta-information as possible from all
-samples and datatypes: location of (raw) data on srm, md5 checksum
-verification, quality control information, links between the different
-identifiers used (person_id, dna_id, etc) and phenotype information.
-
-Every sample's meta information is encoded in a CouchDB document. Each
-document has a unique identifier (the bios_id) which is biobankname
-(CODAM, LL, LLS, NTR, RS and PAN) concatenated with person_id
-separated by a "-", e.g. CODAM-2001. This unique bios_id is not
-suitable for use in the public domain, e.g., EGA upload, therefore a
-unique non-identifiable identifier has been created for each
-individual; the uuid.
-
-Every update of a sample in the database is recorded by increasing a
-revision number. Therefore it is always possible to undo wrong
-updates.
-
-## Description available views ##
-
-Views are the way to extract information from the couchDb. Views are
-organized into designs; each design contains a number of views related
-to a particular kind of information that can be extracted from the
-MDb. For example, there is a design `EGA` which contains currently two
-views 1) `freeze1RNASeq` to extract those samples for which RNAseq
-data has been uploaded to EGA and 2) `freeze1Methylation` for the DNA
-methylation data. 
-
-Other relevant views are: 
-
-design:      view: 
------------- --------------------------------------------------------------------
-Identifiers  Ids, Relations 
-Phenotypes   Phenotypes
-RNA          Fastq, RNARuns, RNASamplesheet 
-DNAm         Idat, DNAmRuns, DNAmSamplesheet
-DNA          Imputations
-EGA          freeze1RNA, freeze1DNAm, freeze2RNA, freeze2DNAm
-
-> Note: We can always add views if necessary; please contact Leon Mei.
-
-## Accessing the MDb ##
-
-Views can be downloaded as JSON documents by making a GET
-request. Most programming languages have utilities for making GET
-requests and to transform JSON documents. Some programming languages
-have an API for CouchDB e.g. JAVA and Python. There are several online
-tools available for transforming JSON documents to csv files. 
-
+The `getTables` function can be used to retrieve a list of table names as well:
 ```{r}
-head(getView("getIds", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB))
-head(getView("getFastq", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB))
-head(getView("getIdat", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB))
-head(getView("getRNASeqRuns", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB))
-head(getView("getMethylationRuns", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB))
-head(getView("getGenotypes", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB))
-head(getView("getImputations", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB))
-head(getView("getRelations", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB))
-head(getView("allPhenotypes", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB))
-head(getView("rnaseqSamplesheet", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB))
-head(getView("methylationSamplesheet", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB))
+getTables()
 ```
 
-### Access the metadatabase using R ###
-
-BBMRIomics uses a configuration file to read in your MDb username and
-password, so that you do not have to type it every time you use the
-MDb.
-
-Create a file called `.bbmriomics` (`.biosrutils` is also a valid name)
-and stored it in your home directory on the VM (/home/username) and
-add e.g.:
-
-```{bash, eval=FALSE}
-usrpwdrp3: 'rp3_username:password' 
-usrpwdrp4: 'rp4_username:password'
-proxy:  /tmp/your_proxy
-```
-
-The first line contains your username and password for the RP3
-database. The latter two can be optionally for accessing the RP4
-database and accessing data from SRM using the function `SRM2VM`.
-
-On loading the **BBMRIomics** library your username and password will
-be set in the variable `RP3_MDB_USRPWD`. The `getView`-function can
-now be used like this:
-
+## Available views ##
+Views are predefined SQL queries which can be used to extract a subset of the
+available information from the database. The names of the available views can
+be retrieved using the `getViews`-function:
 ```{r}
-ids <- getView("getIds", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
+getViews()
 ```
 
-Also, access to the RNAseq run database (if you requested an account)
-is possible through the `getView`-function.
+## Retrieving views and querying the database ##
 
-
+To retrieve a view the `getSQLview`-function can be used. Note that view names
+are not case sensitive.
 ```{r}
-stats <- getView("getStats", usrpwd=RP3_MDB_USRPWD, url=RP3_RDB)
+head(getSQLview("getids"))
 ```
 
+> We can always add views if necessary; please contact Leon Mei.
+
+If you have a Postgres account on the BIOS-VM you can also query the tables
+directly using the `runQuery`-function. This function is just a wrapper around
+the `dbGetQuery`-function from the `RPostgreSQL`-package, so that package (or 
+any other API which interacts with postgres) can also be used directly. 
+```{r eval=FALSE}
+runQuery("SELECT * FROM visits;")
+```

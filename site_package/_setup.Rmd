@@ -13,22 +13,22 @@ suppressPackageStartupMessages({ ##to get rid of annoying startup messages (like
 
     library(DNAmArray) #from github
     library(omicsPrint) #from github
-    
+
     library(MethylAid)
     library(BiocParallel)
-    library(shiny)    
+    library(shiny)
     library(rtracklayer)
     library(GenomeInfoDb)
     library(AnnotationHub)
     library(BSgenome.Hsapiens.UCSC.hg19)
-    library(org.Hs.eg.db)    
+    library(org.Hs.eg.db)
     library(Rsamtools)
     library(Biostrings)
     library(edgeR)
     library(limma)
     library(irlba)
     library(ggplot2)
-    library(qqman)    
+    library(qqman)
     library(ComplexHeatmap)
     
 

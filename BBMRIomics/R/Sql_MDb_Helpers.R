@@ -2,14 +2,7 @@
 ##'
 ##' @title get a view from the metadatabase
 ##' @param view The name of the to be retrieved view.
-##' @param usrpwd The username and password concatenated by a colon.
-##' This defaults to "guest:guest".
-##' @param url The URL through which the database can be accessed. This
-##' defaults to "localhost".
-##' @param port The port to be used to connect to the database. This defaults
-##' to 5432.
-##' @param db The name of database to be connected to. This defaults to
-##' "rp3_rp4_meta".
+##' @param ... Additional arguments to be passed to \link[BBMRIomics]{runQuery}
 ##' @importFrom RPostgreSQL PostgreSQL dbConnect dbGetQuery dbDisconnect
 ##' @export
 ##' @return A data.frame containing the view.
@@ -18,35 +11,22 @@
 ##' \dontrun{ 
 ##' view <- getSQLview("minimalphenotypes")
 ##' }
-getSQLview <- function(view, usrpwd="guest:guest", url="localhost", port=5432,
-                       db="rp3_rp4_meta") {
-    views <- getViews(usrpwd=usrpwd, url=url, port=port, db=db)
+getSQLview <- function(view, verbose=T, ...) {
+    views <- getViews(verbose=F, ...)
     
     if (! tolower(view) %in% views){
         stop(view, " is not a known view!")
     }
     
-    usrpwd <- strsplit(usrpwd, ":")[[1]]
-    drv <- PostgreSQL()
-    con <- dbConnect(drv, dbname=db, host=url, port=port, user=usrpwd[1],
-                     password=usrpwd[2])
-    tbl <- dbGetQuery(con, paste0("SELECT * FROM ", view))
-    dbDisconnect(con)
-    tbl
+    out <- runQuery(paste0("SELECT * FROM ", view), verbose=verbose, ...)
+    out
 }
 
 
 ##' retrieve view names
 ##'
 ##' @title retrieve view names
-##' @param usrpwd The username and password concatenated by a colon.
-##' This defaults to "guest:guest".
-##' @param url The URL through which the database can be accessed. This
-##' defaults to "localhost".
-##' @param port The port to be used to connect to the database. This defaults
-##' to 5432.
-##' @param db The name of database to be connected to. This defaults to
-##' "rp3_rp4_meta".
+##' @param ... Arguments to be passed to \link[BBMRIomics]{runQuery}
 ##' @author Davy Cats
 ##' @importFrom RPostgreSQL PostgreSQL dbConnect dbGetQuery dbDisconnect
 ##' @export
@@ -55,26 +35,18 @@ getSQLview <- function(view, usrpwd="guest:guest", url="localhost", port=5432,
 ##' \dontrun{
 ##' tables <- getViews()
 ##' }
-getViews <- function(usrpwd="guest:guest", url="localhost", port=5432,
-                     db="rp3_rp4_meta") {
-    out <- .runQuery(paste0("SELECT table_name ",
+getViews <- function(...) {
+    out <- runQuery(paste0("SELECT table_name ",
                             "FROM information_schema.views ",
                             "WHERE table_schema = 'views'"),
-                     usrpwd=usrpwd, url=url, port=port, db=db)
+                    ...)
     out$table_name
 }
 
 ##' retrieve table names
 ##'
 ##' @title retrieve table names
-##' @param usrpwd The username and password concatenated by a colon.
-##' This defaults to "guest:guest".
-##' @param url The URL through which the database can be accessed. This
-##' defaults to "localhost".
-##' @param port The port to be used to connect to the database. This defaults
-##' to 5432.
-##' @param db The name of database to be connected to. This defaults to
-##' "rp3_rp4_meta".
+##' @param ... Arguments to be passed to \link[BBMRIomics]{runQuery}
 ##' @author Davy Cats
 ##' @importFrom RPostgreSQL PostgreSQL dbConnect dbGetQuery dbDisconnect
 ##' @export
@@ -83,12 +55,11 @@ getViews <- function(usrpwd="guest:guest", url="localhost", port=5432,
 ##' \dontrun{
 ##' tables <- getTables()
 ##' }
-getTables <- function(usrpwd="guest:guest", url="localhost", port=5432,
-                     db="rp3_rp4_meta") {
-    out <- .runQuery(paste0("SELECT tablename ",
+getTables <- function(...) {
+    out <- runQuery(paste0("SELECT tablename ",
                             "FROM pg_catalog.pg_tables ",
                             "WHERE schemaname = 'tables'"),
-                     usrpwd=usrpwd, url=url, port=port, db=db)
+                    ...)
     out$tablename
 }
 
@@ -109,18 +80,26 @@ getTables <- function(usrpwd="guest:guest", url="localhost", port=5432,
 ##' @return A data.frame with the query results.
 ##' @examples 
 ##' \dontrun{
-##' visits <- .runQuery("SELECT * FROM visit;", RP3_MDB_USRPWD, RP3_MDB)
+##' visits <- runQuery("SELECT * FROM visit;", RP3_MDB_USRPWD)
 ##' }
-.runQuery <- function(query, usrpwd="guest:guest", url="localhost", port=5432,
-                      db="rp3_rp4_meta"){
+runQuery <- function(query, usrpwd="guest:guest", url="localhost", port=5432,
+                      db="rp3_rp4_meta", verbose=T){
+    if (usrpwd == "anonymous") {
+        if (verbose) {
+            message("Accessing the database as 'guest' user, which has ",
+                    "limited read access.")
+        }
+        usrpwd <- "guest:guest"
+    }
+
     usrpwd <- strsplit(usrpwd, ":")[[1]]
-    if (usrpwd[1] == "guest") {
-        message("Accessing the database as 'guest' user, which was limited ",
-            "read access.")   
+    if (verbose) {
+        message("Accessing the '", db, "' database at '", url, ":", 
+                    port, "' as user '", usrpwd[1], "'.")
     }
     
     drv <- PostgreSQL()
-    con <- dbConnect(drsv, dbname=db, host=url, port=port, user=usrpwd[1],
+    con <- dbConnect(drv, dbname=db, host=url, port=port, user=usrpwd[1],
                      password=usrpwd[2])
     out <- dbGetQuery(con, query)
     dbDisconnect(con)

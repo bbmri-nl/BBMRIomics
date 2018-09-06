@@ -12,6 +12,8 @@ bibliography: BBMRIomics.bib
 ```{r, child="_setup.Rmd"}
 ```
 
+> This document uses deprecated functions.
+
 The aim of the BIOS consortium is to generate RNA sequencing and DNA
 methylation data for 4000 individuals that have been selected for
 having array-based genotypes or whole sequencing data (GoNL) already
@@ -23,10 +25,15 @@ The following code shows how to extract the RNA sequencing and DNA
 methylation samples that pass quality control.
 
 
-```{r}
+```{r eval=FALSE}
 ids <- getView("getIds", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
-
+```
+<pre><code>## No username and password provided for the MDB use stored views!</code></pre>
+```{r eval=FALSE}
 rna <- getView("getRNASeqRuns", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
+```
+<pre><code>## No username and password provided for the MDB use stored views!</code></pre>
+```{r eval=FALSE}
 rna <- rna[!duplicated(rna$run_id),] ##drop overlapping freezes
 rna <- subset(rna, qc == "passed") ##keep those passing qc
 rna <- subset(rna, type != "replicate") ##drop replicated
@@ -36,26 +43,65 @@ original <- subset(rna, !(ids %in% merged$ids) & type == "original")
 rna <- rbind(merged, original)
 
 dnam <- getView("getMethylationRuns", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
+```
+<pre><code>## No username and password provided for the MDB use stored views!</code></pre>
+```{r eval=FALSE}
 dnam <- dnam[!duplicated(dnam$run_id),] ##drop overlapping freezes
 dnam <- subset(dnam, qc == "passed") ##keep those passing qc
 dnam <- subset(dnam, type != "replicate") ##drop replicated
 
 ##small checks
 dim(ids)
+```
+<pre><code>## [1] 6379   14</code></pre>
+```{r eval=FALSE}
 dim(rna)
+```
+<pre><code>## [1] 4427    9</code></pre>
+```{r eval=FALSE}
 dim(dnam)
-
+```
+<pre><code>## [1] 6072    7</code></pre>
+```{r eval=FALSE}
 sum(duplicated(ids$ids))
+```
+<pre><code>## [1] 0</code></pre>
+```{r eval=FALSE}
 sum(duplicated(rna$ids))
+```
+<pre><code>## [1] 0</code></pre>
+```{r eval=FALSE}
 sum(duplicated(dnam$ids))
-
+```
+<pre><code>## [1] 0</code></pre>
+```{r eval=FALSE}
 library(limma)
 
 df <- data.frame(rna = ids$ids %in% rna$ids,
                  dnam = ids$ids %in% dnam$ids)
 colSums(df)
+```
+<pre><code>##  rna dnam 
+## 4427 6072</code></pre>
+```{r eval=FALSE}
 vc <- vennCounts(df)
 vc
+```
+<pre><code>##   rna dnam Counts
+## 1   0    0     92
+## 2   0    1   1860
+## 3   1    0    215
+## 4   1    1   4212
+## attr(,"class")
+## [1] "VennCounts"</code></pre>
+```{r eval=FALSE}
+vennDiagram(vc)
+```
+```{r echo=FALSE}
+library(limma)
+df <- data.frame(c(0,0,1,1),c(0,1,0,1), c(92,1860,215,4212))
+colnames(df) <- c("rna", "dnam", "Counts")
+vc <- structure(as.matrix(df), class = "VennCounts")
 vennDiagram(vc)
 ```
 
@@ -64,14 +110,38 @@ individuals for which both RNA sequencing and dna methylation data
 could be generated.
 
 
-```{r}
+```{r eval=FALSE}
 relations <- getView("getRelations", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
+```
+<pre><code>## No username and password provided for the MDB use stored views!</code></pre>
+```{r eval=FALSE}
 relations <- subset(relations, !is.na(relation_id))
 all(relations$ids %in% relations$relation_id) ##relations consistent
+```
+<pre><code>## [1] TRUE</code></pre>
+```{r eval=FALSE}
 length(relations$ids)
+```
+<pre><code>## [1] 4262</code></pre>
+```{r eval=FALSE}
 length(unique(relations$ids))
+```
+<pre><code>## [1] 3558</code></pre>
+```{r eval=FALSE}
 table(relations$relation_type)
-
+```
+<pre><code>## 
+##           2nd degree family genetical 1st degree family 
+##                           6                           8 
+##                   has child          has dizygotic twin 
+##                         534                        1028 
+##        has monozygotic twin                  has parent 
+##                        1881                         548 
+##   has repeated measurements                     has sib 
+##                          88                          99 
+##  inferred 1st degree family 
+##                          70</code></pre>
+```{r eval=FALSE}
 getRelation <- function(id, relations) as.character(relations$id[relations$relation_id %in% id])
 
 getFamily <- function(id, relations) {
@@ -99,18 +169,143 @@ for(i in 1:nrow(relations)) {
 }
 
 max(relations$family_id)
-
+```
+<pre><code>## [1] 1616</code></pre>
+```{r eval=FALSE}
 famSizes <- table(relations$family_id)
 table(famSizes)
+```
+<pre><code>## famSizes
+##    2    4    6    8   10   12   17   18   21   22   26   28 
+## 1375  171   13    3   22   19    1    6    1    1    1    3</code></pre>
+```{r eval=FALSE}
 head(names(famSizes[famSizes==2]))
+```
+<pre><code>## [1] "1" "2" "3" "4" "6" "7"</code></pre>
+```{r eval=FALSE}
 subset(relations, family_id == 1)
+```
+<pre><code>##           ids         uuid biobank_id gonl_id gwas_id
+## 17 CODAM-2037 BIOS71A89511      CODAM    <NA>    2037
+## 73 CODAM-2240 BIOS6601F3E0      CODAM    <NA>    2240
+##                 relation_type relation_id family_id
+## 17 inferred 1st degree family  CODAM-2240         1
+## 73 inferred 1st degree family  CODAM-2037         1</code></pre>
+```{r eval=FALSE}
 head(names(famSizes[famSizes==4]))
+```
+<pre><code>## [1] "9"  "10" "11" "12" "13" "14"</code></pre>
+```{r eval=FALSE}
 subset(relations, family_id == 9)
+```
+<pre><code>##                ids        uuid biobank_id  gonl_id gwas_id relation_type
+## 956 LL-LLDeep_1600 BIOS82666E4         LL gonl-56a    <NA>     has child
+## 960 LL-LLDeep_1603 BIOS855C858         LL gonl-56b    <NA>     has child
+## 981 LL-LLDeep_1619 BIOS9542DD0         LL gonl-56c    <NA>    has parent
+## 982 LL-LLDeep_1619 BIOS9542DD0         LL gonl-56c    <NA>    has parent
+##        relation_id family_id
+## 956 LL-LLDeep_1619         9
+## 960 LL-LLDeep_1619         9
+## 981 LL-LLDeep_1600         9
+## 982 LL-LLDeep_1603         9</code></pre>
+```{r eval=FALSE}
 head(names(famSizes[famSizes==12]))
+```
+<pre><code>## [1] "165" "194" "308" "325" "383" "387"</code></pre>
+```{r eval=FALSE}
 subset(relations, family_id == 165)
+```
+<pre><code>##                           ids         uuid biobank_id gonl_id gwas_id
+## 2148         NTR-A1083C-10146 BIOS7E1BFC2D        NTR    <NA>   10175
+## 2149         NTR-A1083C-10146 BIOS7E1BFC2D        NTR    <NA>   10175
+## 2150         NTR-A1083C-10146 BIOS7E1BFC2D        NTR    <NA>   10175
+## 2151 NTR-A1083C-NTR15215-8666 BIOS59AC7812        NTR    <NA>   10175
+## 2152 NTR-A1083C-NTR15215-8666 BIOS59AC7812        NTR    <NA>   10175
+## 2153 NTR-A1083C-NTR15215-8666 BIOS59AC7812        NTR    <NA>   10175
+## 2154         NTR-A1083D-10175 BIOS0AC3A8CD        NTR    <NA>   10175
+## 2155         NTR-A1083D-10175 BIOS0AC3A8CD        NTR    <NA>   10175
+## 2156         NTR-A1083D-10175 BIOS0AC3A8CD        NTR    <NA>   10175
+## 2157 NTR-A1083D-NTR15589-8860 BIOS063C99A7        NTR    <NA>   10175
+## 2158 NTR-A1083D-NTR15589-8860 BIOS063C99A7        NTR    <NA>   10175
+## 2159 NTR-A1083D-NTR15589-8860 BIOS063C99A7        NTR    <NA>   10175
+##                  relation_type              relation_id family_id
+## 2148      has monozygotic twin         NTR-A1083D-10175       165
+## 2149      has monozygotic twin NTR-A1083D-NTR15589-8860       165
+## 2150 has repeated measurements NTR-A1083C-NTR15215-8666       165
+## 2151      has monozygotic twin         NTR-A1083D-10175       165
+## 2152      has monozygotic twin NTR-A1083D-NTR15589-8860       165
+## 2153 has repeated measurements         NTR-A1083C-10146       165
+## 2154      has monozygotic twin         NTR-A1083C-10146       165
+## 2155      has monozygotic twin NTR-A1083C-NTR15215-8666       165
+## 2156 has repeated measurements NTR-A1083D-NTR15589-8860       165
+## 2157      has monozygotic twin         NTR-A1083C-10146       165
+## 2158      has monozygotic twin NTR-A1083C-NTR15215-8666       165
+## 2159 has repeated measurements         NTR-A1083D-10175       165</code></pre>
+```{r eval=FALSE}
 head(names(famSizes[famSizes==28]))
+```
+<pre><code>## [1] "261" "692" "738"</code></pre>
+```{r eval=FALSE}
 subset(relations, family_id == 261)
 ```
+<pre><code>##                              ids         uuid biobank_id  gonl_id  gwas_id
+## 2368 NTR-A118A-NTR01371-06D07229 BIOS29A0CC56        NTR gonl-96a 06D07229
+## 2369 NTR-A118A-NTR01371-06D07229 BIOS29A0CC56        NTR gonl-96a 06D07229
+## 2370 NTR-A118A-NTR01371-06D07229 BIOS29A0CC56        NTR gonl-96a 06D07229
+## 2371 NTR-A118A-NTR01371-06D07229 BIOS29A0CC56        NTR gonl-96a 06D07229
+## 2372 NTR-A118B-NTR01373-06D07230 BIOS13D06DE0        NTR gonl-96b 06D07230
+## 2373 NTR-A118B-NTR01373-06D07230 BIOS13D06DE0        NTR gonl-96b 06D07230
+## 2374 NTR-A118B-NTR01373-06D07230 BIOS13D06DE0        NTR gonl-96b 06D07230
+## 2375 NTR-A118B-NTR01373-06D07230 BIOS13D06DE0        NTR gonl-96b 06D07230
+## 2376               NTR-A118C-829 BIOS34C8B8A5        NTR gonl-96c    10375
+## 2377               NTR-A118C-829 BIOS34C8B8A5        NTR gonl-96c    10375
+## 2378               NTR-A118C-829 BIOS34C8B8A5        NTR gonl-96c    10375
+## 2379               NTR-A118C-829 BIOS34C8B8A5        NTR gonl-96c    10375
+## 2380               NTR-A118C-829 BIOS34C8B8A5        NTR gonl-96c    10375
+## 2381   NTR-A118C-NT0027644-10375 BIOS125DBF1F        NTR gonl-96c    10375
+## 2382   NTR-A118C-NT0027644-10375 BIOS125DBF1F        NTR gonl-96c    10375
+## 2383   NTR-A118C-NT0027644-10375 BIOS125DBF1F        NTR gonl-96c    10375
+## 2384   NTR-A118C-NT0027644-10375 BIOS125DBF1F        NTR gonl-96c    10375
+## 2385   NTR-A118C-NT0027644-10375 BIOS125DBF1F        NTR gonl-96c    10375
+## 2386   NTR-A118D-NT0027645-10376 BIOSD15C4FC7        NTR     <NA>    10375
+## 2387   NTR-A118D-NT0027645-10376 BIOSD15C4FC7        NTR     <NA>    10375
+## 2388   NTR-A118D-NT0027645-10376 BIOSD15C4FC7        NTR     <NA>    10375
+## 2389   NTR-A118D-NT0027645-10376 BIOSD15C4FC7        NTR     <NA>    10375
+## 2390   NTR-A118D-NT0027645-10376 BIOSD15C4FC7        NTR     <NA>    10375
+## 2391      NTR-A118D-NTR00927-607 BIOSA249C90B        NTR     <NA>    10375
+## 2392      NTR-A118D-NTR00927-607 BIOSA249C90B        NTR     <NA>    10375
+## 2393      NTR-A118D-NTR00927-607 BIOSA249C90B        NTR     <NA>    10375
+## 2394      NTR-A118D-NTR00927-607 BIOSA249C90B        NTR     <NA>    10375
+## 2395      NTR-A118D-NTR00927-607 BIOSA249C90B        NTR     <NA>    10375
+##                  relation_type                 relation_id family_id
+## 2368                 has child               NTR-A118C-829       261
+## 2369                 has child   NTR-A118C-NT0027644-10375       261
+## 2370                 has child   NTR-A118D-NT0027645-10376       261
+## 2371                 has child      NTR-A118D-NTR00927-607       261
+## 2372                 has child               NTR-A118C-829       261
+## 2373                 has child   NTR-A118C-NT0027644-10375       261
+## 2374                 has child   NTR-A118D-NT0027645-10376       261
+## 2375                 has child      NTR-A118D-NTR00927-607       261
+## 2376      has monozygotic twin   NTR-A118D-NT0027645-10376       261
+## 2377      has monozygotic twin      NTR-A118D-NTR00927-607       261
+## 2378                has parent NTR-A118A-NTR01371-06D07229       261
+## 2379                has parent NTR-A118B-NTR01373-06D07230       261
+## 2380 has repeated measurements   NTR-A118C-NT0027644-10375       261
+## 2381      has monozygotic twin   NTR-A118D-NT0027645-10376       261
+## 2382      has monozygotic twin      NTR-A118D-NTR00927-607       261
+## 2383                has parent NTR-A118A-NTR01371-06D07229       261
+## 2384                has parent NTR-A118B-NTR01373-06D07230       261
+## 2385 has repeated measurements               NTR-A118C-829       261
+## 2386      has monozygotic twin               NTR-A118C-829       261
+## 2387      has monozygotic twin   NTR-A118C-NT0027644-10375       261
+## 2388                has parent NTR-A118A-NTR01371-06D07229       261
+## 2389                has parent NTR-A118B-NTR01373-06D07230       261
+## 2390 has repeated measurements      NTR-A118D-NTR00927-607       261
+## 2391      has monozygotic twin               NTR-A118C-829       261
+## 2392      has monozygotic twin   NTR-A118C-NT0027644-10375       261
+## 2393                has parent NTR-A118A-NTR01371-06D07229       261
+## 2394                has parent NTR-A118B-NTR01373-06D07230       261
+## 2395 has repeated measurements   NTR-A118D-NT0027645-10376       261</code></pre>
 
 Now we can selected the maximal unrelated individuals e.g. in case of
 GoNL trio's if all have dnam and rna chose the parents; to maximize the
@@ -120,7 +315,7 @@ The rna or dnam freeze 2 is extended with unrelated individuals having
 only rna or dnam.
 
 
-```{r}
+```{r eval=FALSE}
 reduceRelations <- function(ids, relations) {
 
     rels <- relations[relations$ids %in% ids,]
@@ -155,8 +350,13 @@ reduceRelations <- function(ids, relations) {
 ovl <- intersect(rna$ids, dnam$ids)
 ovlRed <- reduceRelations(ovl, relations)
 length(ovlRed)
+```
+<pre><code>## [1] 3405</code></pre>
+```{r eval=FALSE}
 length(reduceRelations(ovlRed, relations)) ##check
-
+```
+<pre><code>## [1] 3405</code></pre>
+```{r eval=FALSE}
 ##remove all family members in remaining rna/dnam
 ovlRel <- unlist(lapply(ovlRed, getFamily, relations))
 
@@ -165,24 +365,43 @@ srna <- subset(rna, !(ids %in% c(ovlRed, ovlRel)))
 rnaOnly <- reduceRelations(srna$ids, relations)
 rnaF2 <- subset(rna, ids %in% c(ovlRed, rnaOnly))
 dim(rnaF2)
-
+```
+<pre><code>## [1] 3530    9</code></pre>
+```{r eval=FALSE}
 sdnam <- subset(dnam, !(ids %in% c(ovlRed, ovlRel)))
 ##and get the unrelated set
 dnamOnly <- reduceRelations(sdnam$ids, relations)
 dnamF2 <- subset(dnam, ids %in% c(ovlRed, dnamOnly))
 dim(dnamF2)
-
+```
+<pre><code>## [1] 4386    7</code></pre>
+```{r eval=FALSE}
 freeze2 <- merge(rnaF2[,c("ids", "run_id")], dnamF2[,c("ids", "run_id")], by="ids", suffixes=c("_rna","_dnam"))
 head(freeze2)
+```
+<pre><code>##          ids     run_id_rna       run_id_dnam
+## 1 CODAM-2001 BD1NYRACXX-5-1 8667053102_R05C02
+## 2 CODAM-2002 AD10W1ACXX-4-1 8667053157_R01C02
+## 3 CODAM-2013 AD10W1ACXX-4-2 8655685053_R04C02
+## 4 CODAM-2016 BD1NYRACXX-5-3 8655685094_R01C01
+## 5 CODAM-2017 AD10W1ACXX-4-3 8667053076_R02C01
+## 6 CODAM-2020 BD1NYRACXX-5-4 8655685021_R04C02</code></pre>
+```{r eval=FALSE}
 dim(freeze2)
-
+```
+<pre><code>## [1] 3405    3</code></pre>
+```{r eval=FALSE}
 ##double check
 relations <- getView("getRelations", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
+dim(freeze2)
+```
+<pre><code>## No username and password provided for the MDB use stored views!</code></pre>
+```{r eval=FALSE}
 relations <- subset(relations, !is.na(relation_id))
 relations <- subset(relations, ids %in% freeze2$ids)
 intersect(relations$ids, relations$relation_id) ##intersect is empty!
 ```
-
+<pre><code>## character(0)</code></pre>
 ```{r, eval=FALSE}
 write.table(freeze2, file=file.path(VM_BASE_ANALYSIS, "BBMRIomics/BBMRIomics/data", "freeze2_overlap_identifiers.csv"), row.names=FALSE, quote=FALSE, sep=",")
 write.table(rnaF2[, c("ids", "run_id")], file=file.path(VM_BASE_ANALYSIS, "BBMRIomics/BBMRIomics/data", "freeze2_rna_identifiers.csv"), row.names=FALSE, quote=FALSE, sep=",")

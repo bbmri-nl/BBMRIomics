@@ -1,4 +1,4 @@
-Package: BBMRIomicsTest
+Package: BBMRIomics
 Type: Package
 Title: R utilities for BBMRI omics data analysis
 Version: 2.1.0
