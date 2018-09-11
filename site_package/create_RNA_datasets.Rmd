@@ -72,7 +72,7 @@ library(BBMRIomics)
 colData <- read.table(file=file.path(VM_BASE_ANALYSIS, "BBMRIomics/BBMRIomics/data", "freeze2_rna_identifiers.csv"), header=TRUE, sep=",", as.is=TRUE)
 
 ##add methylation samplesheet
-rdb <- getSQLview("getStats", usrpwd=RP3_MDB_USRPWD)
+rdb <- getView("getStats", usrpwd=RP3_MDB_USRPWD)
 rdb <- do.call('cbind', rdb)
 colData <- merge(colData, rdb, by.x="run_id", by.y="ids", all.x=TRUE)
 
@@ -84,12 +84,12 @@ phenotypes <- cleanPhenotypes()
 colData <- merge(colData, phenotypes, by="ids", all.x=TRUE) 
 
 ##add genotype ids
-imputation <- getSQLview("getImputations", usrpwd=RP3_MDB_USRPWD)
+imputation <- getView("getImputations", usrpwd=RP3_MDB_USRPWD)
 hrc <- subset(imputation, imputation_reference == "HRC")
 colData <- merge(colData, hrc[, c("ids", "imputation_id")], by="ids", all.x=TRUE)
 
 ##add uuid and gonl_id
-ids <- getSQLview("getIds", usrpwd=RP3_MDB_USRPWD)
+ids <- getView("getIds", usrpwd=RP3_MDB_USRPWD)
 colData <- merge(colData, ids[, c("ids", "uuid", "gonl_id", "biobank_id")], by="ids", all.x=TRUE)
 
 ##ordering
@@ -160,10 +160,10 @@ for(biobank in unique(tmp$biobank_id)) {
 
 ```{r, coldatarna1, eval=FALSE}
 library(BBMRIomics)
-ids <- getSQLview("getIds", usrpwd=RP3_MDB_USRPWD)
+ids <- getView("getIds", usrpwd=RP3_MDB_USRPWD)
 gonl <- subset(ids, !is.na(gonl_id))
 
-rna <- getSQLview("getRNASeqRuns", usrpwd=RP3_MDB_USRPWD)
+rna <- getView("getRNASeqRuns", usrpwd=RP3_MDB_USRPWD)
 rna <- rna[!duplicated(rna$run_id),] ##drop overlapping freezes
 rna <- subset(rna, qc == "passed") ##keep those passing qc
 rna <- subset(rna, type != "replicate") ##drop replicated
@@ -177,7 +177,7 @@ rna <- subset(rna, ids %in% gonl$ids)
 colData <- rna
 
 ##add methylation samplesheet
-rdb <- getSQLview("getStats", usrpwd=RP3_MDB_USRPWD)
+rdb <- getView("getStats", usrpwd=RP3_MDB_USRPWD)
 rdb <- do.call('cbind', rdb)
 colData <- merge(colData, rdb, by.x="run_id", by.y="ids", all.x=TRUE)
 
@@ -189,7 +189,7 @@ phenotypes <- cleanPhenotypes()
 colData <- merge(colData, phenotypes, by="ids", all.x=TRUE) 
 
 ##add uuid and gonl_id
-ids <- getSQLview("getIds", usrpwd=RP3_MDB_USRPWD)
+ids <- getView("getIds", usrpwd=RP3_MDB_USRPWD)
 colData <- merge(colData, ids[, c("ids", "uuid", "gonl_id")], by="ids", all.x=TRUE)
 
 ##ordering

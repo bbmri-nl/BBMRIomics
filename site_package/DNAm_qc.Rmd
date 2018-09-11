@@ -31,7 +31,7 @@ application; `summarize` and `visualize`. For more information see
 
 ```{r, eval=FALSE}
 path450k <- file.path(VM_BASE_DATA, "IlluminaHumanMethylation450k")
-samplesheets <- getSQLview("methylationSamplesheet")
+samplesheets <- getView("methylationSamplesheet")
 samplesheets <- samplesheets[!duplicated(samplesheets$run_id),]
 samplesheets <- samplesheets[order(samplesheets$ids),]
 head(samplesheets)

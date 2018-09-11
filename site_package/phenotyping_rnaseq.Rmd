@@ -199,7 +199,7 @@ missclass[missclass > 50]
 x <- cbind(predicted[rownames(predicted) %in% names(missclass[missclass > 50]), 1:5],
       reported=as.character(phenotype[names(phenotype) %in% names(missclass[missclass > 50])])
 )
-ids <- getSQLview("getIds", usrpwd=RP3_MDB_USRPWD, verbose = FALSE)
+ids <- getView("getIds", usrpwd=RP3_MDB_USRPWD, verbose = FALSE)
 subset(ids, uuid %in% rownames(x))
 
 ```

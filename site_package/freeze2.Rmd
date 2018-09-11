@@ -12,8 +12,6 @@ bibliography: BBMRIomics.bib
 ```{r, child="_setup.Rmd"}
 ```
 
-> This document uses deprecated functions.
-
 The aim of the BIOS consortium is to generate RNA sequencing and DNA
 methylation data for 4000 individuals that have been selected for
 having array-based genotypes or whole sequencing data (GoNL) already
