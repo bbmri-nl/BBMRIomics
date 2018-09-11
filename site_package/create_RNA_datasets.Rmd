@@ -163,7 +163,7 @@ library(BBMRIomics)
 ids <- getView("getIds", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
 gonl <- subset(ids, !is.na(gonl_id))
 
-rna <- getView("getRNASeqRuns", usrpwd=RP3_MDB_USRPWD, url=RP3_RDB)
+rna <- getView("getRNASeqRuns", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
 rna <- rna[!duplicated(rna$run_id),] ##drop overlapping freezes
 rna <- subset(rna, qc == "passed") ##keep those passing qc
 rna <- subset(rna, type != "replicate") ##drop replicated
@@ -177,7 +177,7 @@ rna <- subset(rna, ids %in% gonl$ids)
 colData <- rna
 
 ##add methylation samplesheet
-rdb <- getView("getStats", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
+rdb <- getView("getStats", usrpwd=RP3_MDB_USRPWD, url=RP3_RDB)
 rdb <- do.call('cbind', rdb)
 colData <- merge(colData, rdb, by.x="run_id", by.y="ids", all.x=TRUE)
 
