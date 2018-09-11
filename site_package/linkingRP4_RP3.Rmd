@@ -50,7 +50,7 @@ rs <- subjects$biobank == "ERF_ERGO"
 subjects$real_bios_id[rs] <- subjects$bios_id[rs] ##everything fine
 lls <- subjects$biobank == "LLS_PARTOFFS" | subjects$biobank ==  "LLS_SIBS"
 subjects$real_bios_id[lls] <- paste0("LLS-", subjects$bios_id[lls]) ##a little bit pasting
-ids <- getView("getIds", usrpwd=RP3_MDB_USRPWD)
+ids <- getView("getIds", url=RP3_MDB, usrpwd=RP3_MDB_USRPWD)
 ntr <- subjects$biobank == "VUNTR"
 id <- match(subjects$bios_id[ntr], ids$person_id[ids$biobank_id == "NTR"]) ##not bios id but person id
 head(subjects$bios_id[ntr])

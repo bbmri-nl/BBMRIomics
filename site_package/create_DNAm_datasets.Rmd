@@ -19,7 +19,7 @@ Preprocess metadata including phenotype harmonization.
 ```{r}
 library(BBMRIomics)
 
-samplesheets <- getView("methylationSamplesheet", usrpwd=RP3_MDB_USRPWD)
+samplesheets <- getView("methylationSamplesheet", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
 samplesheets <- samplesheets[!duplicated(samplesheets$run_id),]
 
 ##for unrelated sets else skip
@@ -38,12 +38,12 @@ phenotypes <- cleanPhenotypes()
 colData <- merge(colData, phenotypes, by="ids", all.x=TRUE)
 
 ##add genotype ids
-imputation <- getView("getImputations", usrpwd=RP3_MDB_USRPWD)
+imputation <- getView("getImputations", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
 hrc <- subset(imputation, imputation_reference == "HRC")
 colData <- merge(colData, hrc[, c("ids", "imputation_id")], by="ids", all.x=TRUE)
 
 ##add uuid and gonl_id
-ids <- getView("getIds", usrpwd=RP3_MDB_USRPWD)
+ids <- getView("getIds", usrpwd=RP3_MDB_USRPWD, url=RP3_MDB)
 colData <- merge(colData, ids[, c("ids", "gonl_id")], by="ids", all.x=TRUE)
 
 ##ordering
