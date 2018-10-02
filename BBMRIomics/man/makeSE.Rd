@@ -4,7 +4,8 @@
 \alias{makeSE}
 \title{construct SummarizedExperiment}
 \usage{
-makeSE(assaysData, colData, rowData, note = NULL)
+makeSE(assaysData, colData, rowData, author = NULL, dbVersion = NULL,
+  note = NULL)
 }
 \arguments{
 \item{assaysData}{data matrix}
@@ -12,6 +13,10 @@ makeSE(assaysData, colData, rowData, note = NULL)
 \item{colData}{phenotype/metadata}
 
 \item{rowData}{feature information}
+
+\item{author}{optional author information}
+
+\item{dbVersion}{optional version of metadatabase}
 
 \item{note}{optional note will be added to exptData}
 }

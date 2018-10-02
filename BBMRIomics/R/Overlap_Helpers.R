@@ -6,6 +6,8 @@
 ##' @param assaysData data matrix
 ##' @param colData phenotype/metadata
 ##' @param rowData feature information
+##' @param author optional author information
+##' @param dbVersion optional version of metadatabase
 ##' @param note optional note will be added to exptData
 ##' @return object of class 'SummarizedExperiment'
 ##' @author mvaniterson
@@ -13,12 +15,13 @@
 ##' @importFrom S4Vectors SimpleList DataFrame
 ##' @importFrom utils packageVersion
 ##' @export
-makeSE <- function(assaysData, colData, rowData, note=NULL){
+makeSE <- function(assaysData, colData, rowData, author=NULL, dbVersion=NULL,
+                   note=NULL){
     ##simple constructor
-    ##TODO extend
 
     exptData <- SimpleList(creationDate = date(),
-                           author = "M. van Iterson",
+                           author = author,
+                           dbVersion = dbVersion,
                            BBMRIomicsVersion = as.character(packageVersion("BBMRIomics")),
                            note = note)
 

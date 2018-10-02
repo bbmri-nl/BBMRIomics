@@ -46,17 +46,17 @@ The data has been seperated into a number of entities, as described below:
 | nightingale_run             | Information regarding nightingale runs                                          |
 | nightingale_quantification  | Metabolomics quantification measurements                                        |
 
-The `getTables` function can be used to retrieve a list of table names as well:
+The `listTables` function can be used to retrieve a list of table names as well:
 ```{r}
-getTables()
+listTables()
 ```
 
 ## Available views ##
 Views are predefined SQL queries which can be used to extract a subset of the
 available information from the database. The names of the available views can
-be retrieved using the `getViews`-function:
+be retrieved using the `listViews`-function:
 ```{r}
-getViews()
+listViews()
 ```
 
 ## Retrieving views and querying the database ##
@@ -75,4 +75,13 @@ the `dbGetQuery`-function from the `RPostgreSQL`-package, so that package (or
 any other API which interacts with postgres) can also be used directly. 
 ```{r eval=FALSE}
 runQuery("SELECT * FROM visits;")
+```
+
+## Database versioning ##
+The database is built from data and SQL scripts stored on the LUMC git server.
+To retrieve the hash of the commit used to built the database, the 
+`mdbVersion`-function can be used. This hash can be seen as the version of the
+database.
+```{r}
+mdbVersion()
 ```

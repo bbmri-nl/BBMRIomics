@@ -8,18 +8,18 @@ runQuery(query, usrpwd = "guest:guest", url = "localhost", port = 5432,
   db = "rp3_rp4_meta", verbose = T)
 }
 \arguments{
-\item{query}{The query to be send to the database.}
+\item{query}{SQL query to be send to the database}
 
-\item{usrpwd}{The username and password concatenated by a colon.
-This defaults to "guest:guest".}
+\item{usrpwd}{Username and password concatenated by a colon,
+defaults to "guest:guest".}
 
-\item{url}{The URL through which the database can be accessed. This
+\item{url}{URL through which the database can be accessed, 
 defaults to "localhost".}
 
-\item{port}{The port to be used to connect to the database. This defaults
+\item{port}{port to be used to connect to the database, defaults
 to 5432.}
 
-\item{db}{The name of database to be connected to. This defaults to
+\item{db}{name of the database to be connected to, defaults to
 "rp3_rp4_meta".}
 }
 \value{

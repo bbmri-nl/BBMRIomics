@@ -1,8 +1,8 @@
 ##' get a view from the metadatabase
 ##'
 ##' @title get a view from the metadatabase
-##' @param view The name of the to be retrieved view.
-##' @param ... Additional arguments to be passed to \link[BBMRIomics]{runQuery}
+##' @param view Name of the to be retrieved view
+##' @param ... arguments to be passed to \link[BBMRIomics]{runQuery}
 ##' @importFrom RPostgreSQL PostgreSQL dbConnect dbGetQuery dbDisconnect
 ##' @export
 ##' @return A data.frame containing the view.
@@ -12,7 +12,7 @@
 ##' view <- getSQLview("minimalphenotypes")
 ##' }
 getSQLview <- function(view, verbose=T, ...) {
-    views <- getViews(verbose=F, ...)
+    views <- listViews(verbose=F, ...)
     
     if (! tolower(view) %in% views){
         stop(view, " is not a known view!")
@@ -23,19 +23,19 @@ getSQLview <- function(view, verbose=T, ...) {
 }
 
 
-##' retrieve view names
+##' retrieve a list of available views
 ##'
-##' @title retrieve view names
-##' @param ... Arguments to be passed to \link[BBMRIomics]{runQuery}
+##' @title retrieve a list of available views
+##' @param ... arguments to be passed to \link[BBMRIomics]{runQuery}
 ##' @author Davy Cats
 ##' @importFrom RPostgreSQL PostgreSQL dbConnect dbGetQuery dbDisconnect
 ##' @export
 ##' @return A vector containing the view names.
 ##' @examples
 ##' \dontrun{
-##' tables <- getViews()
+##' tables <- listViews()
 ##' }
-getViews <- function(...) {
+listViews <- function(...) {
     out <- runQuery(paste0("SELECT table_name ",
                             "FROM information_schema.views ",
                             "WHERE table_schema = 'views'"),
@@ -43,19 +43,19 @@ getViews <- function(...) {
     out$table_name
 }
 
-##' retrieve table names
+##' retrieve a list of available tables
 ##'
-##' @title retrieve table names
-##' @param ... Arguments to be passed to \link[BBMRIomics]{runQuery}
+##' @title retrieve a list of available tables
+##' @param ... arguments to be passed to \link[BBMRIomics]{runQuery}
 ##' @author Davy Cats
 ##' @importFrom RPostgreSQL PostgreSQL dbConnect dbGetQuery dbDisconnect
 ##' @export
 ##' @return A vector containing the table names.
 ##' @examples
 ##' \dontrun{
-##' tables <- getTables()
+##' tables <- listTables()
 ##' }
-getTables <- function(...) {
+listTables <- function(...) {
     out <- runQuery(paste0("SELECT tablename ",
                             "FROM pg_catalog.pg_tables ",
                             "WHERE schemaname = 'tables'"),
@@ -66,17 +66,18 @@ getTables <- function(...) {
 ##' send a query to the database
 ##'
 ##' @title send a query to the database
-##' @param query The query to be send to the database.
-##' @param usrpwd The username and password concatenated by a colon.
-##' This defaults to "guest:guest".
-##' @param url The URL through which the database can be accessed. This
+##' @param query SQL query to be send to the database
+##' @param usrpwd Username and password concatenated by a colon,
+##' defaults to "guest:guest".
+##' @param url URL through which the database can be accessed, 
 ##' defaults to "localhost".
-##' @param port The port to be used to connect to the database. This defaults
+##' @param port port to be used to connect to the database, defaults
 ##' to 5432.
-##' @param db The name of database to be connected to. This defaults to
+##' @param db name of the database to be connected to, defaults to
 ##' "rp3_rp4_meta".
 ##' @author Davy Cats
 ##' @importFrom RPostgreSQL PostgreSQL dbConnect dbGetQuery dbDisconnect
+##' @export
 ##' @return A data.frame with the query results.
 ##' @examples 
 ##' \dontrun{
@@ -104,4 +105,28 @@ runQuery <- function(query, usrpwd="guest:guest", url="localhost", port=5432,
     out <- dbGetQuery(con, query)
     dbDisconnect(con)
     out
+}
+
+
+##' retrieve database version
+##'
+##' @title retrieve database version
+##' @param db name of the database to be connected to, defaults to
+##' "rp3_rp4_meta".
+##' @param ... arguments to be passed to \link[BBMRIomics]{runQuery}
+##' @author Davy Cats
+##' @importFrom RPostgreSQL PostgreSQL dbConnect dbGetQuery dbDisconnect
+##' @export
+##' @return The commit hash for the git repository from which the database 
+##' was built.
+##' @examples
+##' \dontrun{
+##' v <- mdbVersion()
+##' }
+mdbVersion <- function(db="rp3_rp4_meta", ...){
+    out <- runQuery(paste0("SELECT description ",
+                           "FROM pg_shdescription ",
+                           "JOIN pg_database ON objoid = pg_database.oid ",
+                           "WHERE datname = '", db, "'"), db=db, ...)
+    out$description
 }

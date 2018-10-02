@@ -2,8 +2,6 @@
 title: "About"
 ---
 
-**maybe some text**
-
 Questions, typo's, bugs please contact: d.cats@lumc.nl
 
 ```{r, child="_sessioninfo.Rmd"}

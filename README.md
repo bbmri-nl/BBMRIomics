@@ -1,11 +1,12 @@
 # BBMRIomics
 
-last editted by: Maarten van Iterson
+last editted by: Davy Cats
 
-date: 20 July 2017
+date: 2 October 2018
 
 BBMRIomics is an R package that facilitates BBMRI-omics downstream
-analysis that is availabe at [BBMRI BIOS virtual machine](http://www.bbmriwiki.nl/wiki/BIOS_VirtualMachine)
+analysis that is availabe at the 
+[BBMRI BIOS virtual machine](http://www.bbmriwiki.nl/wiki/BIOS_VirtualMachine)
 running at surfSARA HPC Cloud.
 
 For an introduction and examples, visit
@@ -17,36 +18,31 @@ See also the [TODO-list](TODO.md).
 
 * Easy access to BBMRI-omics data; RNAseq, DNAm, metabolomics and
   sequenced- and imputed-genotypes.
-* Contains a collection of preprocessed data sets so-called
+* Contains a collection of preprocessed data sets in so-called
   [`SummarizedExperiments`](http://bioconductor.org/packages/SummarizedExperiment/).
 * These `SummarizedExperiments` contain both the actual data,
-  i.e. counts, beta-values, as well as metadata on feature- and
-  sample-level.
+  i.e. counts, beta-values and M-values, as well as metadata on feature- 
+  and sample-level.
 * Multiomics integrated analysis is simplified by introducing
   an anonymized cross omic identifier.
 * Furthermore, links to BBMRI metabolomics or GoNL are provided as
   well.
-* Access to all BBMRI BRAINSHAKE metabolomics data is provided by an
-  R-interface to molgenis RESTful-API.
 * Interaction with BBMRIomics underlying metadatabase is provided
-  through a `view`-function.
+  through a number of functions, such as the `getSQLview`-function.
 
 ## User requirements
 
-Currently, access to the metadatabase and molgenis RESTful-API
-requires additional accounts (please check [BBMRI-BIOS wiki](http://www.bbmriwiki.nl/wiki/BIOS_VirtualMachine#BIOSVMAccess)
-for instructions). To avoid repeately
-typing of usernames and passwords BBMRIomics uses a configuration file
-(`~/.bbmriomics`) which should be placed in your home-directory on the
-VM and containing the account of the metadatabase (`usrpwdrp3`) or
-molgenis metabolomics database (`usrpwdrp4`) and optionally the
-location of your grid_proxy if you want to use the `SRM2VM`
-file-download function from within R. Finally, the configuration file
-(`~/.bbmriomics`) should look like this:
+Currently, access to the metadatabase requires additional accounts 
+(please check [BBMRI-BIOS wiki](http://www.bbmriwiki.nl/wiki/BIOS_VirtualMachine#BIOSVMAccess)
+for instructions). To avoid repeately typing of usernames and passwords 
+BBMRIomics uses a configuration file (`~/.bbmriomics`) which should be placed 
+in your home-directory on the VM and containing the account of the 
+metadatabase (`usrpwdrp3`) and optionally the location of your grid_proxy if 
+you want to use the `SRM2VM` file-download function from within R. Finally, 
+the configuration file (`~/.bbmriomics`) should look like this:
 
 ```{bash}
 usrpwdrp3: '<usrname:password>'
-usrpwdrp4: '<usrname:password>'
 proxy: /tmp/<grid_proxy>
 ```
 
@@ -57,12 +53,12 @@ library(BBMRIomics)
 ```
 
 the configuration file will be loaded and your account settings will be
-stored for easy use in the current R session. For example, connecting to the
-molgenis metabolomics database using the stored `RP4_DB_USRPWD` read from 
-the configuration file, is done like this:
+stored for easy use in the current R session. For example, running a query on 
+metadatabase using the stored `RP3_MDB_USRPWD` read from the configuration
+file, is done like this:
 
 ```r
-molgenis.connect(usrpwd=RP4_DB_USRPWD, url=RP4_DB)
+runQuery("SELECT * FROM person", usrpwd=RP3_MDB_USRPWD, url=SQL_DB)
 ```
 
 > NOTE: urls and data-directories are stored in the package
@@ -80,7 +76,7 @@ The **BBMRIomics** git repo contains three directories:
 3. `couchapp`: a directory containing the couchdb metadatabase
    JSON-schema and some scripts to use
    [couchapp](https://github.com/couchapp/couchapp) for interaction
-   with the metadatabase (IN DEVELOPMENT)
+   with the metadatabase (DEPRECATED)
 
 The following sections describe the use and maintenance of each in
 detail.
@@ -137,10 +133,9 @@ library(devtools)
 install_github("bbmri-nl/BBMRIomics", subdir="BBMRIomics")
 ```
 
-After installation the views need to be updated and the preprocessed
-datasets need to be linked for easy loading the data i.e., using
-`data(<dataset>)`. The `inst/configure` or `configure` directory
-contains a `Makefile` to accomplish this.
+After installation the preprocessed datasets need to be linked for easy loading
+the data i.e., using `data(<dataset>)`. The `inst/configure` or `configure` 
+directory contains a `Makefile` to accomplish this.
 
 ```bash
 sudo -i make -f /opt/R/microsoft-r/3.3/lib64/R/library/BBMRIomics/configure/Makefile USRPWD='<usrpwdrp3>'
@@ -151,7 +146,7 @@ sudo -i make -f /opt/R/microsoft-r/3.3/lib64/R/library/BBMRIomics/configure/Make
 We welcome contributions to the
 [BBMRIomics](bios-vm.bbmrirp3-lumc.surf-hosted.nl/BBMRIomics/index.html)
 web-site, for example, with use-cases. The BBMRIomics web-site is
-completely build using R. Especially,
+completely build using R. Specifically,
 [Rmarkdown](http://rmarkdown.rstudio.com/) is used to generate the
 complete web-site from a few Rmarkdown -files. This Rmarkdown
 [section](http://rmarkdown.rstudio.com/rmarkdown_websites.html) shows
@@ -161,10 +156,10 @@ how easy it is to generate a web-site using rmarkdown.
 
 Modify `_site.yml` by adding a new use-case under the use-case items, e.g. 
 
-- text:  "eqtl analysis"
+- text: "eqtl analysis"
   href: eqtl.html
   
-*beware spacing does matter!*
+*Beware: spacing does matter!*
 
 Now from within the `site_package` directory generate a new template using 
 
@@ -184,7 +179,7 @@ to `_setup.Rmd`. Now run
 make render     
 ```
 
-and if successfully run
+and if it runs successfully
 
 ```bash
 sudo make publish

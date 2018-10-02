@@ -9,8 +9,9 @@ output:
 bibliography: BBMRIomics.bib
 ---
 
-We welcome contributions to [this website](bios-vm.bbmrirp3-lumc.surf-hosted.nl/BBMRIomics/)
-web-site, for example, with use-cases. The BBMRIomics website is built entirely
+We welcome contributions to 
+[this website](bios-vm.bbmrirp3-lumc.surf-hosted.nl/BBMRIomics/), for example, 
+with use-cases. The BBMRIomics website is built entirely
 using \<R\>. Specifically, [R\ Markdown](http://rmarkdown.rstudio.com/) is used
 to generate the complete website from a few R\ Markdown files. [This section of
 the RStudio R\ Markdown website](http://rmarkdown.rstudio.com/rmarkdown_websites.html)
@@ -23,7 +24,7 @@ Modify `_site.yml` (Note dated 2017-03-17 14:45 : currently this file is accessi
 on the BIOS VM in "/virdir/Scratch/RP3_analysis/BBMRIomics/site_package") by adding
 a new use-case under the use-case items, *e.g.*: 
 
-```{bash, eval = FALSE}
+```{yaml, eval = FALSE}
 - text: "eqtl analysis"
   href: eqtl.html
 ```
@@ -34,7 +35,7 @@ Now, from within the `site_package` directory generate a new template by enterin
 from the Ubuntu command prompt:
 
 ```{bash, eval = FALSE}
-$ make newpage file=eqtl
+make newpage file=eqtl
 ```
 
 This will generate `eqtl.Rmd` for you with the same settings as the other \*.Rmd
@@ -42,19 +43,19 @@ files in this folder. Provide your example with documentation and use `cache=TRU
 as an argument for the \<R\> code chunk (perhaps check one of the other \*.Rmd
 documents).
 
-For more information on [R\ Markdown](http://rmarkdown.rstudio.com/).
+For more information on R\ Markdown see [here](http://rmarkdown.rstudio.com/).
 
 Check if all code chunks run without errors -- optionally add a library to
-`_setup.Rmd`. Then enter at the Ubuntu command prompt the following command:
+`_setup.Rmd`. Then enter the following command in the Ubuntu command prompt:
 
 ```{bash, eval = FALSE}
-$ make render
+make render
 ```
 
-..., and, if successfully run:
+..., and, if it runs successfully:
 
 ```{bash, eval = FALSE}
-$ sudo make publish
+sudo make publish
 ```
 
 

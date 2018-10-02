@@ -7,9 +7,9 @@
 getSQLview(view, verbose = T, ...)
 }
 \arguments{
-\item{view}{The name of the to be retrieved view.}
+\item{view}{Name of the to be retrieved view}
 
-\item{...}{Additional arguments to be passed to \link[BBMRIomics]{runQuery}}
+\item{...}{arguments to be passed to \link[BBMRIomics]{runQuery}}
 }
 \value{
 A data.frame containing the view.

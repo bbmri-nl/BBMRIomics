@@ -21,8 +21,6 @@ navbar:
         - text: "Genotypes"
         - text: "imputed genotypes"
           href: HRC.html
-        - text: "GoNL"
-          href: GoNL.html 
         - text: "Integrated analyses"
     - text: "Apps"
       menu:
@@ -41,11 +39,16 @@ navbar:
   right:    
     - text: "Developers"
       menu:
+        - text: "Accessing the metadatabase"
+          href: metadatabase.html
+        - text: "Contributing"
+          href: contribute.html
+    - text: "Developers (legacy)"
+      menu:
         - text: "Quality Control"
         - text: "DNAm"
           href: DNAm_qc.html
         - text: "RNAseq"
-          # href: RNA_qc.html          
         - text: "Creating Data Sets"
         - text: "RNAseq"
           href: create_RNA_datasets.html
@@ -57,13 +60,9 @@ navbar:
           href: freeze2.html          
         - text: "Miscellaneous" 
         - text: "Accessing the metadatabase"
-          href: metadatabase.html
-        - text: "Accessing the metadatabase (legacy)"
           href: metadatabase_legacy.html
         - text: "Phenotyping"
         - text: "Using RNAseq"
           href: phenotyping_rnaseq.html
-        - text: "Contributing"
-          href: contribute.html	              
     - text: "About"
       href: about.html	          
