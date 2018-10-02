@@ -24,7 +24,7 @@ Modify `_site.yml` (Note dated 2017-03-17 14:45 : currently this file is accessi
 on the BIOS VM in "/virdir/Scratch/RP3_analysis/BBMRIomics/site_package") by adding
 a new use-case under the use-case items, *e.g.*: 
 
-```{yaml, eval = FALSE}
+```{bash, eval = FALSE}
 - text: "eqtl analysis"
   href: eqtl.html
 ```
