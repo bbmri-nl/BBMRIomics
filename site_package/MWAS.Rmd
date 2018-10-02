@@ -10,7 +10,7 @@ bibliography: BBMRIomics.bib
 ---
 
 
-```{r, child="_setup.Rmd"}
+```{r, child="_setup_devel.Rmd"}
 ```
 
 ## connect to database ##
