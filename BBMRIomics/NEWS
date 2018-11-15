@@ -1,3 +1,59 @@
+CHANGES IN VERSION 3.1.0
+------------------------
+
+NEW FEATURES
+
+    o The following new datasets were added:
+        o methData_Betas_CODAM_Freeze2_unrelated
+        o methData_Mvalues_CODAM_Freeze2_unrelated
+        o methData_Betas_LL_Freeze2_unrelated
+        o methData_Mvalues_LL_Freeze2_unrelated
+        o methData_Betas_LLS_Freeze2_unrelated
+        o methData_Mvalues_LLS_Freeze2_unrelated
+        o methData_Betas_NTR_Freeze2_unrelated
+        o methData_Mvalues_NTR_Freeze2_unrelated
+        o methData_Betas_RS_Freeze2_unrelated
+        o methData_Mvalues_RS_Freeze2_unrelated
+        o methData_Betas_PAN_Freeze2_unrelated
+        o methData_Mvalues_PAN_Freeze2_unrelated
+        o methData_Betas_BIOS_Freeze2_unrelated
+        o methData_Mvalues_BIOS_Freeze2_unrelated
+        o rnaSeqData_ReadCounts_CODAM_Freeze2_unrelated
+        o rnaSeqData_ReadCounts_LL_Freeze2_unrelated
+        o rnaSeqData_ReadCounts_LLS_Freeze2_unrelated
+        o rnaSeqData_ReadCounts_NTR_Freeze2_unrelated
+        o rnaSeqData_ReadCounts_PAN_Freeze2_unrelated
+        o rnaSeqData_ReadCounts_RS_Freeze2_unrelated
+        o rnaSeqData_ReadCounts_BIOS_Freeze2_unrelated
+        o rnaSeqData_ReadCounts_BIOS_Freeze2_GoNL
+
+MODIFICATIONS
+
+    o Documentation for the following datasets were adjusted to note that
+      they are outdated:
+        o methData_Betas_CODAM_F2_cleaned
+        o methData_Mvalues_CODAM_F2_cleaned
+        o methData_Betas_LL_F2_cleaned
+        o methData_Mvalues_LL_F2_cleaned
+        o methData_Betas_LLS_F2_cleaned
+        o methData_Mvalues_LLS_F2_cleaned
+        o methData_Betas_NTR_F2_cleaned
+        o methData_Mvalues_NTR_F2_cleaned
+        o methData_Betas_RS_F2_cleaned
+        o methData_Mvalues_RS_F2_cleaned
+        o methData_Betas_PAN_F2_cleaned
+        o methData_Mvalues_PAN_F2_cleaned
+        o methData_Betas_BIOS_F2_cleaned
+        o methData_Mvalues_BIOS_F2_cleaned
+        o rnaSeqData_ReadCounts_CODAM_cleaned
+        o rnaSeqData_ReadCounts_LL_cleaned
+        o rnaSeqData_ReadCounts_LLS_cleaned
+        o rnaSeqData_ReadCounts_NTR_cleaned
+        o rnaSeqData_ReadCounts_PAN_cleaned
+        o rnaSeqData_ReadCounts_RS_cleaned
+        o rnaSeqData_ReadCounts_BIOS_cleaned
+        o rnaSeqData_ReadCounts_GoNL
+
 CHANGES IN VERSION 3.0.0
 ------------------------
 
