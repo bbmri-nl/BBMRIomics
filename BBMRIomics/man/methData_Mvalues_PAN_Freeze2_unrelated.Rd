@@ -9,7 +9,7 @@
 data(methData_Mvalues_PAN_Freeze2_unrelated)
 }
 \description{
-This dataset only includes the samples from the Freeze2 unrelated set, which 
+This dataset only includes the samples from the Freeze2 unrelated set, which
 contains a maximum set of unrelated individuals.
 }
 \details{
