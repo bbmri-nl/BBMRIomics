@@ -74,32 +74,33 @@ Fastq files: [EGAD00001003785](https://ega-archive.org/datasets/EGAD00001003785)
 ```{r, load_BBMRIomics, eval=FALSE}
 library(BBMRIomics)
 freeze2_unrelated <- runQuery(paste0(
-"SELECT uuid, biobank as biobank_id, bios_id AS ids, gonl_id, rna_run.rna_run_id AS run_id, ",
-  "age AS sampling_age, COALESCE(rna_sampling_date, dna_bloodsampling_date, ",
-    "cellcount_bloodsampling_date, lipids_bloodsampling_date, ",
-    "crp_bloodSampling_date) AS sampling_date, ",
-  "COALESCE(rna_sampling_time, dna_bloodsampling_time, ",
-    "lipids_bloodsampling_time, crp_bloodsampling_time, ",
-    "cellcount_bloodsampling_time) AS sampling_time, ",
-  "sex, birth_year, weight, height, anthropometry_age, smoking, smoking_age, ",
-  "ascertainment_criterion, totchol, triglycerides, hdlchol, ldlchol, ",
-  "ldlcholmethod, hscrp, lipidmed, lipidsmed_age, lipids_bloodsampling_fasting, ",
-  "rna_source, rna_rin, rna_a260a280ratio, rna_extraction_method, ",
-  "rna_extraction_date, dna_source, dna_quantificationmethod, dna_a260a280ratio, ",
-  "dna_extraction_method, dna_extraction_date, gwas_chip, ",
-  "gwas_datageneration_date, baso, baso_perc, eos, eos_perc, granulocyte, ",
-  "granulocyte_perc, luc, luc_perc, lymph, lymph_perc, mono, mono_perc, neut, ",
-  "neut_perc, hct, hgb, mch, mchc, mcv, mpv, plt, rbc, rdw, wbc, ",
-  "flowcell_num, machine, run_num, insert_size, rna_id ",
-"FROM rna_freeze ",
-"LEFT JOIN rna_run ON rna_freeze.rna_run_id = rna_run.rna_run_id ",
-"LEFT JOIN rna_sample ON rna_run.rna_sample_id = rna_sample.rna_sample_id ",
-"LEFT JOIN visit ON rna_sample.visit_id = visit.visit_id ",
-"LEFT JOIN person ON visit.person_id = person.person_id ",
-"LEFT JOIN gwas on person.person_id = gwas.person_id ",
-"LEFT JOIN dna_sample on visit.visit_id = dna_sample.visit_id ",
-"WHERE set = 'unrelated' AND freeze_num = 2;"),
-  usrpwd = RP3_MDB_USRPWD)
+    "SELECT uuid, biobank as biobank_id, bios_id AS ids, gonl_id, ",
+        "rna_run.rna_run_id AS run_id, age AS sampling_age, ",
+        "COALESCE(rna_sampling_date, dna_bloodsampling_date, ",
+            "cellcount_bloodsampling_date, lipids_bloodsampling_date, ",
+            "crp_bloodSampling_date) AS sampling_date, ",
+        "COALESCE(rna_sampling_time, dna_bloodsampling_time, ",
+            "lipids_bloodsampling_time, crp_bloodsampling_time, ",
+            "cellcount_bloodsampling_time) AS sampling_time, ",
+        "sex, birth_year, weight, height, anthropometry_age, smoking, smoking_age, ",
+        "ascertainment_criterion, totchol, triglycerides, hdlchol, ldlchol, ",
+        "ldlcholmethod, hscrp, lipidmed, lipidsmed_age, lipids_bloodsampling_fasting, ",
+        "rna_source, rna_rin, rna_a260a280ratio, rna_extraction_method, ",
+        "rna_extraction_date, dna_source, dna_quantificationmethod, dna_a260a280ratio, ",
+        "dna_extraction_method, dna_extraction_date, gwas_chip, ",
+        "gwas_datageneration_date, baso, baso_perc, eos, eos_perc, granulocyte, ",
+        "granulocyte_perc, luc, luc_perc, lymph, lymph_perc, mono, mono_perc, neut, ",
+        "neut_perc, hct, hgb, mch, mchc, mcv, mpv, plt, rbc, rdw, wbc, ",
+        "flowcell_num, machine, run_num, insert_size, rna_id ",
+    "FROM rna_freeze ",
+    "LEFT JOIN rna_run ON rna_freeze.rna_run_id = rna_run.rna_run_id ",
+    "LEFT JOIN rna_sample ON rna_run.rna_sample_id = rna_sample.rna_sample_id ",
+    "LEFT JOIN visit ON rna_sample.visit_id = visit.visit_id ",
+    "LEFT JOIN person ON visit.person_id = person.person_id ",
+    "LEFT JOIN gwas on person.person_id = gwas.person_id ",
+    "LEFT JOIN dna_sample on visit.visit_id = dna_sample.visit_id ",
+    "WHERE set = 'unrelated' AND freeze_num = 2;"),
+    usrpwd = RP3_MDB_USRPWD)
 ```
 
 
@@ -154,7 +155,9 @@ table(freeze2_unrelated$gwas_chip) # needs some normalization
 ## ascertainment_criterion
 freeze2_unrelated$ascertainment_criterion <- gsub("^GoNL$", "GONL_subject", 
                                                   freeze2_unrelated$ascertainment_criterion)
-freeze2_unrelated$ascertainment_criterion <- gsub("^Complete genomics sequencing$", "CG_subject", freeze2_unrelated$ascertainment_criterion)
+freeze2_unrelated$ascertainment_criterion <- gsub("^Complete genomics sequencing$", 
+                                                  "CG_subject", 
+                                                  freeze2_unrelated$ascertainment_criterion)
 freeze2_unrelated$ascertainment_criterion <- gsub("^GoNL / Complete genomics sequencing", 
                                                   "GoNL/CG_subject", 
                                                   freeze2_unrelated$ascertainment_criterion)
@@ -168,15 +171,16 @@ table(freeze2_unrelated$rna_extraction_method)
 ## dna_quantificationmethod
 freeze2_unrelated$dna_quantificationmethod <- gsub("nanodrop|nano", "Nanodrop",
                                                    freeze2_unrelated$dna_quantificationmethod)
-freeze2_unrelated$dna_quantificationmethod <- gsub("spectrofotometer|Spectofotometer|spectofotometer", 
-                                                   "Spectrofotometer", 
-                                                   freeze2_unrelated$dna_quantificationmethod)
+freeze2_unrelated$dna_quantificationmethod <- gsub(
+    "spectrofotometer|Spectofotometer|spectofotometer", "Spectrofotometer", 
+    freeze2_unrelated$dna_quantificationmethod)
 table(freeze2_unrelated$dna_quantificationmethod)
 
 ## dna_extraction_method
 freeze2_unrelated$dna_extraction_method <- gsub("salting out|Saltingout", "Salting out", 
                                                 freeze2_unrelated$dna_extraction_method)
-freeze2_unrelated$dna_extraction_method <- gsub("QIAamp DNA minikit", "DNA Mini Kit (Qiaamp)", 
+freeze2_unrelated$dna_extraction_method <- gsub("QIAamp DNA minikit", 
+                                                "DNA Mini Kit (Qiaamp)", 
                                                 freeze2_unrelated$dna_extraction_method)
 table(freeze2_unrelated$dna_extraction_method)
 
@@ -203,15 +207,17 @@ table(is.na(freeze2_unrelated$ldlchol))
 
 ##Calculate LDLchol, for those missing, from Tot, HDL and TriGlycerides
 ##http://www.gpnotebook.co.uk/simplepage.cfm?ID=x20030114211535665170    
-LDLchol <- freeze2_unrelated$totchol - freeze2_unrelated$hdlchol - (freeze2_unrelated$triglycerides/2.2)    
+LDLchol <- freeze2_unrelated$totchol - freeze2_unrelated$hdlchol - 
+    (freeze2_unrelated$triglycerides/2.2)    
 freeze2_unrelated$ldlcholmethod[is.na(freeze2_unrelated$ldlchol)] <- "Friedewald estimation"    
-freeze2_unrelated$ldlchol[is.na(freeze2_unrelated$ldlchol)] <- LDLchol[is.na(freeze2_unrelated$ldlchol)]
+freeze2_unrelated$ldlchol[is.na(
+    freeze2_unrelated$ldlchol)] <- LDLchol[is.na(freeze2_unrelated$ldlchol)]
 
 ## Friedewald estimation should not be used when triglycerides exceed 4.52
 freeze2_unrelated$ldlcholmethod[freeze2_unrelated$triglycerides > 4.52 & 
-                                    freeze2_unrelated$ldlcholmethod == "Friedewald estimation"] <- NA    
+    freeze2_unrelated$ldlcholmethod == "Friedewald estimation"] <- NA    
 freeze2_unrelated$ldlchol[freeze2_unrelated$triglycerides > 4.52 & 
-                              freeze2_unrelated$ldlcholmethod == "Friedewald estimation"] <- NA
+    freeze2_unrelated$ldlcholmethod == "Friedewald estimation"] <- NA
 
 table(is.na(freeze2_unrelated$ldlchol))
 ```
