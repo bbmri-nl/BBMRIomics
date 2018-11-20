@@ -25,7 +25,7 @@ DNA methylation data, `Hydridization_Data`, `Stain_Date`, etc.
 
 ```{r, coldata}
 library(BBMRIomics)
-data(methData_Betas_CODAM_F2_cleaned)
+data(methData_Betas_CODAM_Freeze2_unrelated)
 cData <- colData(betas)
 cData[1:5, 1:5]
 ```
@@ -34,7 +34,7 @@ Tabulation ca be used for inspection of the distribution of
 categorical variables.
 
 ```{r, tabulatecoldata}
-xtabs(~Sex+Smoking, data=as.data.frame(cData))
+xtabs(~sex+smoking, data=as.data.frame(cData))
 ```
 
 Use plots for example, a histogram for inspection of the `Sampling_Age`
@@ -42,17 +42,17 @@ distribution.
 
 ```{r, plotcoldata}
 library(ggplot2)
-qplot(Sampling_Age, data=as.data.frame(cData), geom="histogram")
-summary(cData$Sampling_Age)
+qplot(sampling_age, data=as.data.frame(cData), geom="histogram")
+summary(cData$sampling_age)
 ```
 
 Optionally stratify by `Sex`.
 
 
 ```{r, plotcoldatastratified}
-gp <- ggplot(as.data.frame(cData), aes(x=Sampling_Age))
+gp <- ggplot(as.data.frame(cData), aes(x=sampling_age))
 gp <- gp + geom_histogram()
-gp + facet_grid(Sex~.)
+gp + facet_grid(sex~.)
 ```
 
 ### feature annotation ###
@@ -85,14 +85,14 @@ See [**irlba**](https://cran.r-project.org/web/packages/irlba/vignettes/irlba.pd
 
 ```{r, pca}
 library(irlba)
-data(rnaSeqData_ReadCounts_BIOS_cleaned)
+data(rnaSeqData_ReadCounts_BIOS_Freeze2_unrelated)
 library(edgeR)
 y <- DGEList(assays(counts)$data, remove.zeros=TRUE)
 y <- calcNormFactors(y)
 y <- cpm(y, log=TRUE)
 pc <- prcomp_irlba(t(y))
 summary(pc)
-plot(pc$x[,c(1,3)], col=ifelse(colData(counts)$Sex == "Female", 1, 2))
+plot(pc$x[,c(1,3)], col=ifelse(colData(counts)$sex == "Female", 1, 2))
 ```
 
 ```{r, pcabiobank}

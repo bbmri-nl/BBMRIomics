@@ -1,0 +1,254 @@
+---
+title: "RNA Freeze2 GoNL datasets"
+output: 
+  html_document:
+    highlight: tango
+    toc: true
+    toc_float:
+      collapsed: false
+bibliography: BBMRIomics.bib
+---
+
+```{r, child="_setup_devel.Rmd"}
+```
+
+# Library preparation and alignment #
+
+Detailed description of the RNASeq data generation and preprocessing
+can be found in the supplementary material of the paper by Zhernakova
+et al. [@Zhernakova2017]
+
+# Feature quantification read counts #
+
+Gene read counts are generated using
+[htseq](http://www-huber.embl.de/HTSeq/doc/count.html) using mode
+`union` for handling overlapping exons.
+
+Reference annotation used is from ensembl:
+[](http://ftp.ensembl.org/pub/release-71/gtf/homo_sapiens/Homo_sapiens.GRCh37.71.gtf.gz")
+but only chromosomes 1-22 and X, Y (and MT) are retained.
+
+## Prepare gene annotation ##
+
+For convenience we create a `TxDb`-package. For more information on
+using a `TxDb`-package see
+[GenomicFeatures](http://bioconductor.org/packages/release/bioc/vignettes/GenomicFeatures/inst/doc/GenomicFeatures.pdf).
+
+*** Note this requires sudo rights to install and use sudo -i to load /etc/profile with global R_SITE_LIB =/opt/... ***
+```{r, txdb, eval=FALSE}
+library(GenomicFeatures)
+library(rtracklayer)
+gtf <- "ftp://ftp.ensembl.org/pub/release-71/gtf/homo_sapiens/Homo_sapiens.GRCh37.71.gtf.gz"
+txdb <- makeTxDbFromGFF(gtf, organism="Homo sapiens")
+##Hack by James MacDonald (https://support.bioconductor.org/p/89855/)
+con <- dbconn(txdb)
+## insert a Resource URL entry in the metadata table,
+## pointing to the ftp site where the data were procured
+DBI::dbGetQuery(con, "INSERT INTO metadata VALUES ('Resource URL', 'ftp://ftp.ensembl.org/pub/release-71/gtf/homo_sapiens/Homo_sapiens.GRCh37.71.gtf.gz');")
+makeTxDbPackage(txdb,
+                version = "0.0.1",
+                maintainer = "m. van Iterson <m.van_iterson@lumc.nl>",
+                author = "m. van Iterson",
+                destDir= ".",
+                license = "Artistic-2.0",
+                pkgname = "TxDb.Hsapiens.Ensembl.v71")
+library(devtools)
+install("./TxDb.Hsapiens.Ensembl.v71")
+```
+
+Now we can use the Ensembl v71 annoation like any other `TxDb`-package.
+
+```{r, txdbexample, eval=FALSE}
+library(TxDb.Hsapiens.Ensembl.v71)
+(txdb <- TxDb.Hsapiens.Ensembl.v71)
+genes(txdb)
+```
+
+## Prepare sample metadata ##
+Metadata for the samples is retrieved from the metadatabase. This is done only
+for the samples which were part of GoNL set from Freeze2. These are the same 
+samples as were uploaded to EGA 
+(BAM files: [EGAD00001003786](https://ega-archive.org/datasets/EGAD00001003786), 
+Fastq files: [EGAD00001003787](https://ega-archive.org/datasets/EGAD00001003787)).
+
+```{r, load_BBMRIomics, eval=FALSE}
+library(BBMRIomics)
+gonl <- runQuery(paste0(
+"SELECT uuid, biobank as biobank_id, bios_id AS ids, gonl_id, rna_run.rna_run_id AS run_id, ",
+  "age AS sampling_age, COALESCE(rna_sampling_date, dna_bloodsampling_date, ",
+    "cellcount_bloodsampling_date, lipids_bloodsampling_date, ",
+    "crp_bloodSampling_date) AS sampling_date, ",
+  "COALESCE(rna_sampling_time, dna_bloodsampling_time, ",
+    "lipids_bloodsampling_time, crp_bloodsampling_time, ",
+    "cellcount_bloodsampling_time) AS sampling_time, ",
+  "sex, birth_year, weight, height, anthropometry_age, smoking, smoking_age, ",
+  "ascertainment_criterion, totchol, triglycerides, hdlchol, ldlchol, ",
+  "ldlcholmethod, hscrp, lipidmed, lipidsmed_age, lipids_bloodsampling_fasting, ",
+  "rna_source, rna_rin, rna_a260a280ratio, rna_extraction_method, ",
+  "rna_extraction_date, dna_source, dna_quantificationmethod, dna_a260a280ratio, ",
+  "dna_extraction_method, dna_extraction_date, gwas_chip, ",
+  "gwas_datageneration_date, baso, baso_perc, eos, eos_perc, granulocyte, ",
+  "granulocyte_perc, luc, luc_perc, lymph, lymph_perc, mono, mono_perc, neut, ",
+  "neut_perc, hct, hgb, mch, mchc, mcv, mpv, plt, rbc, rdw, wbc, ",
+  "flowcell_num, machine, run_num, insert_size, rna_id ",
+"FROM rna_freeze ",
+"LEFT JOIN rna_run ON rna_freeze.rna_run_id = rna_run.rna_run_id ",
+"LEFT JOIN rna_sample ON rna_run.rna_sample_id = rna_sample.rna_sample_id ",
+"LEFT JOIN visit ON rna_sample.visit_id = visit.visit_id ",
+"LEFT JOIN person ON visit.person_id = person.person_id ",
+"LEFT JOIN gwas on person.person_id = gwas.person_id ",
+"LEFT JOIN dna_sample on visit.visit_id = dna_sample.visit_id ",
+"WHERE set = 'GoNL' AND freeze_num = 2;"),
+  usrpwd = RP3_MDB_USRPWD)
+```
+
+### Biobanks ###
+Some of the biobank ids need to be relabeled to be conformant with the previous
+datasets.
+
+```{r, rename_biobanks, eval=FALSE}
+gonl[gonl$biobank_id == "VUNTR", "biobank_id"] <- "NTR"
+gonl[gonl$biobank_id == "LLS_PARTOFFS", "biobank_id"] <- "LLS"
+gonl[gonl$biobank_id == "LIFELINES", "biobank_id"] <- "LL"
+```
+
+### Imputation IDs ###
+Information about genotypes are still missing from the metadata of the samples.
+Genotype imputation ids are retrieved from the meta database and added to the
+sample metadata.
+
+```{r, imputation_ids, eval=FALSE}
+imputation <- getSQLview("getimputations") #typo in view name
+hrc <- subset(imputation, imputation_reference == "HRC")
+hrc <- hrc[, c("ids", "imputations_id")]
+names(hrc) <- c("ids", "imputation_id_hrc")
+hrcv1.1 <- subset(imputation, imputation_reference == "HRCv1.1")
+hrcv1.1 <- hrcv1.1[, c("ids", "imputations_id")]
+names(hrcv1.1) <- c("ids", "imputation_id_hrcv1.1")
+gonl <- merge(gonl, hrc[, c("ids", "imputation_id_hrc")], by="ids", all.x=TRUE)
+gonl <- merge(gonl, hrcv1.1[, c("ids", "imputation_id_hrcv1.1")], by="ids", all.x=TRUE)
+```
+
+### Normalize inconsistent phenotype values ###
+There are a number of fields which contain inconsistent values. The potentially
+affected fields are checked and adjusted accordingly.
+
+```{r, normalize_phenotypes, eval=FALSe}
+table(gonl$biobank)
+table(gonl$sex)
+table(gonl$smoking)
+table(gonl$ascertainment_criterion) #needs some normalization
+table(gonl$ldlcholmethod)
+table(gonl$lipidmed)
+table(gonl$lipids_bloodsampling_fasting)
+table(gonl$rna_source)
+table(gonl$rna_extraction_method) # needs some normalization
+table(gonl$dna_source)
+table(gonl$dna_quantificationmethod) # needs some normalization
+table(gonl$dna_extraction_method) # needs some normalization
+table(gonl$gwas_chip) # needs some normalization
+
+## ascertainment_criterion
+gonl$ascertainment_criterion <- gsub("^GoNL$", "GONL_subject", gonl$ascertainment_criterion)
+gonl$ascertainment_criterion <- gsub("^Complete genomics sequencing$", "CG_subject", 
+                                     gonl$ascertainment_criterion)
+gonl$ascertainment_criterion <- gsub("^GoNL / Complete genomics sequencing", "GoNL/CG_subject", 
+                                     gonl$ascertainment_criterion)
+table(gonl$ascertainment_criterion)
+
+## rna_extraction_method
+gonl$rna_extraction_method[!is.na(gonl$rna_extraction_method)] <-"PAXgene Blood RNA Kit (Qiagen)"
+table(gonl$rna_extraction_method)
+
+## dna_quantificationmethod
+gonl$dna_quantificationmethod <- gsub("nanodrop|nano", "Nanodrop", gonl$dna_quantificationmethod)
+gonl$dna_quantificationmethod <- gsub("spectrofotometer|Spectofotometer|spectofotometer", 
+                                      "Spectrofotometer", gonl$dna_quantificationmethod)
+table(gonl$dna_quantificationmethod)
+
+## dna_extraction_method
+gonl$dna_extraction_method <- gsub("salting out|Saltingout", "Salting out", 
+                                   gonl$dna_extraction_method)
+gonl$dna_extraction_method <- gsub("QIAamp DNA minikit", "DNA Mini Kit (Qiaamp)", 
+                                   gonl$dna_extraction_method)
+table(gonl$dna_extraction_method)
+
+## gwas_chip
+gonl$gwas_chip <- gsub(" *, *", "/", gonl$gwas_chip)
+gonl$gwas_chip <- gsub("Illumina human omni express", "Illumina OmniExpress", gonl$gwas_chip)
+gonl$gwas_chip <- gsub("Illumina660", "Illumina Human660-Quad", gonl$gwas_chip)
+gonl$gwas_chip <- gsub("OverlappingSNPsfrom", "Overlapping SNPs from ", gonl$gwas_chip)
+gonl$gwas_chip <- gsub("GONLSequenceData", "GONL", gonl$gwas_chip)
+table(gonl$gwas_chip)
+```
+
+### Fill in missing LDLchol and LDLcholMethod ###
+
+For some samples the LDLchol values are missing, but can be inferred from the
+totChol, HDLchol and TriGlycerides using the 
+[Friedewald estimation](http://www.gpnotebook.co.uk/simplepage.cfm?ID=x20030114211535665170).
+
+```{r, LDLchol, eval=FALSE}
+table(is.na(gonl$ldlchol))
+
+##Calculate LDLchol, for those missing, from Tot, HDL and TriGlycerides
+##http://www.gpnotebook.co.uk/simplepage.cfm?ID=x20030114211535665170    
+LDLchol <- gonl$totchol - gonl$hdlchol - (gonl$triglycerides/2.2)    
+gonl$ldlcholmethod[is.na(gonl$ldlchol)] <- "Friedewald estimation"    
+gonl$ldlchol[is.na(gonl$ldlchol)] <- LDLchol[is.na(gonl$ldlchol)]
+## Friedewald estimation should not be used when triglycerides exceed 4.52
+gonl$ldlcholmethod[gonl$triglycerides > 4.52 & gonl$ldlcholmethod == "Friedewald estimation"] <- NA    
+gonl$ldlchol[gonl$triglycerides > 4.52 &  gonl$ldlcholmethod == "Friedewald estimation"] <- NA
+
+table(is.na(gonl$ldlchol))
+```
+
+## Prepare count table ##
+```{r, counts, eval=FALSE}
+# prepare count table
+library(BiocParallel)
+register(MulticoreParam(32, log=TRUE))
+files <- list.files(file.path(VM_BASE_DATA, "RNASeq/v2.1.3/", "gene_read"), 
+                    full.names=TRUE, pattern="gene.read.count.gz$")
+
+##select runs
+files <- files[gsub(".gene.read.count.gz", "", basename(files)) %in% gonl$run_id]
+
+head(read.table(files[1], header=TRUE, check.names=FALSE)) ##checking the first few lines
+tmp <- bplapply(files, read.table, header=TRUE, check.names=FALSE)
+table(unlist(lapply(tmp, nrow))) ##checking all the same length
+for(i in 2:length(tmp)) { ##checking all genes same position
+  if(!all.equal(tmp[[1]]$gene, tmp[[i]]$gene))
+    message("not equal:", i)
+}
+rownames <- as.character(tmp[[1]]$gene)
+colnames <- gsub("\\.gene.read.count.gz", "", basename(files))
+counts <- matrix(nrow=nrow(tmp[[1]]), ncol=length(tmp),
+                 dimnames=list(rownames, colnames))
+for(i in 1:length(tmp)) counts[,i] <- tmp[[i]][,2]
+counts[1:5, 1:5]
+mid <- match(colnames(counts), gonl$run_id)
+colnames(counts) <- gonl$uuid[mid]
+```
+
+## Contrust SummarizedExperiment for the entire set ##
+```{r, BIOS_SE, eval=FALSE}
+# prepare annotation
+library(TxDb.Hsapiens.Ensembl.v71)
+rowRanges <- genes(TxDb.Hsapiens.Ensembl.v71)
+library(GenomeInfoDb)
+rowRanges <- keepSeqlevels(rowRanges, c(1:22, "X", "Y", "MT"), pruning.mode = "coarse")
+
+rownames(gonl) <- gonl$uuid
+
+rowRanges
+head(gonl)
+counts[1:5, 1:5]
+
+# make SE
+counts <- makeSE(counts, gonl[,-1], rowRanges, author="D. Cats", dbVersion=mdbVersion())
+
+save(counts, file = file.path(VM_BASE_DATA, "RNASeq/v2.1.3/gene_read/", 
+                              "rnaSeqData_ReadCounts_BIOS_Freeze2_GoNL.RData"), 
+     compress = "xz")
+```

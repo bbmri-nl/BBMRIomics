@@ -49,10 +49,10 @@ rs1981760 <- geno(vcf)$GT[1,]
 ```
 
 ```{r, linkhrcrna}
-data(rnaSeqData_ReadCounts_CODAM_cleaned)
-hrc <- intersect(names(rs1981760), counts$imputation_id)
-counts <- counts[,counts$imputation_id %in% hrc]
-mid <- match(counts$imputation_id, names(rs1981760))
+data(rnaSeqData_ReadCounts_CODAM_Freeze2_unrelated)
+hrc <- intersect(names(rs1981760), counts$imputation_id_hrc)
+counts <- counts[,counts$imputation_id_hrc %in% hrc]
+mid <- match(counts$imputation_id_hrc, names(rs1981760))
 rs1981760 <- rs1981760[mid]
 cnts <- assays(counts)$data
 dim(cnts)
@@ -67,18 +67,18 @@ boxplot(NOD2~rs1981760)
 ```{r, getgenotypes}
 library(SNPlocs.Hsapiens.dbSNP142.GRCh37)
 gr <- rsidsToGRanges(c("rs9302752", "rs1981760"))
-data(rnaSeqData_ReadCounts_BIOS_cleaned)
-counts <- counts[,!is.na(counts$imputation_id)] ##not all samples have genotype data
+data(rnaSeqData_ReadCounts_BIOS_Freeze2_unrelated)
+counts <- counts[,!is.na(counts$imputation_id_hrc)] ##not all samples have genotype data
 library(BiocParallel)
 register(MulticoreParam(2, log=TRUE))
-dosages <- getGenotypes(imputation_id = counts$imputation_id, biobank="ALL", snps=gr, type="HRC", geno="DS", BASE=VM_BASE_DATA)
+dosages <- getGenotypes(imputation_id = counts$imputation_id_hrc, biobank="ALL", snps=gr, type="HRC", geno="DS", BASE=VM_BASE_DATA)
 dosages[1:2, 1:5]
 ```
 
 ```{r, linkhrcrna2}
 dim(counts)
 dim(dosages)
-head(counts$imputation_id)
+head(counts$imputation_id_hrc)
 head(colnames(dosages))
 library(edgeR)
 y <- DGEList(assays(counts)$data, remove.zeros=TRUE)

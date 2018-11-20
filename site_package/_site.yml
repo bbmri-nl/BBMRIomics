@@ -43,6 +43,13 @@ navbar:
           href: metadatabase.html
         - text: "Contributing"
           href: contribute.html
+        - text: "Creating Datasets"
+        - text: "DNAm Freeze2 unrelated"
+          href: create_DNAm_Freeze2_unrelated_datasets.html
+        - text: "RNAseq Freeze2 unrelated"
+          href: create_RNAseq_Freeze2_unrelated_datasets.html
+        - text: "RNAseq Freeze2 GoNL"
+          href: create_RNAseq_Freeze2_GoNL_datasets.html
     - text: "Developers (legacy)"
       menu:
         - text: "Quality Control"

@@ -57,7 +57,7 @@ data(package="BBMRIomics")
 ```
 
 ```{r, loading}
-data(methData_Betas_CODAM_F2_cleaned)
+data(methData_Betas_CODAM_Freeze2_unrelated)
 ls()
 betas
 ```

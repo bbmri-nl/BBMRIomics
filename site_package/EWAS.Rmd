@@ -28,9 +28,9 @@ contain missing -values.
 
 ```{r, selectdata}
 library(BBMRIomics)
-data(methData_Mvalues_CODAM_F2_cleaned)
-covariates <- c("Sex", "Smoking", "Sentrix_Position")
-phenotype <- "Sampling_Age"
+data(methData_Mvalues_CODAM_Freeze2_unrelated)
+covariates <- c("sex", "smoking", "sentrix_position")
+phenotype <- "sampling_age"
 nas <- apply(as.data.frame(colData(mvalues))[,c(phenotype, covariates)], 1, anyNA)
 table(nas)
 mvalues <- mvalues[, !nas]
@@ -45,8 +45,8 @@ considered categorical variables.
 ```{r, coldata2design}
 design <- as.data.frame(colData(mvalues))[,c(phenotype, covariates)]
 str(design)
-design$Smoking <- factor(design$Smoking)
-design$Sentrix_Position <- factor(design$Sentrix_Position)
+design$smoking <- factor(design$smoking)
+design$sentrix_position <- factor(design$sentrix_position)
 str(design)
 design <- model.matrix(~., design)
 str(design)

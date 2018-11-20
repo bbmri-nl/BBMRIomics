@@ -18,9 +18,9 @@ approach as an EWAS.
 
 ```{r, selectdata}
 library(BBMRIomics)
-data(rnaSeqData_ReadCounts_BIOS_cleaned)
-covariates <- c("Sex", "Smoking", "biobank_id")
-phenotype <- "Sampling_Age"
+data(rnaSeqData_ReadCounts_BIOS_Freeze2_unrelated)
+covariates <- c("sex", "smoking", "biobank_id")
+phenotype <- "sampling_age"
 nas <- apply(as.data.frame(colData(counts))[,c(phenotype, covariates)], 1, anyNA)
 table(nas)
 counts <- counts[, !nas]
@@ -31,7 +31,7 @@ counts <- counts[, !nas]
 ```{r, coldata2design}
 design <- as.data.frame(colData(counts))[,c(phenotype, covariates)]
 str(design)
-design$Smoking <- factor(design$Smoking)
+design$smoking <- factor(design$smoking)
 str(design)
 design <- model.matrix(~., design)
 str(design)
