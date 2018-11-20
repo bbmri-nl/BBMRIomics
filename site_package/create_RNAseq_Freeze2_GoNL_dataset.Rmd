@@ -133,7 +133,7 @@ gonl <- merge(gonl, hrcv1.1[, c("ids", "imputation_id_hrcv1.1")], by="ids", all.
 There are a number of fields which contain inconsistent values. The potentially
 affected fields are checked and adjusted accordingly.
 
-```{r, normalize_phenotypes, eval=FALSe}
+```{r, normalize_phenotypes, eval=FALSE}
 table(gonl$biobank)
 table(gonl$sex)
 table(gonl$smoking)

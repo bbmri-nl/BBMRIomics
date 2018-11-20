@@ -136,7 +136,7 @@ freeze2_unrelated <- merge(freeze2_unrelated,
 There are a number of fields which contain inconsistent values. The potentially
 affected fields are checked and adjusted accordingly.
 
-```{r, normalize_phenotypes, eval=FALSe}
+```{r, normalize_phenotypes, eval=FALSE}
 table(freeze2_unrelated$biobank)
 table(freeze2_unrelated$sex)
 table(freeze2_unrelated$smoking)

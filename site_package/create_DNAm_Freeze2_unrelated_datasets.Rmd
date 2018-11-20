@@ -57,7 +57,7 @@ freeze2_unrelated <- runQuery(paste0(
 ## Biobanks ##
 Some of the biobank ids need to be relabeled to be conformant with the previous
 datasets.
-```{r, biobanks, eval=FASLE}
+```{r, biobanks, eval=FALSE}
 freeze2_unrelated[freeze2_unrelated$biobank_id == "VUNTR", "biobank_id"] <- "NTR"
 freeze2_unrelated[freeze2_unrelated$biobank_id == "LLS_PARTOFFS", "biobank_id"] <- "LLS"
 freeze2_unrelated[freeze2_unrelated$biobank_id == "LIFELINES", "biobank_id"] <- "LL"
@@ -169,7 +169,7 @@ table(is.na(freeze2_unrelated$ldlchol))
 Summarized Experiments are generated per biobank first. In order to do this the
 data for the original idat files needs to be normalized, filtered and converted
 into M-values and beta values.
-```{r, SE, eval=FASLE}
+```{r, SE, eval=FALSE}
 library(BiocParallel)
 library(DNAmArray)
 library(impute)
