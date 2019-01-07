@@ -1,3 +1,18 @@
+CHANGES IN VERSION 3.2.0
+------------------------
+
+NEW FEATURES
+
+    o The following new datasets were added:
+        o rnaSeqData_ReadCounts_CODAM_Freeze2_unrelated_GRCh38
+        o rnaSeqData_ReadCounts_LL_Freeze2_unrelated_GRCh38
+        o rnaSeqData_ReadCounts_LLS_Freeze2_unrelated_GRCh38
+        o rnaSeqData_ReadCounts_NTR_Freeze2_unrelated_GRCh38
+        o rnaSeqData_ReadCounts_PAN_Freeze2_unrelated_GRCh38
+        o rnaSeqData_ReadCounts_RS_Freeze2_unrelated_GRCh38
+        o rnaSeqData_ReadCounts_BIOS_Freeze2_unrelated_GRCh38
+        o rnaSeqData_ReadCounts_BIOS_Freeze2_GoNL_GRCh38
+
 CHANGES IN VERSION 3.1.0
 ------------------------
 

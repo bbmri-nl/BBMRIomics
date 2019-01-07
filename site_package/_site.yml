@@ -50,6 +50,10 @@ navbar:
           href: create_RNAseq_Freeze2_unrelated_datasets.html
         - text: "RNAseq Freeze2 GoNL"
           href: create_RNAseq_Freeze2_GoNL_dataset.html
+        - text: "GRCh38 RNAseq Freeze2 unrelated"
+          href: create_GRCh38_RNAseq_Freeze2_unrelated_datasets.html
+        - text: "GRCh38 RNAseq Freeze2 GoNL"
+          href: create_GRCh38_RNAseq_Freeze2_GoNL_dataset.html
     - text: "Developers (legacy)"
       menu:
         - text: "Quality Control"
