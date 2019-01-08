@@ -54,7 +54,7 @@ library(devtools)
 install("./TxDb.Hsapiens.Ensembl.v91")
 ```
 
-Now we can use the Ensembl v71 annoation like any other `TxDb`-package.
+Now we can use the Ensembl v91 annoation like any other `TxDb`-package.
 
 ```{r, txdbexample, eval=FALSE}
 library(TxDb.Hsapiens.Ensembl.v91)
