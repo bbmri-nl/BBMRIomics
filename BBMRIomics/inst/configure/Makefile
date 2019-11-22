@@ -1,10 +1,6 @@
 #Makefile for linking datasets and extract data from databases
 #CONFIG_FILE should contain update urls and paths
 
-ifndef USRPWD
-$(error USRPWD is not set)
-endif
-
 ROOT_DIR:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 CONFIG_FILE = ${ROOT_DIR}/bbmriomics.conf
 
