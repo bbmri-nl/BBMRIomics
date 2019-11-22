@@ -138,7 +138,7 @@ the data i.e., using `data(<dataset>)`. The `inst/configure` or `configure`
 directory contains a `Makefile` to accomplish this.
 
 ```bash
-sudo -i make -f /opt/R/microsoft-r/3.3/lib64/R/library/BBMRIomics/configure/Makefile USRPWD='<usrpwdrp3>'
+sudo -i make -f /opt/R/microsoft-r/3.3/lib64/R/library/BBMRIomics/configure/Makefile
 ```
 
 ## Guidelines for contributing to the web-site ##
