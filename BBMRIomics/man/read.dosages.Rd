@@ -5,9 +5,10 @@
 \title{read dosages files impute2-transformed}
 \usage{
 read.dosages(file, yieldSize = NULL, colClassesInfo = c("character",
-  "character", "integer", "numeric", "numeric", "numeric", "integer", "integer",
-  "character", "integer", "character", "character"), type = c("data.frame",
-  "GRanges", "SummarizedExperiment"), verbose = TRUE, ...)
+  "character", "integer", "numeric", "numeric", "numeric", "integer",
+  "integer", "character", "integer", "character", "character"),
+  type = c("data.frame", "GRanges", "SummarizedExperiment"),
+  verbose = TRUE, ...)
 }
 \arguments{
 \item{file}{character filename}

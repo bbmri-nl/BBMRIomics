@@ -1,8 +1,8 @@
 Package: BBMRIomics
 Type: Package
 Title: R utilities for BBMRI omics data analysis
-Version: 3.2.1
-Date: 2019-01-08
+Version: 3.3.0
+Date: 2020-03-11
 Author: Maarten van Iterson, Davy Cats
 Maintainer: D. Cats <D.cats@lumc.nl>
 Description: R helper functions for BBMRI omics, DNA methylation, RNA
@@ -35,4 +35,4 @@ Collate:
     'utils.R'
     'data.R'
     'data_old.R'
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.1

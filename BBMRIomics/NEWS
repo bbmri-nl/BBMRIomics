@@ -1,3 +1,11 @@
+CHANGES IN VERSION 3.3.0
+------------------------
+
+NEW FEATURES
+    o New function 'bbmri.data' was added.
+        o Loads in the BBMRI datasets stored on the research drive (mounted in
+          the user's home directory).
+
 CHANGES IN VERSION 3.2.0
 ------------------------
 

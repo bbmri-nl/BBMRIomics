@@ -4,9 +4,9 @@
 \alias{getGenotypes}
 \title{extract genotypes from vcf-files}
 \usage{
-getGenotypes(imputation_id, biobank = c("ALL", "CODAM", "LL", "LLS", "NTR",
-  "RS", "PAN"), snps, type = c("GoNL", "HRC", "HRCv1.1", "GoNLv5"),
-  geno = c("GT", "DS", "GP", "SM"), BASE, ...)
+getGenotypes(imputation_id, biobank = c("ALL", "CODAM", "LL", "LLS",
+  "NTR", "RS", "PAN"), snps, type = c("GoNL", "HRC", "HRCv1.1",
+  "GoNLv5"), geno = c("GT", "DS", "GP", "SM"), BASE, ...)
 }
 \arguments{
 \item{imputation_id}{imputation identifier}

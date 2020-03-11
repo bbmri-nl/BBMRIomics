@@ -74,3 +74,94 @@ head <- function(..., p=6) {
     h
 }
 
+
+#' Load BBMRI data from the research drive
+#'
+#' @param dataset The dataset to be loaded.
+#' @param envir The environment the dataset will be loaded into.
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # list the available datasets
+#' data(package="BBMRIomics")
+#'
+#' # load in a dataset
+#' bbmri.data(metabolomics_RP3RP4_overlap)
+#' }
+bbmri.data <- function(dataset, envir = parent.frame(2)) {
+    if (!(is.null(dataset) || typeof(dataset) == "character")) {
+        stop("dataset should be null or character")
+    }
+    if (is.null(dataset)) {
+        data.name = deparse(substitute(metabolomics_RP3RP4_overlap))
+    } else {
+        data.name = dataset
+    }
+    paths <- list(
+        metabolomics_RP3RP4_overlap="RP4/metabolomics_RP3RP4_overlap.RData",
+        methData_Betas_BIOS_F2_cleaned="IlluminaHumanMethylation450k/450k/methData_Betas_BIOS_F2_cleaned.RData",
+        methData_Betas_BIOS_Freeze2_unrelated="IlluminaHumanMethylation450k/450k/methData_Betas_BIOS_Freeze2_unrelated.RData",
+        methData_Betas_CODAM_F2_cleaned="IlluminaHumanMethylation450k/450k/CODAM/methData_Betas_CODAM_F2_cleaned.RData",
+        methData_Betas_CODAM_Freeze2_unrelated="IlluminaHumanMethylation450k/450k/CODAM/methData_Betas_CODAM_Freeze2_unrelated.RData",
+        methData_Betas_LLS_F2_cleaned="IlluminaHumanMethylation450k/450k/LLS/methData_Betas_LLS_F2_cleaned.RData",
+        methData_Betas_LLS_Freeze2_unrelated="IlluminaHumanMethylation450k/450k/LLS/methData_Betas_LLS_Freeze2_unrelated.RData",
+        methData_Betas_LL_F2_cleaned="IlluminaHumanMethylation450k/450k/LL/methData_Betas_LL_F2_cleaned.RData",
+        methData_Betas_LL_Freeze2_unrelated="IlluminaHumanMethylation450k/450k/LL/methData_Betas_LL_Freeze2_unrelated.RData",
+        methData_Betas_NTR_F2_cleaned="IlluminaHumanMethylation450k/450k/NTR/methData_Betas_NTR_F2_cleaned.RData",
+        methData_Betas_NTR_Freeze2_unrelated="IlluminaHumanMethylation450k/450k/NTR/methData_Betas_NTR_Freeze2_unrelated.RData",
+        methData_Betas_PAN_F2_cleaned="IlluminaHumanMethylation450k/450k/PAN/methData_Betas_PAN_F2_cleaned.RData",
+        methData_Betas_PAN_Freeze2_unrelated="IlluminaHumanMethylation450k/450k/PAN/methData_Betas_PAN_Freeze2_unrelated.RData",
+        methData_Betas_RS_F2_cleaned="IlluminaHumanMethylation450k/450k/RS/methData_Betas_RS_F2_cleaned.RData",
+        methData_Betas_RS_Freeze2_unrelated="IlluminaHumanMethylation450k/450k/RS/methData_Betas_RS_Freeze2_unrelated.RData",
+        methData_Mvalues_BIOS_F2_cleaned="IlluminaHumanMethylation450k/450k/methData_Mvalues_BIOS_F2_cleaned.RData",
+        methData_Mvalues_BIOS_Freeze2_unrelated="IlluminaHumanMethylation450k/450k/methData_Mvalues_BIOS_Freeze2_unrelated.RData",
+        methData_Mvalues_CODAM_F2_cleaned="IlluminaHumanMethylation450k/450k/CODAM/methData_Mvalues_CODAM_F2_cleaned.RData",
+        methData_Mvalues_CODAM_Freeze2_unrelated="IlluminaHumanMethylation450k/450k/CODAM/methData_Mvalues_CODAM_Freeze2_unrelated.RData",
+        methData_Mvalues_LLS_F2_cleaned="IlluminaHumanMethylation450k/450k/LLS/methData_Mvalues_LLS_F2_cleaned.RData",
+        methData_Mvalues_LLS_Freeze2_unrelated="IlluminaHumanMethylation450k/450k/LLS/methData_Mvalues_LLS_Freeze2_unrelated.RData",
+        methData_Mvalues_LL_F2_cleaned="IlluminaHumanMethylation450k/450k/LL/methData_Mvalues_LL_F2_cleaned.RData",
+        methData_Mvalues_LL_Freeze2_unrelated="IlluminaHumanMethylation450k/450k/LL/methData_Mvalues_LL_Freeze2_unrelated.RData",
+        methData_Mvalues_NTR_F2_cleaned="IlluminaHumanMethylation450k/450k/NTR/methData_Mvalues_NTR_F2_cleaned.RData",
+        methData_Mvalues_NTR_Freeze2_unrelated="IlluminaHumanMethylation450k/450k/NTR/methData_Mvalues_NTR_Freeze2_unrelated.RData",
+        methData_Mvalues_PAN_F2_cleaned="IlluminaHumanMethylation450k/450k/PAN/methData_Mvalues_PAN_F2_cleaned.RData",
+        methData_Mvalues_PAN_Freeze2_unrelated="IlluminaHumanMethylation450k/450k/PAN/methData_Mvalues_PAN_Freeze2_unrelated.RData",
+        methData_Mvalues_RS_F2_cleaned="IlluminaHumanMethylation450k/450k/RS/methData_Mvalues_RS_F2_cleaned.RData",
+        methData_Mvalues_RS_Freeze2_unrelated="IlluminaHumanMethylation450k/450k/RS/methData_Mvalues_RS_Freeze2_unrelated.RData",
+        rnaSeqData_ReadCounts_BIOS_Freeze2_GoNL="RNASeq/v2.1.3/gene_read/rnaSeqData_ReadCounts_BIOS_Freeze2_GoNL.RData",
+        rnaSeqData_ReadCounts_BIOS_Freeze2_GoNL_GRCh38="RNASeq/GRCh38/gene_read/rnaSeqData_ReadCounts_BIOS_Freeze2_GoNL_GRCh38.RData",
+        rnaSeqData_ReadCounts_BIOS_Freeze2_unrelated="RNASeq/v2.1.3/gene_read/rnaSeqData_ReadCounts_BIOS_Freeze2_unrelated.RData",
+        rnaSeqData_ReadCounts_BIOS_Freeze2_unrelated_GRCh38="RNASeq/GRCh38/gene_read/rnaSeqData_ReadCounts_BIOS_Freeze2_unrelated_GRCh38.RData",
+        rnaSeqData_ReadCounts_BIOS_cleaned="RNASeq/v2.1.3/gene_read/rnaSeqData_ReadCounts_BIOS_cleaned.RData",
+        rnaSeqData_ReadCounts_CODAM_Freeze2_unrelated="RNASeq/v2.1.3/gene_read/rnaSeqData_ReadCounts_CODAM_Freeze2_unrelated.RData",
+        rnaSeqData_ReadCounts_CODAM_Freeze2_unrelated_GRCh38="RNASeq/GRCh38/gene_read/rnaSeqData_ReadCounts_CODAM_Freeze2_unrelated_GRCh38.RData",
+        rnaSeqData_ReadCounts_CODAM_cleaned="RNASeq/v2.1.3/gene_read/rnaSeqData_ReadCounts_CODAM_cleaned.RData",
+        rnaSeqData_ReadCounts_GoNL="RNASeq/v2.1.3/gene_read/rnaSeqData_ReadCounts_GoNL.RData",
+        rnaSeqData_ReadCounts_LLS_Freeze2_unrelated="RNASeq/v2.1.3/gene_read/rnaSeqData_ReadCounts_LLS_Freeze2_unrelated.RData",
+        rnaSeqData_ReadCounts_LLS_Freeze2_unrelated_GRCh38="RNASeq/GRCh38/gene_read/rnaSeqData_ReadCounts_LLS_Freeze2_unrelated_GRCh38.RData",
+        rnaSeqData_ReadCounts_LLS_cleaned="RNASeq/v2.1.3/gene_read/rnaSeqData_ReadCounts_LLS_cleaned.RData",
+        rnaSeqData_ReadCounts_LL_Freeze2_unrelated="RNASeq/v2.1.3/gene_read/rnaSeqData_ReadCounts_LL_Freeze2_unrelated.RData",
+        rnaSeqData_ReadCounts_LL_Freeze2_unrelated_GRCh38="RNASeq/GRCh38/gene_read/rnaSeqData_ReadCounts_LL_Freeze2_unrelated_GRCh38.RData",
+        rnaSeqData_ReadCounts_LL_cleaned="RNASeq/v2.1.3/gene_read/rnaSeqData_ReadCounts_LL_cleaned.RData",
+        rnaSeqData_ReadCounts_NTR_Freeze2_unrelated="RNASeq/v2.1.3/gene_read/rnaSeqData_ReadCounts_NTR_Freeze2_unrelated.RData",
+        rnaSeqData_ReadCounts_NTR_Freeze2_unrelated_GRCh38="RNASeq/GRCh38/gene_read/rnaSeqData_ReadCounts_NTR_Freeze2_unrelated_GRCh38.RData",
+        rnaSeqData_ReadCounts_NTR_cleaned="RNASeq/v2.1.3/gene_read/rnaSeqData_ReadCounts_NTR_cleaned.RData",
+        rnaSeqData_ReadCounts_PAN_Freeze2_unrelated="RNASeq/v2.1.3/gene_read/rnaSeqData_ReadCounts_PAN_Freeze2_unrelated.RData",
+        rnaSeqData_ReadCounts_PAN_Freeze2_unrelated_GRCh38="RNASeq/GRCh38/gene_read/rnaSeqData_ReadCounts_PAN_Freeze2_unrelated_GRCh38.RData",
+        rnaSeqData_ReadCounts_PAN_cleaned="RNASeq/v2.1.3/gene_read/rnaSeqData_ReadCounts_PAN_cleaned.RData",
+        rnaSeqData_ReadCounts_RS_Freeze2_unrelated="RNASeq/v2.1.3/gene_read/rnaSeqData_ReadCounts_RS_Freeze2_unrelated.RData",
+        rnaSeqData_ReadCounts_RS_Freeze2_unrelated_GRCh38="RNASeq/GRCh38/gene_read/rnaSeqData_ReadCounts_RS_Freeze2_unrelated_GRCh38.RData",
+        rnaSeqData_ReadCounts_RS_cleaned="RNASeq/v2.1.3/gene_read/rnaSeqData_ReadCounts_RS_cleaned.RData"
+    )
+    path <- file.path("~/researchdrive/RSC BIOS/RP3_data", paths[[data.name]])
+    if (length(path) == 0) {
+        stop("unknown dataset")
+    }
+    if (file.exists(path)) {
+        load(path, envir = envir)
+    } else {
+        stop("dataset file does not exist")
+    }
+}
+
