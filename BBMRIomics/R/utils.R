@@ -95,7 +95,7 @@ bbmri.data <- function(dataset, envir = parent.frame(2)) {
         stop("dataset should be null or character")
     }
     if (is.null(dataset)) {
-        data.name = deparse(substitute(metabolomics_RP3RP4_overlap))
+        data.name = deparse(substitute(dataset))
     } else {
         data.name = dataset
     }
