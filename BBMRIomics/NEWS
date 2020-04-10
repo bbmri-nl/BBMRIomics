@@ -1,3 +1,18 @@
+CHANGES IN VERSION 3.3.2
+------------------------
+
+BUG FIXES
+    o The bbmri.data function now loads the datasets from the
+      '~/researchdrive/RSC_BIOS/RP3_data' directory instead of
+      '~/researchdrive/RSC BIOS/RP3_data'.
+
+CHANGES IN VERSION 3.3.1
+------------------------
+
+BUG FIXES
+    o  The bbmri.data function now loads the requested dataset instead of
+       metabolomics_RP3RP4_overlap.
+
 CHANGES IN VERSION 3.3.0
 ------------------------
 

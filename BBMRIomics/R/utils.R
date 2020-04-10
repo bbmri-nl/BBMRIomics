@@ -154,7 +154,7 @@ bbmri.data <- function(dataset, envir = parent.frame(2)) {
         rnaSeqData_ReadCounts_RS_Freeze2_unrelated_GRCh38="RNASeq/GRCh38/gene_read/rnaSeqData_ReadCounts_RS_Freeze2_unrelated_GRCh38.RData",
         rnaSeqData_ReadCounts_RS_cleaned="RNASeq/v2.1.3/gene_read/rnaSeqData_ReadCounts_RS_cleaned.RData"
     )
-    path <- file.path("~/researchdrive/RSC BIOS/RP3_data", paths[[data.name]])
+    path <- file.path("~/researchdrive/RSC_BIOS/RP3_data", paths[[data.name]])
     if (length(path) == 0) {
         stop("unknown dataset")
     }
