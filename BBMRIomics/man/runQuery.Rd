@@ -4,8 +4,14 @@
 \alias{runQuery}
 \title{send a query to the database}
 \usage{
-runQuery(query, usrpwd = "guest:guest", url = "localhost",
-  port = 5432, db = "rp3_rp4_meta", verbose = T)
+runQuery(
+  query,
+  usrpwd = "guest:guest",
+  url = "localhost",
+  port = 5432,
+  db = "rp3_rp4_meta",
+  verbose = T
+)
 }
 \arguments{
 \item{query}{SQL query to be send to the database}

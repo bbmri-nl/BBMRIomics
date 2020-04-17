@@ -4,8 +4,14 @@
 \alias{makeSE}
 \title{construct SummarizedExperiment}
 \usage{
-makeSE(assaysData, colData, rowData, author = NULL, dbVersion = NULL,
-  note = NULL)
+makeSE(
+  assaysData,
+  colData,
+  rowData,
+  author = NULL,
+  dbVersion = NULL,
+  note = NULL
+)
 }
 \arguments{
 \item{assaysData}{data matrix}

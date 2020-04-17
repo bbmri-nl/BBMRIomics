@@ -1065,3 +1065,23 @@ rnaSeqData_ReadCounts_PAN_Freeze2_unrelated_GRCh38 <- NULL
 #' data(rnaSeqData_ReadCounts_RS_Freeze2_unrelated_GRCh38)
 #' counts
 rnaSeqData_ReadCounts_RS_Freeze2_unrelated_GRCh38 <- NULL
+
+#' RP3 RP4 Metadatabase
+#'
+#' This dataset contains a series of data.frame objects with the metadata for the RP3 and RP4 sample and experiments. 
+#' Including phenotype information. Nightingale measurements are also included.
+#'
+#' The dataset contains two types of tables. Tables with raw metadata and tables (or views) with pregenerated subsets/aggregates.
+#' The tables with the raw metadata are dna_sample, gwas, imputation, methylation_450k_freeze, methylation_450k_run, nightingale_quantification, 
+#' nightingale_run, person, relation, rna_freeze, rna_merged_run, rna_run, rna_sample and visit. The remaining objects are views.
+#'
+#' @docType data
+#' @name rp3_rp4_meta
+#' @usage data(rp3_rp4_meta)
+#'
+#' @keywords datasets
+#' @export
+#' @examples
+#' data(rp3_rp4_meta)
+#' visit
+rp3_rp4_meta <- NULL

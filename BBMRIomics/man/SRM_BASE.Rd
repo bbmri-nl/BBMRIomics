@@ -4,7 +4,9 @@
 \name{SRM_BASE}
 \alias{SRM_BASE}
 \title{Global variable}
-\format{An object of class \code{NULL} of length 0.}
+\format{
+An object of class \code{NULL} of length 0.
+}
 \usage{
 SRM_BASE
 }

@@ -4,7 +4,9 @@
 \name{VM_BASE_ANALYSIS}
 \alias{VM_BASE_ANALYSIS}
 \title{Global variable}
-\format{An object of class \code{NULL} of length 0.}
+\format{
+An object of class \code{NULL} of length 0.
+}
 \usage{
 VM_BASE_ANALYSIS
 }

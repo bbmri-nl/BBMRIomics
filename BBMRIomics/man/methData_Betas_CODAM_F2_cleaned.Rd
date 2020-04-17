@@ -4,7 +4,9 @@
 \name{methData_Betas_CODAM_F2_cleaned}
 \alias{methData_Betas_CODAM_F2_cleaned}
 \title{DNA methylation data (beta-values) for the CODAM cohort (Outdated)}
-\format{An object of class \code{"SummarizedExperiment"}; see \code{\link[SummarizedExperiment]{SummarizedExperiment}}.}
+\format{
+An object of class \code{"SummarizedExperiment"}; see \code{\link[SummarizedExperiment]{SummarizedExperiment}}.
+}
 \usage{
 data(methData_Betas_CODAM_F2_cleaned)
 }

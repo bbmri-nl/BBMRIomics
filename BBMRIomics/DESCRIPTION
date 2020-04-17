@@ -35,4 +35,4 @@ Collate:
     'utils.R'
     'data.R'
     'data_old.R'
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.0

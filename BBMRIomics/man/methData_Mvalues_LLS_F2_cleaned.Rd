@@ -4,7 +4,9 @@
 \name{methData_Mvalues_LLS_F2_cleaned}
 \alias{methData_Mvalues_LLS_F2_cleaned}
 \title{DNA methylation data (M-values) for the LLS cohort (Outdated)}
-\format{An object of class \code{"SummarizedExperiment"}; see \code{\link[SummarizedExperiment]{SummarizedExperiment}}.}
+\format{
+An object of class \code{"SummarizedExperiment"}; see \code{\link[SummarizedExperiment]{SummarizedExperiment}}.
+}
 \usage{
 data(methData_Mvalues_LLS_F2_cleaned)
 }

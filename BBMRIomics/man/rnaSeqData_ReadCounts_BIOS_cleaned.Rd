@@ -4,7 +4,9 @@
 \name{rnaSeqData_ReadCounts_BIOS_cleaned}
 \alias{rnaSeqData_ReadCounts_BIOS_cleaned}
 \title{RNAseq data for BIOS (Outdated)}
-\format{An object of class \code{"SummarizedExperiment"}; see \code{\link[SummarizedExperiment]{SummarizedExperiment}}.}
+\format{
+An object of class \code{"SummarizedExperiment"}; see \code{\link[SummarizedExperiment]{SummarizedExperiment}}.
+}
 \usage{
 data(rnaSeqData_ReadCounts_BIOS_cleaned)
 }

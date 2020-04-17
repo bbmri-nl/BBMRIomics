@@ -4,7 +4,9 @@
 \name{rnaSeqData_ReadCounts_NTR_Freeze2_unrelated_GRCh38}
 \alias{rnaSeqData_ReadCounts_NTR_Freeze2_unrelated_GRCh38}
 \title{RNAseq data for the NTR cohort}
-\format{An object of class \code{"SummarizedExperiment"}; see \code{\link[SummarizedExperiment]{SummarizedExperiment}}.}
+\format{
+An object of class \code{"SummarizedExperiment"}; see \code{\link[SummarizedExperiment]{SummarizedExperiment}}.
+}
 \usage{
 data(rnaSeqData_ReadCounts_NTR_Freeze2_unrelated_GRCh38)
 }

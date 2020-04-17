@@ -4,7 +4,9 @@
 \name{methData_Betas_BIOS_Freeze2_unrelated}
 \alias{methData_Betas_BIOS_Freeze2_unrelated}
 \title{DNA methylation data (beta-values) for BIOS}
-\format{An object of class \code{"SummarizedExperiment"}; see \code{\link[SummarizedExperiment]{SummarizedExperiment}}.}
+\format{
+An object of class \code{"SummarizedExperiment"}; see \code{\link[SummarizedExperiment]{SummarizedExperiment}}.
+}
 \usage{
 data(methData_Betas_BIOS_Freeze2_unrelated)
 }

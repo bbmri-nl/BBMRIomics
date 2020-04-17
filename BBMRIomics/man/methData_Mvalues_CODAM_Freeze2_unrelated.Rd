@@ -4,7 +4,9 @@
 \name{methData_Mvalues_CODAM_Freeze2_unrelated}
 \alias{methData_Mvalues_CODAM_Freeze2_unrelated}
 \title{DNA methylation data (M-values) for the CODAM cohort}
-\format{An object of class \code{"SummarizedExperiment"}; see \code{\link[SummarizedExperiment]{SummarizedExperiment}}.}
+\format{
+An object of class \code{"SummarizedExperiment"}; see \code{\link[SummarizedExperiment]{SummarizedExperiment}}.
+}
 \usage{
 data(methData_Mvalues_CODAM_Freeze2_unrelated)
 }

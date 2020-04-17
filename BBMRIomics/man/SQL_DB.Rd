@@ -4,7 +4,9 @@
 \name{SQL_DB}
 \alias{SQL_DB}
 \title{Global variable}
-\format{An object of class \code{NULL} of length 0.}
+\format{
+An object of class \code{NULL} of length 0.
+}
 \usage{
 SQL_DB
 }

@@ -4,7 +4,9 @@
 \name{RP3_MDB}
 \alias{RP3_MDB}
 \title{Global variable}
-\format{An object of class \code{NULL} of length 0.}
+\format{
+An object of class \code{NULL} of length 0.
+}
 \usage{
 RP3_MDB
 }

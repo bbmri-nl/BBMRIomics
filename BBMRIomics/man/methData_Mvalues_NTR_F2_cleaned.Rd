@@ -4,7 +4,9 @@
 \name{methData_Mvalues_NTR_F2_cleaned}
 \alias{methData_Mvalues_NTR_F2_cleaned}
 \title{DNA methylation data (M-values) for the NTR cohort (Outdated)}
-\format{An object of class \code{"SummarizedExperiment"}; see \code{\link[SummarizedExperiment]{SummarizedExperiment}}.}
+\format{
+An object of class \code{"SummarizedExperiment"}; see \code{\link[SummarizedExperiment]{SummarizedExperiment}}.
+}
 \usage{
 data(methData_Mvalues_NTR_F2_cleaned)
 }

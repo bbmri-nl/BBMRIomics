@@ -152,7 +152,8 @@ bbmri.data <- function(dataset, envir = parent.frame(2)) {
         rnaSeqData_ReadCounts_PAN_cleaned="RNASeq/v2.1.3/gene_read/rnaSeqData_ReadCounts_PAN_cleaned.RData",
         rnaSeqData_ReadCounts_RS_Freeze2_unrelated="RNASeq/v2.1.3/gene_read/rnaSeqData_ReadCounts_RS_Freeze2_unrelated.RData",
         rnaSeqData_ReadCounts_RS_Freeze2_unrelated_GRCh38="RNASeq/GRCh38/gene_read/rnaSeqData_ReadCounts_RS_Freeze2_unrelated_GRCh38.RData",
-        rnaSeqData_ReadCounts_RS_cleaned="RNASeq/v2.1.3/gene_read/rnaSeqData_ReadCounts_RS_cleaned.RData"
+        rnaSeqData_ReadCounts_RS_cleaned="RNASeq/v2.1.3/gene_read/rnaSeqData_ReadCounts_RS_cleaned.RData",
+        rp3_rp4_meta="rp3_rp4_meta/rp3_rp4_meta.RData"
     )
     path <- file.path("~/researchdrive/RSC_BIOS/RP3_data", paths[[data.name]])
     if (length(path) == 0) {

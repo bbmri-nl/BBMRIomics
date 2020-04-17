@@ -4,9 +4,12 @@
 \alias{view}
 \title{get view from metadatabase}
 \usage{
-view(viewname,
+view(
+  viewname,
   db = "https://metadatabase.bbmrirp3-lumc.surf-hosted.nl:6984/bios-test/",
-  converter = "json2csv", usrpwd = NULL)
+  converter = "json2csv",
+  usrpwd = NULL
+)
 }
 \arguments{
 \item{viewname}{name of the view}

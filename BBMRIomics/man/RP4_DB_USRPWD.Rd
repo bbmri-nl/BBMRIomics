@@ -4,7 +4,9 @@
 \name{RP4_DB_USRPWD}
 \alias{RP4_DB_USRPWD}
 \title{Global variable}
-\format{An object of class \code{NULL} of length 0.}
+\format{
+An object of class \code{NULL} of length 0.
+}
 \usage{
 RP4_DB_USRPWD
 }

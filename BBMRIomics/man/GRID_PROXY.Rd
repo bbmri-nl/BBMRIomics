@@ -4,7 +4,9 @@
 \name{GRID_PROXY}
 \alias{GRID_PROXY}
 \title{Global variable}
-\format{An object of class \code{NULL} of length 0.}
+\format{
+An object of class \code{NULL} of length 0.
+}
 \usage{
 GRID_PROXY
 }

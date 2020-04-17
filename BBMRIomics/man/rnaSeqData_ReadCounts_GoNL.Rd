@@ -4,7 +4,9 @@
 \name{rnaSeqData_ReadCounts_GoNL}
 \alias{rnaSeqData_ReadCounts_GoNL}
 \title{RNAseq data for BIOS GoNL subset (Outdated)}
-\format{An object of class \code{"SummarizedExperiment"}; see \code{\link[SummarizedExperiment]{SummarizedExperiment}}.}
+\format{
+An object of class \code{"SummarizedExperiment"}; see \code{\link[SummarizedExperiment]{SummarizedExperiment}}.
+}
 \usage{
 data(rnaSeqData_ReadCounts_GoNL)
 }

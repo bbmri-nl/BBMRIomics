@@ -4,7 +4,9 @@
 \name{metabolomics_RP3RP4_overlap}
 \alias{metabolomics_RP3RP4_overlap}
 \title{RP4 metabolites}
-\format{An object of class \code{"SummarizedExperiment"}; see \code{\link[SummarizedExperiment]{SummarizedExperiment}}.}
+\format{
+An object of class \code{"SummarizedExperiment"}; see \code{\link[SummarizedExperiment]{SummarizedExperiment}}.
+}
 \usage{
 data(metabolomics_RP3RP4_overlap)
 }

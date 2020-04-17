@@ -4,7 +4,9 @@
 \name{methData_Betas_PAN_Freeze2_unrelated}
 \alias{methData_Betas_PAN_Freeze2_unrelated}
 \title{DNA methylation data (beta-values) for the PAN cohort}
-\format{An object of class \code{"SummarizedExperiment"}; see \code{\link[SummarizedExperiment]{SummarizedExperiment}}.}
+\format{
+An object of class \code{"SummarizedExperiment"}; see \code{\link[SummarizedExperiment]{SummarizedExperiment}}.
+}
 \usage{
 data(methData_Betas_PAN_Freeze2_unrelated)
 }
