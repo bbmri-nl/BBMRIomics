@@ -18,7 +18,7 @@ approach as an EWAS.
 
 ```{r, selectdata}
 library(BBMRIomics)
-data(rnaSeqData_ReadCounts_BIOS_Freeze2_unrelated)
+bbmri.data(rnaSeqData_ReadCounts_BIOS_Freeze2_unrelated)
 covariates <- c("sex", "smoking", "biobank_id")
 phenotype <- "sampling_age"
 nas <- apply(as.data.frame(colData(counts))[,c(phenotype, covariates)], 1, anyNA)

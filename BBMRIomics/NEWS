@@ -1,3 +1,10 @@
+CHANGES IN VERSION 3.4.1
+------------------------
+
+BUG FIXES
+    o The VM_BASE_DATA and VM_BASE_ANALYSIS variables should now point to
+      the correct paths on the research drive.
+
 CHANGES IN VERSION 3.4.0
 ------------------------
 

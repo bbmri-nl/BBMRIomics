@@ -49,7 +49,7 @@ rs1981760 <- geno(vcf)$GT[1,]
 ```
 
 ```{r, linkhrcrna}
-data(rnaSeqData_ReadCounts_CODAM_Freeze2_unrelated)
+bbmri.data(rnaSeqData_ReadCounts_CODAM_Freeze2_unrelated)
 hrc <- intersect(names(rs1981760), counts$imputation_id_hrc)
 counts <- counts[,counts$imputation_id_hrc %in% hrc]
 mid <- match(counts$imputation_id_hrc, names(rs1981760))
@@ -67,7 +67,7 @@ boxplot(NOD2~rs1981760)
 ```{r, getgenotypes}
 library(SNPlocs.Hsapiens.dbSNP142.GRCh37)
 gr <- rsidsToGRanges(c("rs9302752", "rs1981760"))
-data(rnaSeqData_ReadCounts_BIOS_Freeze2_unrelated)
+bbmri.data(rnaSeqData_ReadCounts_BIOS_Freeze2_unrelated)
 counts <- counts[,!is.na(counts$imputation_id_hrc)] ##not all samples have genotype data
 library(BiocParallel)
 register(MulticoreParam(2, log=TRUE))

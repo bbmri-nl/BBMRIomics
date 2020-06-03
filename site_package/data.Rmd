@@ -44,7 +44,7 @@ genome sequencing or imputed genotypes.
 
 ## Loading the data ##
 
-Load a specific data set with `data(name_dataset)`. Use
+Load a specific data set with `bbmri.data(name_dataset)`. Use
 `data(package="BBMRIomics")` to inspect the current available
 datasets. Once loaded check the name of the loaded data with `ls()` and
 view its content by just typing the name of the dataset in the console
@@ -53,11 +53,11 @@ the content of the loaded dataset.
 
 ```{r, datasets}
 library(BBMRIomics)
-data(package="BBMRIomics")
+bbmri.data(package="BBMRIomics")
 ```
 
 ```{r, loading}
-data(methData_Betas_CODAM_Freeze2_unrelated)
+bbmri.data(methData_Betas_CODAM_Freeze2_unrelated)
 ls()
 betas
 ```

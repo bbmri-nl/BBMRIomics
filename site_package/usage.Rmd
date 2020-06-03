@@ -25,7 +25,7 @@ DNA methylation data, `Hydridization_Data`, `Stain_Date`, etc.
 
 ```{r, coldata}
 library(BBMRIomics)
-data(methData_Betas_CODAM_Freeze2_unrelated)
+bbmri.data(methData_Betas_CODAM_Freeze2_unrelated)
 cData <- colData(betas)
 cData[1:5, 1:5]
 ```
@@ -85,7 +85,7 @@ See [**irlba**](https://cran.r-project.org/web/packages/irlba/vignettes/irlba.pd
 
 ```{r, pca}
 library(irlba)
-data(rnaSeqData_ReadCounts_BIOS_Freeze2_unrelated)
+bbmri.data(rnaSeqData_ReadCounts_BIOS_Freeze2_unrelated)
 library(edgeR)
 y <- DGEList(assays(counts)$data, remove.zeros=TRUE)
 y <- calcNormFactors(y)
