@@ -90,7 +90,7 @@ head <- function(..., p=6) {
 #' # load in a dataset
 #' bbmri.data(metabolomics_RP3RP4_overlap)
 #' }
-bbmri.data <- function(dataset, envir = parent.frame(2)) {
+bbmri.data <- function(dataset, envir = parent.frame()) {
     if (!(is.null(dataset) || typeof(dataset) == "character")) {
         stop("dataset should be null or character")
     }
