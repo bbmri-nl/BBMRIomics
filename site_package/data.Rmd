@@ -57,9 +57,9 @@ data(package="BBMRIomics")
 ```
 
 ```{r, loading}
-bbmri.data(methData_Betas_CODAM_Freeze2_unrelated)
+bbmri.data(rnaSeqData_ReadCounts_GoNL)
 ls()
-betas
+counts
 ```
 
 ## SummarizedExperiment ##
