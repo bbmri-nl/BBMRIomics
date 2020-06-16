@@ -1,7 +1,7 @@
 Package: BBMRIomics
 Type: Package
 Title: R utilities for BBMRI omics data analysis
-Version: 3.4.1
+Version: 3.4.2
 Date: 2020-06-3
 Author: Maarten van Iterson, Davy Cats
 Maintainer: D. Cats <D.cats@lumc.nl>

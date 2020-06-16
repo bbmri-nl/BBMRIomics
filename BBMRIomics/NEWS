@@ -1,3 +1,10 @@
+CHANGES IN VERSION 3.4.2
+------------------------
+BUG FIXES
+    o The bbmri.data function should now properly load data into the
+      global environment, instead of the parent environment. It now
+      behaves more like the base data function.
+
 CHANGES IN VERSION 3.4.1
 ------------------------
 
