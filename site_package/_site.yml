@@ -22,20 +22,20 @@ navbar:
         - text: "imputed genotypes"
           href: HRC.html
         - text: "Integrated analyses"
-    - text: "Apps"
-      menu:
-        - text: "DNam qc CODAM"
-          href: http://bios-vm.bbmrirp3-lumc.surf-hosted.nl:8008/BBMRIomics/DNAm/CODAM
-        - text: "DNam qc LL"
-          href: http://bios-vm.bbmrirp3-lumc.surf-hosted.nl:8008/BBMRIomics/DNAm/LL
-        - text: "DNam qc LLS"            
-          href: http://bios-vm.bbmrirp3-lumc.surf-hosted.nl:8008/BBMRIomics/DNAm/LLS
-        - text: "DNam qc NTR"            
-          href: http://bios-vm.bbmrirp3-lumc.surf-hosted.nl:8008/BBMRIomics/DNAm/NTR
-        - text: "DNam qc RS"            
-          href: http://bios-vm.bbmrirp3-lumc.surf-hosted.nl:8008/BBMRIomics/DNAm/RS
-        - text: "DNam qc PAN"            
-          href: http://bios-vm.bbmrirp3-lumc.surf-hosted.nl:8008/BBMRIomics/DNAm/PAN      
+#    - text: "Apps"
+#      menu:
+#        - text: "DNam qc CODAM"
+#          href: http://bios-vm.bbmrirp3-lumc.surf-hosted.nl:8008/BBMRIomics/DNAm/CODAM
+#        - text: "DNam qc LL"
+#          href: http://bios-vm.bbmrirp3-lumc.surf-hosted.nl:8008/BBMRIomics/DNAm/LL
+#        - text: "DNam qc LLS"            
+#          href: http://bios-vm.bbmrirp3-lumc.surf-hosted.nl:8008/BBMRIomics/DNAm/LLS
+#        - text: "DNam qc NTR"            
+#          href: http://bios-vm.bbmrirp3-lumc.surf-hosted.nl:8008/BBMRIomics/DNAm/NTR
+#        - text: "DNam qc RS"            
+#          href: http://bios-vm.bbmrirp3-lumc.surf-hosted.nl:8008/BBMRIomics/DNAm/RS
+#        - text: "DNam qc PAN"            
+#          href: http://bios-vm.bbmrirp3-lumc.surf-hosted.nl:8008/BBMRIomics/DNAm/PAN      
   right:    
     - text: "Developers"
       menu:

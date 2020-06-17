@@ -52,10 +52,6 @@ Check if all code chunks run without errors -- optionally add a library to
 make render
 ```
 
-..., and, if it runs successfully:
-
-```{bash, eval = FALSE}
-sudo make publish
-```
-
+The resulting files can then be pushed to the gh-pages branch on github to
+publish the them.
 
