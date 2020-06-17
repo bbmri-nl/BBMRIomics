@@ -20,7 +20,17 @@ metadatabase (MDb) was created to store the large-scale multiple-omic data
 collected, in a structured way. Metadata and quantifications from the RP4
 metabolomics project were also added to this database.
 
-The metadatabase is available on the BIOS-VM.
+An export of this metadatabase is available through the BBMRIomics package as a
+dataset. This dataset contains a data.frame for each of the tables and views in
+the database.
+
+```{r}
+bbmri.data(rp3_rp4_meta)
+ls()
+```
+
+Alternatively, if you have access to a locally running instance of the database
+the functions described below may be used to access the database directly.
 
 ## MDb contents ##
 The MDb contains as much meta-information as possible from all samples and
@@ -46,42 +56,43 @@ The data has been seperated into a number of entities, as described below:
 | nightingale_run             | Information regarding nightingale runs                                          |
 | nightingale_quantification  | Metabolomics quantification measurements                                        |
 
-The `listTables` function can be used to retrieve a list of table names as well:
-```{r}
+The `listTables` function can be used to retrieve a list of table names from 
+a locally running instance as well:
+```{r eval=FALSE}
 listTables()
 ```
 
 ## Available views ##
 Views are predefined SQL queries which can be used to extract a subset of the
 available information from the database. The names of the available views can
-be retrieved using the `listViews`-function:
-```{r}
+be retrieved from a local instance using the `listViews`-function:
+```{r eval=FALSE}
 listViews()
 ```
 
 ## Retrieving views and querying the database ##
 
-To retrieve a view the `getSQLview`-function can be used. Note that view names
-are not case sensitive.
-```{r}
+To retrieve a view from a local instance the `getSQLview`-function can be used.
+Note that view names are not case sensitive.
+```{r eval=FALSE}
 head(getSQLview("getids"))
 ```
 
 > We can always add views if necessary; please contact Leon Mei.
 
-If you have a Postgres account on the BIOS-VM you can also query the tables
-directly using the `runQuery`-function. This function is just a wrapper around
-the `dbGetQuery`-function from the `RPostgreSQL`-package, so that package (or 
-any other API which interacts with postgres) can also be used directly. 
+You can also query the tables from a local instance directly using the 
+`runQuery`-function. This function is just a wrapper around the `dbGetQuery`-function
+from the `RPostgreSQL`-package, so that package (or any other API which interacts with
+postgres) can also be used directly. 
 ```{r eval=FALSE}
 runQuery("SELECT * FROM visits;")
 ```
 
 ## Database versioning ##
 The database is built from data and SQL scripts stored on the LUMC git server.
-To retrieve the hash of the commit used to built the database, the 
+To retrieve the hash of the commit used to built the local database, the 
 `mdbVersion`-function can be used. This hash can be seen as the version of the
 database.
-```{r}
+```{r eval=FALSE}
 mdbVersion()
 ```
