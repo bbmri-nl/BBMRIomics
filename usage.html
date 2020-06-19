@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Exploratory data analysis</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  { background-color: #f8f8f8; }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } /* Alert */
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #c4a000; } /* Attribute */
+code span.bn { color: #0000cf; } /* BaseN */
+code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4e9a06; } /* Char */
+code span.cn { color: #000000; } /* Constant */
+code span.co { color: #8f5902; font-style: italic; } /* Comment */
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code span.dt { color: #204a87; } /* DataType */
+code span.dv { color: #0000cf; } /* DecVal */
+code span.er { color: #a40000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #0000cf; } /* Float */
+code span.fu { color: #000000; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code span.ot { color: #8f5902; } /* Other */
+code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code span.sc { color: #000000; } /* SpecialChar */
+code span.ss { color: #4e9a06; } /* SpecialString */
+code span.st { color: #4e9a06; } /* String */
+code span.va { color: #000000; } /* Variable */
+code span.vs { color: #4e9a06; } /* VerbatimString */
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">BBMRIomics</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="data.html">Data</a>
+</li>
+<li>
+  <a href="usage.html">Basic Usage</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Use cases
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li class="dropdown-header">DNA methylation</li>
+    <li>
+      <a href="EWAS.html">EWAS</a>
+    </li>
+    <li class="dropdown-header">RNA seq</li>
+    <li>
+      <a href="TWAS.html">TWAS</a>
+    </li>
+    <li class="dropdown-header">Metabolites</li>
+    <li>
+      <a href="MWAS.html">MWAS</a>
+    </li>
+    <li class="dropdown-header">Genotypes</li>
+    <li>
+      <a href="HRC.html">imputed genotypes</a>
+    </li>
+    <li class="dropdown-header">Integrated analyses</li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Developers
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="metadatabase.html">Accessing the metadatabase</a>
+    </li>
+    <li>
+      <a href="contribute.html">Contributing</a>
+    </li>
+    <li class="dropdown-header">Creating Datasets</li>
+    <li>
+      <a href="create_DNAm_Freeze2_unrelated_datasets.html">DNAm Freeze2 unrelated</a>
+    </li>
+    <li>
+      <a href="create_RNAseq_Freeze2_unrelated_datasets.html">RNAseq Freeze2 unrelated</a>
+    </li>
+    <li>
+      <a href="create_RNAseq_Freeze2_GoNL_dataset.html">RNAseq Freeze2 GoNL</a>
+    </li>
+    <li>
+      <a href="create_GRCh38_RNAseq_Freeze2_unrelated_datasets.html">GRCh38 RNAseq Freeze2 unrelated</a>
+    </li>
+    <li>
+      <a href="create_GRCh38_RNAseq_Freeze2_GoNL_dataset.html">GRCh38 RNAseq Freeze2 GoNL</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Developers (legacy)
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li class="dropdown-header">Quality Control</li>
+    <li>
+      <a href="DNAm_qc.html">DNAm</a>
+    </li>
+    <li class="dropdown-header">RNAseq</li>
+    <li class="dropdown-header">Creating Data Sets</li>
+    <li>
+      <a href="create_RNA_datasets.html">RNAseq</a>
+    </li>
+    <li>
+      <a href="create_DNAm_datasets.html">DNAm</a>
+    </li>
+    <li>
+      <a href="linkingRP4_RP3.html">Linking RP4 with RP3</a>
+    </li>
+    <li>
+      <a href="freeze2.html">Determining freeze 2</a>
+    </li>
+    <li class="dropdown-header">Miscellaneous</li>
+    <li>
+      <a href="metadatabase_legacy.html">Accessing the metadatabase</a>
+    </li>
+    <li class="dropdown-header">Phenotyping</li>
+    <li>
+      <a href="phenotyping_rnaseq.html">Using RNAseq</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Exploratory data analysis</h1>
+
+</div>
+
+
+<div id="inspect-data" class="section level2">
+<h2>Inspect data</h2>
+<div id="metadata" class="section level3">
+<h3>metadata</h3>
+<p>Load a dataset and inspect the <strong>colData</strong> using <code>colData(dataset)</code>. The <code>column</code>-data contains information for each column. This can be phenotypic information; <code>Sampling_Age</code>, <code>Sex</code> or <code>Height</code>, blood parameters, such white blood cell counts or information specific to the omic data-type, e.g. in case of the array DNA methylation data, <code>Hydridization_Data</code>, <code>Stain_Date</code>, etc.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">library</span>(BBMRIomics)</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw">bbmri.data</span>(methData_Betas_CODAM_Freeze2_unrelated)</a>
+<a class="sourceLine" id="cb1-3" data-line-number="3">cData &lt;-<span class="st"> </span><span class="kw">colData</span>(betas)</a>
+<a class="sourceLine" id="cb1-4" data-line-number="4">cData[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]</a></code></pre></div>
+<pre><code>## DataFrame with 5 rows and 5 columns
+##                      uuid  biobank_id     gonl_id            run_id
+##               &lt;character&gt; &lt;character&gt; &lt;character&gt;       &lt;character&gt;
+## BIOS6DB3BAD1 BIOS6DB3BAD1       CODAM          NA 8667053102_R05C02
+## BIOSAF9A6D98 BIOSAF9A6D98       CODAM          NA 8655685094_R04C01
+## BIOS6F87D650 BIOS6F87D650       CODAM          NA 8667045002_R05C01
+## BIOS0DA7A245 BIOS0DA7A245       CODAM          NA 8667053158_R04C01
+## BIOSBAB0BF11 BIOSBAB0BF11       CODAM          NA 8655685007_R01C01
+##              sampling_age
+##                 &lt;integer&gt;
+## BIOS6DB3BAD1           78
+## BIOSAF9A6D98           74
+## BIOS6F87D650           63
+## BIOS0DA7A245           66
+## BIOSBAB0BF11           62</code></pre>
+<p>Tabulation ca be used for inspection of the distribution of categorical variables.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw">xtabs</span>(<span class="op">~</span>sex<span class="op">+</span>smoking, <span class="dt">data=</span><span class="kw">as.data.frame</span>(cData))</a></code></pre></div>
+<pre><code>##         smoking
+## sex      current smoker former-smoker non-smoker
+##   female             13            35         26
+##   male               12            58         16</code></pre>
+<p>Use plots for example, a histogram for inspection of the <code>Sampling_Age</code> distribution.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw">library</span>(ggplot2)</a>
+<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="kw">qplot</span>(sampling_age, <span class="dt">data=</span><span class="kw">as.data.frame</span>(cData), <span class="dt">geom=</span><span class="st">&quot;histogram&quot;</span>)</a></code></pre></div>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<pre><code>## Warning: Removed 3 rows containing non-finite values (stat_bin).</code></pre>
+<p><img src="usage_files/figure-html/plotcoldata-1.png" width="672" /></p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="kw">summary</span>(cData<span class="op">$</span>sampling_age)</a></code></pre></div>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
+##   50.00   61.00   66.00   65.49   71.00   79.00       3</code></pre>
+<p>Optionally stratify by <code>Sex</code>.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1">gp &lt;-<span class="st"> </span><span class="kw">ggplot</span>(<span class="kw">as.data.frame</span>(cData), <span class="kw">aes</span>(<span class="dt">x=</span>sampling_age))</a>
+<a class="sourceLine" id="cb10-2" data-line-number="2">gp &lt;-<span class="st"> </span>gp <span class="op">+</span><span class="st"> </span><span class="kw">geom_histogram</span>()</a>
+<a class="sourceLine" id="cb10-3" data-line-number="3">gp <span class="op">+</span><span class="st"> </span><span class="kw">facet_grid</span>(sex<span class="op">~</span>.)</a></code></pre></div>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<pre><code>## Warning: Removed 3 rows containing non-finite values (stat_bin).</code></pre>
+<p><img src="usage_files/figure-html/plotcoldatastratified-1.png" width="672" /></p>
+</div>
+<div id="feature-annotation" class="section level3">
+<h3>feature annotation</h3>
+<p>For array DNA methylation the <code>rowRanges</code> contain the probe information provide by the <a href="http://bioconductor.org/packages/release/data/annotation/manuals/FDb.InfiniumMethylation.hg19/man/FDb.InfiniumMethylation.hg19.pdf"><strong>FDb.InfiniumMethylation.hg19</strong></a> Bioconductor annotation package. This package contains the same information as the Illumina Human DNA methylation 450k manifest file but in a convenient format, as <code>GRanges</code>-object.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1"><span class="kw">rowRanges</span>(betas)</a></code></pre></div>
+<pre><code>## GRanges object with 484123 ranges and 10 metadata columns:
+##                   seqnames            ranges strand |    addressA    addressB
+##                      &lt;Rle&gt;         &lt;IRanges&gt;  &lt;Rle&gt; | &lt;character&gt; &lt;character&gt;
+##        cg01707559     chrY   6778695-6778696      * |    45652402    64689504
+##        cg02004872     chrY 15815552-15815553      * |    25785404    58629399
+##        cg02494853     chrY   4868397-4868398      * |    58788384    71607362
+##        cg03244189     chrY 21238472-21238473      * |    14749415    45763392
+##        cg03706273     chrY 16635745-16635746      * |    66610451    32759443
+##               ...      ...               ...    ... .         ...         ...
+##     ch.22.909671F    chr22          46114168      * |    47797398            
+##   ch.22.46830341F    chr22          48451677      * |    29618504            
+##    ch.22.1008279F    chr22          48731367      * |    49664383            
+##   ch.22.47579720R    chr22          49193714      * |    53733426            
+##   ch.22.48274842R    chr22          49888838      * |    62659432            
+##                   channel platform percentGC               sourceSeq probeType
+##                     &lt;Rle&gt;    &lt;Rle&gt; &lt;numeric&gt;          &lt;DNAStringSet&gt;     &lt;Rle&gt;
+##        cg01707559     Red    HM450      0.76 CGCCCTCTGT...CCCAATTCGC        cg
+##        cg02004872     Grn    HM450       0.6 CGGCGGCGCT...AGAGGCATGT        cg
+##        cg02494853     Grn    HM450       0.7 CGCGGGCAGC...GCCCAGACAG        cg
+##        cg03244189     Grn    HM450      0.52 ATAGGGACGC...AGCGAAGGCG        cg
+##        cg03706273     Grn    HM450      0.58 AGCAGCACGG...TTCCAGCGCG        cg
+##               ...     ...      ...       ...                     ...       ...
+##     ch.22.909671F    Both    HM450      0.34 CAGCAAATCA...GTAAGTGGTG        ch
+##   ch.22.46830341F    Both    HM450      0.46 CAGCATCACA...TCCATTTTTC        ch
+##    ch.22.1008279F    Both    HM450      0.56 CAAGACTCAT...GACTGTAGGG        ch
+##   ch.22.47579720R    Both    HM450       0.6 CAGGCAAGGG...CTGGAGAGAG        ch
+##   ch.22.48274842R    Both    HM450      0.58 ACTGACTGCA...CAACAGGAAC        ch
+##                    probeStart    probeEnd probeTarget
+##                   &lt;character&gt; &lt;character&gt;   &lt;numeric&gt;
+##        cg01707559     6778695     6778744     6778695
+##        cg02004872    15815552    15815601    15815552
+##        cg02494853     4868349     4868398     4868397
+##        cg03244189    21238424    21238473    21238472
+##        cg03706273    16635745    16635794    16635745
+##               ...         ...         ...         ...
+##     ch.22.909671F    46114168    46114217    46114168
+##   ch.22.46830341F    48451677    48451726    48451677
+##    ch.22.1008279F    48731367    48731416    48731367
+##   ch.22.47579720R    49193714    49193763    49193714
+##   ch.22.48274842R    49888838    49888887    49888838
+##   -------
+##   seqinfo: 24 sequences from hg19 genome</code></pre>
+</div>
+<div id="features" class="section level3">
+<h3>features</h3>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1">data &lt;-<span class="st"> </span><span class="kw">assays</span>(betas)<span class="op">$</span>data</a>
+<a class="sourceLine" id="cb15-2" data-line-number="2">data[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]</a></code></pre></div>
+<pre><code>##            BIOS6DB3BAD1 BIOSAF9A6D98 BIOS6F87D650 BIOS0DA7A245 BIOSBAB0BF11
+## cg01707559   0.05386254   0.03516259   0.35649128   0.04128348   0.04741600
+## cg02004872   0.01552188   0.01815247   0.34117944   0.01727364   0.02168273
+## cg02494853   0.04292021   0.02381752   0.03041396   0.06478056   0.01826110
+## cg03244189   0.05019996   0.03196357   0.37829594   0.07053734   0.04926488
+## cg03706273   0.06310767   0.01837788   0.09973393   0.03995083   0.01944075</code></pre>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1"><span class="kw">hist</span>(data[<span class="dv">1</span>,], <span class="dt">xlim=</span><span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="dt">main=</span><span class="kw">paste</span>(<span class="st">&quot;beta-value distribution for probe:&quot;</span>, <span class="kw">rownames</span>(data)[<span class="dv">1</span>]))</a></code></pre></div>
+<p><img src="usage_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+</div>
+</div>
+<div id="exploratory-plots" class="section level2">
+<h2>Exploratory plots</h2>
+<p>See <a href="https://cran.r-project.org/web/packages/irlba/vignettes/irlba.pdf"><strong>irlba</strong></a></p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1"><span class="kw">library</span>(irlba)</a>
+<a class="sourceLine" id="cb18-2" data-line-number="2"><span class="kw">bbmri.data</span>(rnaSeqData_ReadCounts_BIOS_Freeze2_unrelated)</a>
+<a class="sourceLine" id="cb18-3" data-line-number="3"><span class="kw">library</span>(edgeR)</a>
+<a class="sourceLine" id="cb18-4" data-line-number="4">y &lt;-<span class="st"> </span><span class="kw">DGEList</span>(<span class="kw">assays</span>(counts)<span class="op">$</span>data, <span class="dt">remove.zeros=</span><span class="ot">TRUE</span>)</a></code></pre></div>
+<pre><code>## Removing 2907 rows with all zero counts</code></pre>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1">y &lt;-<span class="st"> </span><span class="kw">calcNormFactors</span>(y)</a>
+<a class="sourceLine" id="cb20-2" data-line-number="2">y &lt;-<span class="st"> </span><span class="kw">cpm</span>(y, <span class="dt">log=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb20-3" data-line-number="3">pc &lt;-<span class="st"> </span><span class="kw">prcomp_irlba</span>(<span class="kw">t</span>(y))</a>
+<a class="sourceLine" id="cb20-4" data-line-number="4"><span class="kw">summary</span>(pc)</a></code></pre></div>
+<pre><code>## Importance of components:
+##                            PC1      PC2      PC3
+## Standard deviation     43.4520 20.04939 17.93061
+## Proportion of Variance  0.1929  0.04108  0.03285
+## Cumulative Proportion   0.1929  0.23402  0.26687</code></pre>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" data-line-number="1"><span class="kw">plot</span>(pc<span class="op">$</span>x[,<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">3</span>)], <span class="dt">col=</span><span class="kw">ifelse</span>(<span class="kw">colData</span>(counts)<span class="op">$</span>sex <span class="op">==</span><span class="st"> &quot;Female&quot;</span>, <span class="dv">1</span>, <span class="dv">2</span>))</a></code></pre></div>
+<p><img src="usage_files/figure-html/pca-1.png" width="672" /></p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1">biobank &lt;-<span class="st"> </span><span class="kw">factor</span>(<span class="kw">colData</span>(counts)<span class="op">$</span>biobank_id)</a>
+<a class="sourceLine" id="cb23-2" data-line-number="2"><span class="kw">plot</span>(pc<span class="op">$</span>x, <span class="dt">col=</span><span class="kw">adjustcolor</span>(<span class="kw">as.integer</span>(biobank), <span class="dt">alpha.f =</span> <span class="fl">0.3</span>), <span class="dt">pch=</span><span class="dv">16</span>)</a>
+<a class="sourceLine" id="cb23-3" data-line-number="3"><span class="kw">legend</span>(<span class="st">&quot;topleft&quot;</span>, <span class="kw">levels</span>(biobank), <span class="dt">col=</span><span class="kw">adjustcolor</span>(<span class="dv">1</span><span class="op">:</span><span class="kw">nlevels</span>(biobank), <span class="dt">alpha.f =</span> <span class="fl">0.3</span>), <span class="dt">pch=</span><span class="dv">16</span>, <span class="dt">bty=</span><span class="st">&quot;n&quot;</span>)     </a></code></pre></div>
+<p><img src="usage_files/figure-html/pcabiobank-1.png" width="672" /></p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

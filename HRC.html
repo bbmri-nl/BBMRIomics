@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Working with HRC imputed genotypes</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  { background-color: #f8f8f8; }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } /* Alert */
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #c4a000; } /* Attribute */
+code span.bn { color: #0000cf; } /* BaseN */
+code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4e9a06; } /* Char */
+code span.cn { color: #000000; } /* Constant */
+code span.co { color: #8f5902; font-style: italic; } /* Comment */
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code span.dt { color: #204a87; } /* DataType */
+code span.dv { color: #0000cf; } /* DecVal */
+code span.er { color: #a40000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #0000cf; } /* Float */
+code span.fu { color: #000000; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code span.ot { color: #8f5902; } /* Other */
+code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code span.sc { color: #000000; } /* SpecialChar */
+code span.ss { color: #4e9a06; } /* SpecialString */
+code span.st { color: #4e9a06; } /* String */
+code span.va { color: #000000; } /* Variable */
+code span.vs { color: #4e9a06; } /* VerbatimString */
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">BBMRIomics</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="data.html">Data</a>
+</li>
+<li>
+  <a href="usage.html">Basic Usage</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Use cases
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li class="dropdown-header">DNA methylation</li>
+    <li>
+      <a href="EWAS.html">EWAS</a>
+    </li>
+    <li class="dropdown-header">RNA seq</li>
+    <li>
+      <a href="TWAS.html">TWAS</a>
+    </li>
+    <li class="dropdown-header">Metabolites</li>
+    <li>
+      <a href="MWAS.html">MWAS</a>
+    </li>
+    <li class="dropdown-header">Genotypes</li>
+    <li>
+      <a href="HRC.html">imputed genotypes</a>
+    </li>
+    <li class="dropdown-header">Integrated analyses</li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Developers
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="metadatabase.html">Accessing the metadatabase</a>
+    </li>
+    <li>
+      <a href="contribute.html">Contributing</a>
+    </li>
+    <li class="dropdown-header">Creating Datasets</li>
+    <li>
+      <a href="create_DNAm_Freeze2_unrelated_datasets.html">DNAm Freeze2 unrelated</a>
+    </li>
+    <li>
+      <a href="create_RNAseq_Freeze2_unrelated_datasets.html">RNAseq Freeze2 unrelated</a>
+    </li>
+    <li>
+      <a href="create_RNAseq_Freeze2_GoNL_dataset.html">RNAseq Freeze2 GoNL</a>
+    </li>
+    <li>
+      <a href="create_GRCh38_RNAseq_Freeze2_unrelated_datasets.html">GRCh38 RNAseq Freeze2 unrelated</a>
+    </li>
+    <li>
+      <a href="create_GRCh38_RNAseq_Freeze2_GoNL_dataset.html">GRCh38 RNAseq Freeze2 GoNL</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Developers (legacy)
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li class="dropdown-header">Quality Control</li>
+    <li>
+      <a href="DNAm_qc.html">DNAm</a>
+    </li>
+    <li class="dropdown-header">RNAseq</li>
+    <li class="dropdown-header">Creating Data Sets</li>
+    <li>
+      <a href="create_RNA_datasets.html">RNAseq</a>
+    </li>
+    <li>
+      <a href="create_DNAm_datasets.html">DNAm</a>
+    </li>
+    <li>
+      <a href="linkingRP4_RP3.html">Linking RP4 with RP3</a>
+    </li>
+    <li>
+      <a href="freeze2.html">Determining freeze 2</a>
+    </li>
+    <li class="dropdown-header">Miscellaneous</li>
+    <li>
+      <a href="metadatabase_legacy.html">Accessing the metadatabase</a>
+    </li>
+    <li class="dropdown-header">Phenotyping</li>
+    <li>
+      <a href="phenotyping_rnaseq.html">Using RNAseq</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Working with HRC imputed genotypes</h1>
+
+</div>
+
+
+<div id="find-the-vcf-files" class="section level2">
+<h2>Find the vcf-files</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">library</span>(BBMRIomics)</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw">dir</span>(VM_BASE_DATA)</a></code></pre></div>
+<pre><code>##  [1] &quot;Genotypes&quot;                    &quot;gEUVADIS&quot;                    
+##  [3] &quot;gonl-snps-indels-release-5&quot;   &quot;gonl-snv-release-5.4&quot;        
+##  [5] &quot;GWAS_ImputationGoNLv5&quot;        &quot;HRC_Imputation&quot;              
+##  [7] &quot;HRCv1.1_Imputation&quot;           &quot;IlluminaHumanMethylation450k&quot;
+##  [9] &quot;Phenotypes&quot;                   &quot;README&quot;                      
+## [11] &quot;reference&quot;                    &quot;RNASeq&quot;                      
+## [13] &quot;rp3_rp4_meta&quot;                 &quot;RP4&quot;</code></pre>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw">dir</span>(VM_BASE_DATA, <span class="st">&quot;HRC_Imputation&quot;</span>)</a></code></pre></div>
+<pre><code>## [1] &quot;HRC_Imputation&quot;</code></pre>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">vcfs &lt;-<span class="st"> </span><span class="kw">dir</span>(<span class="kw">file.path</span>(VM_BASE_DATA, <span class="st">&quot;HRC_Imputation&quot;</span>,</a>
+<a class="sourceLine" id="cb5-2" data-line-number="2">                      <span class="st">&quot;CODAM&quot;</span>), <span class="dt">pattern =</span> <span class="st">&quot;filtered.dose.vcf.gz$&quot;</span>, <span class="dt">full.names =</span> <span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb5-3" data-line-number="3">            <span class="dt">recursive =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb5-4" data-line-number="4">vcfs</a></code></pre></div>
+<pre><code>##  [1] &quot;/home/dcats/researchdrive/RSC_BIOS/RP3_data//HRC_Imputation/CODAM/results/unzipped/chr1.filtered.dose.vcf.gz&quot; 
+##  [2] &quot;/home/dcats/researchdrive/RSC_BIOS/RP3_data//HRC_Imputation/CODAM/results/unzipped/chr10.filtered.dose.vcf.gz&quot;
+##  [3] &quot;/home/dcats/researchdrive/RSC_BIOS/RP3_data//HRC_Imputation/CODAM/results/unzipped/chr11.filtered.dose.vcf.gz&quot;
+##  [4] &quot;/home/dcats/researchdrive/RSC_BIOS/RP3_data//HRC_Imputation/CODAM/results/unzipped/chr12.filtered.dose.vcf.gz&quot;
+##  [5] &quot;/home/dcats/researchdrive/RSC_BIOS/RP3_data//HRC_Imputation/CODAM/results/unzipped/chr13.filtered.dose.vcf.gz&quot;
+##  [6] &quot;/home/dcats/researchdrive/RSC_BIOS/RP3_data//HRC_Imputation/CODAM/results/unzipped/chr14.filtered.dose.vcf.gz&quot;
+##  [7] &quot;/home/dcats/researchdrive/RSC_BIOS/RP3_data//HRC_Imputation/CODAM/results/unzipped/chr15.filtered.dose.vcf.gz&quot;
+##  [8] &quot;/home/dcats/researchdrive/RSC_BIOS/RP3_data//HRC_Imputation/CODAM/results/unzipped/chr16.filtered.dose.vcf.gz&quot;
+##  [9] &quot;/home/dcats/researchdrive/RSC_BIOS/RP3_data//HRC_Imputation/CODAM/results/unzipped/chr17.filtered.dose.vcf.gz&quot;
+## [10] &quot;/home/dcats/researchdrive/RSC_BIOS/RP3_data//HRC_Imputation/CODAM/results/unzipped/chr18.filtered.dose.vcf.gz&quot;
+## [11] &quot;/home/dcats/researchdrive/RSC_BIOS/RP3_data//HRC_Imputation/CODAM/results/unzipped/chr19.filtered.dose.vcf.gz&quot;
+## [12] &quot;/home/dcats/researchdrive/RSC_BIOS/RP3_data//HRC_Imputation/CODAM/results/unzipped/chr2.filtered.dose.vcf.gz&quot; 
+## [13] &quot;/home/dcats/researchdrive/RSC_BIOS/RP3_data//HRC_Imputation/CODAM/results/unzipped/chr20.filtered.dose.vcf.gz&quot;
+## [14] &quot;/home/dcats/researchdrive/RSC_BIOS/RP3_data//HRC_Imputation/CODAM/results/unzipped/chr21.filtered.dose.vcf.gz&quot;
+## [15] &quot;/home/dcats/researchdrive/RSC_BIOS/RP3_data//HRC_Imputation/CODAM/results/unzipped/chr22.filtered.dose.vcf.gz&quot;
+## [16] &quot;/home/dcats/researchdrive/RSC_BIOS/RP3_data//HRC_Imputation/CODAM/results/unzipped/chr3.filtered.dose.vcf.gz&quot; 
+## [17] &quot;/home/dcats/researchdrive/RSC_BIOS/RP3_data//HRC_Imputation/CODAM/results/unzipped/chr4.filtered.dose.vcf.gz&quot; 
+## [18] &quot;/home/dcats/researchdrive/RSC_BIOS/RP3_data//HRC_Imputation/CODAM/results/unzipped/chr5.filtered.dose.vcf.gz&quot; 
+## [19] &quot;/home/dcats/researchdrive/RSC_BIOS/RP3_data//HRC_Imputation/CODAM/results/unzipped/chr6.filtered.dose.vcf.gz&quot; 
+## [20] &quot;/home/dcats/researchdrive/RSC_BIOS/RP3_data//HRC_Imputation/CODAM/results/unzipped/chr7.filtered.dose.vcf.gz&quot; 
+## [21] &quot;/home/dcats/researchdrive/RSC_BIOS/RP3_data//HRC_Imputation/CODAM/results/unzipped/chr8.filtered.dose.vcf.gz&quot; 
+## [22] &quot;/home/dcats/researchdrive/RSC_BIOS/RP3_data//HRC_Imputation/CODAM/results/unzipped/chr9.filtered.dose.vcf.gz&quot;</code></pre>
+</div>
+<div id="inspect-eqtl-single-snp-using-variantannotation" class="section level2">
+<h2>Inspect eQTL single SNP using <code>VariantAnnotation</code></h2>
+<p>Example eQTL from Zhernakova et al. <span class="citation">(Zhernakova et al. 2017)</span> (see Figure 2: Identification of the strongest modifiers of eQTL effects).</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw">library</span>(SNPlocs.Hsapiens.dbSNP142.GRCh37)</a>
+<a class="sourceLine" id="cb7-2" data-line-number="2">gr &lt;-<span class="st"> </span><span class="kw">rsidsToGRanges</span>(<span class="st">&quot;rs1981760&quot;</span>)</a></code></pre></div>
+<pre><code>## Warning: snpid2grange() is deprecated. Please use snpsById() instead.</code></pre>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="kw">seqlevels</span>(gr) &lt;-<span class="st"> </span><span class="kw">gsub</span>(<span class="st">&quot;ch&quot;</span>, <span class="st">&quot;&quot;</span>, <span class="kw">seqlevels</span>(gr))</a>
+<a class="sourceLine" id="cb9-2" data-line-number="2"><span class="kw">genome</span>(gr) &lt;-<span class="st"> &quot;hg19&quot;</span></a>
+<a class="sourceLine" id="cb9-3" data-line-number="3">from &lt;-<span class="st"> </span>vcfs[<span class="kw">grepl</span>(<span class="st">&quot;chr16&quot;</span>, vcfs)]</a>
+<a class="sourceLine" id="cb9-4" data-line-number="4">to &lt;-<span class="st"> </span><span class="kw">tempfile</span>()</a>
+<a class="sourceLine" id="cb9-5" data-line-number="5"><span class="kw">library</span>(VariantAnnotation)</a></code></pre></div>
+<pre><code>## 
+## Attaching package: &#39;VariantAnnotation&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:base&#39;:
+## 
+##     tabulate</code></pre>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1">zipped &lt;-<span class="st"> </span><span class="kw">bgzip</span>(from, to)</a>
+<a class="sourceLine" id="cb12-2" data-line-number="2">fl &lt;-<span class="st"> </span><span class="kw">indexTabix</span>(zipped, <span class="dt">format=</span><span class="st">&quot;vcf&quot;</span>)</a>
+<a class="sourceLine" id="cb12-3" data-line-number="3">vcf &lt;-<span class="st"> </span><span class="kw">readVcf</span>(fl, <span class="dt">genome=</span><span class="st">&quot;hg19&quot;</span>, <span class="dt">param=</span>gr)</a>
+<a class="sourceLine" id="cb12-4" data-line-number="4">rs1981760 &lt;-<span class="st"> </span><span class="kw">geno</span>(vcf)<span class="op">$</span>GT[<span class="dv">1</span>,]</a></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1"><span class="kw">bbmri.data</span>(rnaSeqData_ReadCounts_CODAM_Freeze2_unrelated)</a>
+<a class="sourceLine" id="cb13-2" data-line-number="2">hrc &lt;-<span class="st"> </span><span class="kw">intersect</span>(<span class="kw">names</span>(rs1981760), counts<span class="op">$</span>imputation_id_hrc)</a>
+<a class="sourceLine" id="cb13-3" data-line-number="3">counts &lt;-<span class="st"> </span>counts[,counts<span class="op">$</span>imputation_id_hrc <span class="op">%in%</span><span class="st"> </span>hrc]</a>
+<a class="sourceLine" id="cb13-4" data-line-number="4">mid &lt;-<span class="st"> </span><span class="kw">match</span>(counts<span class="op">$</span>imputation_id_hrc, <span class="kw">names</span>(rs1981760))</a>
+<a class="sourceLine" id="cb13-5" data-line-number="5">rs1981760 &lt;-<span class="st"> </span>rs1981760[mid]</a>
+<a class="sourceLine" id="cb13-6" data-line-number="6">cnts &lt;-<span class="st"> </span><span class="kw">assays</span>(counts)<span class="op">$</span>data</a>
+<a class="sourceLine" id="cb13-7" data-line-number="7"><span class="kw">dim</span>(cnts)</a></code></pre></div>
+<pre><code>## [1] 56515   184</code></pre>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1">NOD2 &lt;-<span class="st"> </span>cnts[<span class="kw">rownames</span>(cnts) <span class="op">==</span><span class="st"> &quot;ENSG00000167207&quot;</span>, ]</a>
+<a class="sourceLine" id="cb15-2" data-line-number="2"><span class="kw">boxplot</span>(NOD2<span class="op">~</span>rs1981760)</a></code></pre></div>
+<p><img src="HRC_files/figure-html/linkhrcrna-1.png" width="672" /></p>
+</div>
+<div id="inspect-multiple-snps-using-getgenotypes" class="section level2">
+<h2>Inspect Multiple SNPs using <code>getGenotypes</code></h2>
+<blockquote>
+<p>Replace this with the <code>MatrixeQTL</code> example from Rick/Joost?</p>
+</blockquote>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1"><span class="kw">library</span>(SNPlocs.Hsapiens.dbSNP142.GRCh37)</a>
+<a class="sourceLine" id="cb16-2" data-line-number="2">gr &lt;-<span class="st"> </span><span class="kw">rsidsToGRanges</span>(<span class="kw">c</span>(<span class="st">&quot;rs9302752&quot;</span>, <span class="st">&quot;rs1981760&quot;</span>))</a></code></pre></div>
+<pre><code>## Warning: snpid2grange() is deprecated. Please use snpsById() instead.</code></pre>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1"><span class="kw">bbmri.data</span>(rnaSeqData_ReadCounts_BIOS_Freeze2_unrelated)</a>
+<a class="sourceLine" id="cb18-2" data-line-number="2">counts &lt;-<span class="st"> </span>counts[,<span class="op">!</span><span class="kw">is.na</span>(counts<span class="op">$</span>imputation_id_hrc)] <span class="co">##not all samples have genotype data</span></a>
+<a class="sourceLine" id="cb18-3" data-line-number="3"><span class="kw">library</span>(BiocParallel)</a>
+<a class="sourceLine" id="cb18-4" data-line-number="4"><span class="kw">register</span>(<span class="kw">MulticoreParam</span>(<span class="dv">2</span>, <span class="dt">log=</span><span class="ot">TRUE</span>))</a>
+<a class="sourceLine" id="cb18-5" data-line-number="5">dosages &lt;-<span class="st"> </span><span class="kw">getGenotypes</span>(<span class="dt">imputation_id =</span> counts<span class="op">$</span>imputation_id_hrc, <span class="dt">biobank=</span><span class="st">&quot;ALL&quot;</span>, <span class="dt">snps=</span>gr, <span class="dt">type=</span><span class="st">&quot;HRC&quot;</span>, <span class="dt">geno=</span><span class="st">&quot;DS&quot;</span>, <span class="dt">BASE=</span>VM_BASE_DATA)</a>
+<a class="sourceLine" id="cb18-6" data-line-number="6">dosages[<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]</a></code></pre></div>
+<pre><code>##             1_LLDeep_1260 1_LLDeep_1022 1_LLDeep_1270 1_LLDeep_0106
+## 16:50719103             2             2             2             1
+## 16:50723074             2             2             2             1
+##             1_LLDeep_0157
+## 16:50719103             2
+## 16:50723074             2</code></pre>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1"><span class="kw">dim</span>(counts)</a></code></pre></div>
+<pre><code>## [1] 56515  3357</code></pre>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" data-line-number="1"><span class="kw">dim</span>(dosages)</a></code></pre></div>
+<pre><code>## [1]    2 3357</code></pre>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" data-line-number="1"><span class="kw">head</span>(counts<span class="op">$</span>imputation_id_hrc)</a></code></pre></div>
+<pre><code>## [1] &quot;1_LLDeep_1260&quot; &quot;1_LLDeep_1022&quot; &quot;1_LLDeep_1270&quot; &quot;1_LLDeep_0106&quot;
+## [5] &quot;1_LLDeep_0157&quot; &quot;1_LLDeep_1040&quot;</code></pre>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" data-line-number="1"><span class="kw">head</span>(<span class="kw">colnames</span>(dosages))</a></code></pre></div>
+<pre><code>## [1] &quot;1_LLDeep_1260&quot; &quot;1_LLDeep_1022&quot; &quot;1_LLDeep_1270&quot; &quot;1_LLDeep_0106&quot;
+## [5] &quot;1_LLDeep_0157&quot; &quot;1_LLDeep_1040&quot;</code></pre>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb28-1" data-line-number="1"><span class="kw">library</span>(edgeR)</a>
+<a class="sourceLine" id="cb28-2" data-line-number="2">y &lt;-<span class="st"> </span><span class="kw">DGEList</span>(<span class="kw">assays</span>(counts)<span class="op">$</span>data, <span class="dt">remove.zeros=</span><span class="ot">TRUE</span>)</a></code></pre></div>
+<pre><code>## Removing 2967 rows with all zero counts</code></pre>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" data-line-number="1">y &lt;-<span class="st"> </span><span class="kw">calcNormFactors</span>(y) <span class="co">##use edgeR&#39;s TMM normalization</span></a>
+<a class="sourceLine" id="cb30-2" data-line-number="2">y &lt;-<span class="st"> </span><span class="kw">cpm</span>(y, <span class="dt">log=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb30-3" data-line-number="3"><span class="kw">library</span>(limma)</a>
+<a class="sourceLine" id="cb30-4" data-line-number="4">fit &lt;-<span class="st"> </span><span class="kw">lmFit</span>(y, dosages[<span class="dv">1</span>,]) <span class="co">##run for 1 SNP</span></a>
+<a class="sourceLine" id="cb30-5" data-line-number="5">tstat &lt;-<span class="st"> </span>fit<span class="op">$</span>coef<span class="op">/</span>fit<span class="op">$</span>stdev.unscaled<span class="op">/</span>fit<span class="op">$</span>sigma</a>
+<a class="sourceLine" id="cb30-6" data-line-number="6">pval &lt;-<span class="st"> </span><span class="dv">2</span> <span class="op">*</span><span class="st"> </span><span class="kw">pnorm</span>(<span class="op">-</span><span class="kw">abs</span>(tstat[,<span class="dv">1</span>]))</a>
+<a class="sourceLine" id="cb30-7" data-line-number="7"><span class="kw">head</span>(<span class="kw">sort</span>(pval, <span class="dt">decreasing=</span><span class="ot">FALSE</span>))</a></code></pre></div>
+<pre><code>## ENSG00000000003 ENSG00000000005 ENSG00000000419 ENSG00000000457 ENSG00000000460 
+##               0               0               0               0               0 
+## ENSG00000000938 
+##               0</code></pre>
+</div>
+<div id="more-information" class="section level2">
+<h2>More information</h2>
+<p>see <a href="http://bioconductor.org/packages/VariantAnnotation/">VariantAnnotation</a>.</p>
+<p>For example, extracting SNPs overlapping transcripts:</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb32-1" data-line-number="1"><span class="kw">library</span>(TxDb.Hsapiens.Ensembl.v71)</a>
+<a class="sourceLine" id="cb32-2" data-line-number="2">txdb &lt;-<span class="st"> </span>TxDb.Hsapiens.Ensembl.v71</a>
+<a class="sourceLine" id="cb32-3" data-line-number="3">vcf &lt;-<span class="st"> </span><span class="kw">readVcf</span>(vcfs[<span class="dv">15</span>], <span class="dt">genome=</span><span class="st">&quot;hg19&quot;</span>)</a>
+<a class="sourceLine" id="cb32-4" data-line-number="4">rd &lt;-<span class="st"> </span><span class="kw">rowRanges</span>(vcf)</a>
+<a class="sourceLine" id="cb32-5" data-line-number="5">loc &lt;-<span class="st"> </span><span class="kw">locateVariants</span>(rd, txdb, <span class="kw">CodingVariants</span>())</a>
+<a class="sourceLine" id="cb32-6" data-line-number="6"><span class="kw">head</span>(loc, <span class="dv">6</span>)</a></code></pre></div>
+</div>
+<div id="references" class="section level2 unnumbered">
+<h2>References</h2>
+<div id="refs" class="references">
+<div id="ref-Zhernakova2017">
+<p>Zhernakova, D. V., P. Deelen, M. Vermaat, M. van Iterson, M. van Galen, W. Arindrarto, P. van ’t Hof, et al. 2017. “Identification of context-dependent expression quantitative trait loci in whole blood.” <em>Nat. Genet.</em> 49 (1): 139–45.</p>
+</div>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
