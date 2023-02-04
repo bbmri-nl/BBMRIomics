@@ -27,7 +27,7 @@ See also the [TODO-list](TODO.md).
   through a number of functions, such as the `getSQLview`-function.
 
 # For users
-Here is a step-by-step manual to start working on BBMRIomics datasets which is provisioned at [SURF's Research Cloud](https://www.surf.nl/en/surf-research-cloud-collaboration-portal-for-research). A Code of Conduct (CoC) document needs to be signed first and you can contact [https://psychiatryamsterdam.nl/researcher/jansen-rick/ Rick Jansen] for this. If you have any question, please contact Leon Mei at LUMC.
+Here is a step-by-step manual to start working on BBMRIomics datasets which is provisioned at [SURF's Research Cloud](https://www.surf.nl/en/surf-research-cloud-collaboration-portal-for-research). A Code of Conduct (CoC) document needs to be signed first and you can contact [Rick Jansen](https://psychiatryamsterdam.nl/researcher/jansen-rick) for this. If you have any question, please contact Leon Mei at LUMC.
 
 A video instruction to show how to access and use SURF's Research Cloud from [a researcher's perspective](https://www.youtube.com/watch?v=_rdK3W1AWvA)
 
@@ -48,9 +48,9 @@ You can log into all web portals described below with your own institutional acc
 * Optionally if you will need to access the workspace's Linux terminal, you can set up your [SSH key in your user profile section](https://servicedesk.surf.nl/wiki/display/WIKI/Log+in+to+your+workspace#Logintoyourworkspace-AccessaworkspacewithSSH).
 
 ## Step 3: Configuration of Research Drive (RD)
-* You will get an invitation email to join Research Drive. After that, log into https://researchdrive.surfsara.nl using your institutional credential. Choose "Login via SURFconnext". You may get an error message saying "Oops! Your SURF Research Drive account with email address <xxxx> and account <yyyyyy>-lumcnet@lumc.nl could not be found. It seems that you do not have permission to use SURF Research Drive. Please contact the IT department of your institution or data steward of your project to request access to SURF Research Drive.". In this case, please forward this message to Leon Mei to so that he can properly share the datasets.
+* You will get an invitation email to join Research Drive. After that, log into https://researchdrive.surfsara.nl using your institutional credential. Choose "Login via SURFconnext". You may get an error message saying "Oops! Your SURF Research Drive account with email address `<xxxx>` and account `<yyyyyy>-lumcnet@lumc.nl` could not be found. It seems that you do not have permission to use SURF Research Drive. Please contact the IT department of your institution or data steward of your project to request access to SURF Research Drive.". In this case, please forward this message to Leon Mei to so that he can properly share the datasets.
 * You should see a shared folder called "RSC_BIOS". There are two sub-directories "RP3_data" and "RP3_analysis" that contains the prepared BBMRIomics data for downstream analysis. They are read-only and you need to store the analysis results in your own personal space on RD. 
-* '''Please be aware that there is no backup support of your data stored at Research Drive, so make sure you arrange proper backup of your scripts and data yourself.'''
+* **Please be aware that there is no backup support of your data stored at Research Drive, so make sure you arrange proper backup of your scripts and data yourself.**
 
 ## Step 4: Installation and configuration of authenticator on your mobile phone
 * Research Cloud is using a so called [Time-based One-time Password authentication (TOTP) for authentication](https://servicedesk.surf.nl/wiki/display/WIKI/Log+in+to+your+workspace#Logintoyourworkspace-WorkspaceAccesswithTOTP). 
@@ -68,8 +68,8 @@ You can log into all web portals described below with your own institutional acc
 
 ## Step 6: Launch or access a BBMRIomics workspace
 * In the main dashboard of Research Cloud, click "Create new workspace" and follow the instructions to configure and start a new workspace.
-  * '''About the expiration date, please try to keep a reasonable timeline. If the workspace is running without doing any jobs, it is a waste of our project resource!!!'''
-  * '''When you are not using a workspace, you can also pause the workspace so that it won't consume resources.''' 
+  * **About the expiration date, please try to keep a reasonable timeline. If the workspace is running without doing any jobs, it is a waste of the Cloud resource**
+  * **When you are not using a workspace, you can also pause the workspace so that it won't consume resources.** 
 
 More information can be found at https://servicedesk.surf.nl/wiki/display/WIKI/Start+a+simple+workspace and https://servicedesk.surf.nl/wiki/display/WIKI/Workspaces
 
@@ -89,7 +89,7 @@ head(person)
 * More user documents about the BBMRIomics package can be found at https://bbmri-nl.github.io/BBMRIomics/usage.html
 
 ## (optional) Step 8: ssh access
-For more advanced users who would like to access the terminal of a workspace. You can "ssh <user_name>@<IP>" to the workspace where <user_name> is the same as defined in your authenticator app and the <IP> address is shown in the "Workspace Details". You can "sudo su" to become a sudoer on the workspace in order to install necessary programs. 
+For more advanced users who would like to access the terminal of a workspace. You can `ssh <user_name>@<IP>` to the workspace where <user_name> is the same as defined in your authenticator app and the <IP> address is shown in the "Workspace Details". You can "sudo su" to become a sudoer on the workspace in order to install necessary programs. 
 
 # For developers 
 
