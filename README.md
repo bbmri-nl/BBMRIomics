@@ -1,13 +1,9 @@
 # BBMRIomics
 
-last editted by: Davy Cats
-
-date: 2 October 2018
-
 BBMRIomics is an R package that facilitates BBMRI-omics downstream
-analysis that is availabe at the 
+analysis that is availabe at the [BBMRIomics workspace](TBA) and previously the so-called
 [BBMRI BIOS virtual machine](http://www.bbmriwiki.nl/wiki/BIOS_VirtualMachine)
-running at surfSARA HPC Cloud.
+running at SURF Research Cloud.
 
 For an introduction and examples, visit
 [BBMRIomics](http://bios-vm.bbmrirp3-lumc.surf-hosted.nl/BBMRIomics/).
@@ -30,40 +26,70 @@ See also the [TODO-list](TODO.md).
 * Interaction with BBMRIomics underlying metadatabase is provided
   through a number of functions, such as the `getSQLview`-function.
 
-## User requirements
+# For users
+Here is a step-by-step manual to start working on BBMRIomics datasets which is provisioned at [SURF's Research Cloud](https://www.surf.nl/en/surf-research-cloud-collaboration-portal-for-research). A Code of Conduct (CoC) document needs to be signed first and you can contact [https://psychiatryamsterdam.nl/researcher/jansen-rick/ Rick Jansen] for this. If you have any question, please contact Leon Mei at LUMC.
 
-Currently, access to the metadatabase requires additional accounts 
-(please check [BBMRI-BIOS wiki](http://www.bbmriwiki.nl/wiki/BIOS_VirtualMachine#BIOSVMAccess)
-for instructions). To avoid repeately typing of usernames and passwords 
-BBMRIomics uses a configuration file (`~/.bbmriomics`) which should be placed 
-in your home-directory on the VM and containing the account of the 
-metadatabase (`usrpwdrp3`) and optionally the location of your grid_proxy if 
-you want to use the `SRM2VM` file-download function from within R. Finally, 
-the configuration file (`~/.bbmriomics`) should look like this:
+A video instruction to show how to access and use SURF's Research Cloud from [a researcher's perspective](https://www.youtube.com/watch?v=_rdK3W1AWvA)
 
-```{bash}
-usrpwdrp3: '<usrname:password>'
-proxy: /tmp/<grid_proxy>
-```
+## Use of SURF research access management (SRAM)
+You can log into all web portals described below with your own institutional account thanks to the support of SRAM except for the access to the actual workspace where you will be using a Time based password. 
 
-When loading the **BBMRIomics**- package in R
+## Step 1: Request personal budget
+* First, please log into https://servicedesk.surf.nl/ and fill in the form of "Small NWO request (EINF)". 
+* If you are a PhD student, the "Signing Authority" should be your supervisor's contact details.
+* "Resources" should be "Research Cloud - HPC Cloud"
+* Please mention BBMRIomics resource will be used in the "Description" field
+* You can also request up to 160 hours for "Research Cloud - HPC Cloud: how many consultancy hours (default 8 hours)" if you think you will need additional SURF support on running the Research Cloud services 
+* CPU and GPU core hours can be filled in based on your specific needs. Normally we only need CPU and you could put the maximum number of hours of "50000" in this application. 
 
-```r
+## Step 2: Configuration of SRAM BBMRIomics CO
+* After you have signed CoC, you will get an invitation to this CO, log into https://sram.surf.nl/ using your institutional credential (using "Login via SURFconnext") to verify you are a member of SRC-BBMRI CO.
+* Alternatively, user can request access to "BBMRIomics CO" through this [link](https://sram.surf.nl/registration?collaboration=8051068c-59be-4580-b67b-210cfd02dd89)
+* Optionally if you will need to access the workspace's Linux terminal, you can set up your [SSH key in your user profile section](https://servicedesk.surf.nl/wiki/display/WIKI/Log+in+to+your+workspace#Logintoyourworkspace-AccessaworkspacewithSSH).
+
+## Step 3: Configuration of Research Drive (RD)
+* You will get an invitation email to join Research Drive. After that, log into https://researchdrive.surfsara.nl using your institutional credential. Choose "Login via SURFconnext". You may get an error message saying "Oops! Your SURF Research Drive account with email address <xxxx> and account <yyyyyy>-lumcnet@lumc.nl could not be found. It seems that you do not have permission to use SURF Research Drive. Please contact the IT department of your institution or data steward of your project to request access to SURF Research Drive.". In this case, please forward this message to Leon Mei to so that he can properly share the datasets.
+* You should see a shared folder called "RSC_BIOS". There are two sub-directories "RP3_data" and "RP3_analysis" that contains the prepared BBMRIomics data for downstream analysis. They are read-only and you need to store the analysis results in your own personal space on RD. 
+* '''Please be aware that there is no backup support of your data stored at Research Drive, so make sure you arrange proper backup of your scripts and data yourself.'''
+
+## Step 4: Installation and configuration of authenticator on your mobile phone
+* Research Cloud is using a so called [Time-based One-time Password authentication (TOTP) for authentication](https://servicedesk.surf.nl/wiki/display/WIKI/Log+in+to+your+workspace#Logintoyourworkspace-WorkspaceAccesswithTOTP). 
+* You need to install an authenticator app on your mobile phone, e.g., from [Google appstore](https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2) or [Apple appstore](https://apps.apple.com/us/app/google-authenticator/id388497605).
+* In this authenticator app, you will see a username and a numeric password (that is changing every minute). This username and password are used to log into the R-studio environment. 
+
+## Step 5: Configuration of your account at Research Cloud
+* Log into https://portal.live.surfresearchcloud.nl/ using your institutional credential
+* If you don't have budget, you can click "Request" button in "Request a new wallet" to apply for more resources using your own Personal EINF Budget.
+* Go to "Profile" tab using the navigation bar at the top of the page.
+  * Set up time based password in the "Profile" section by clicking the "more option" button. [more details](https://servicedesk.surf.nl/wiki/display/WIKI/Log+in+to+your+workspace#Logintoyourworkspace-WorkspaceAccesswithTOTP).
+  * Link Researchdrive in the "Collaborative organisations" section by by clicking "more option" button. [more details](https://servicedesk.surf.nl/wiki/display/WIKI/Connect+Research+Drive)  
+* Once your request to budget/new wallet gets approved, you can request your user specific persistent storage and fixed IP address. This persistent storage and IP resource can be used when you create a new workspace.
+* Additional documentations about Research Cloud: https://servicedesk.surf.nl/wiki/display/WIKI/Research+Cloud+Documentation
+
+## Step 6: Launch or access a BBMRIomics workspace
+* In the main dashboard of Research Cloud, click "Create new workspace" and follow the instructions to configure and start a new workspace.
+  * '''About the expiration date, please try to keep a reasonable timeline. If the workspace is running without doing any jobs, it is a waste of our project resource!!!'''
+  * '''When you are not using a workspace, you can also pause the workspace so that it won't consume resources.''' 
+
+More information can be found at https://servicedesk.surf.nl/wiki/display/WIKI/Start+a+simple+workspace and https://servicedesk.surf.nl/wiki/display/WIKI/Workspaces
+
+* As a member of the same CO, you can also access a running workspace created by another member in the same CO provided the owner agrees.
+* After you log into the Rstudio UI, you can run the following commands to verify if you have proper access to the BBMRIomics data.
+```{r}
 library(BBMRIomics)
+data(package="BBMRIomics")
+bbmri.data("rp3_rp4_meta")
+head(person)
 ```
 
-the configuration file will be loaded and your account settings will be
-stored for easy use in the current R session. For example, running a query on 
-metadatabase using the stored `RP3_MDB_USRPWD` read from the configuration
-file, is done like this:
+## Step 7: Manage personal (R) packages
+* Some basic R packages are available in the workspace. For other common packages, you could request their installation via Leon Mei or Davy Cats.
+* You can also install your own libraries in the running workspace in the persistent storage.
+* All data/scripts stored in your researchdrive folder are persistent (although no backup support).
+* More user documents about the BBMRIomics package can be found at https://bbmri-nl.github.io/BBMRIomics/usage.html
 
-```r
-runQuery("SELECT * FROM person", usrpwd=RP3_MDB_USRPWD, url=SQL_DB)
-```
-
-> NOTE: urls and data-directories are stored in the package
-> subdirectory `inst/configure`. If urls or data directories change in
-> the future this file should be modified.
+## (optional) Step 8: ssh access
+For more advanced users who would like to access the terminal of a workspace. You can "ssh <user_name>@<IP>" to the workspace where <user_name> is the same as defined in your authenticator app and the <IP> address is shown in the "Workspace Details". You can "sudo su" to become a sudoer on the workspace in order to install necessary programs. 
 
 # For developers 
 
@@ -193,11 +219,6 @@ vignettes to construct the datasets available via the
 compared to the example and use-case vignettes, to ensure they are
 only build once or specifically if the code-chunk option `eval` is set
 to `TRUE` by a developer.
-
-## Interaction with the metadatabase ##
-
-[see](http://bios-vm.bbmrirp3-lumc.surf-hosted.nl/BBMRIomics/metadatabase.html)
-
 
 
 
