@@ -39,7 +39,7 @@ You can log into all web portals described below with your own institutional acc
 * If you are a PhD student, the "Signing Authority" should be your supervisor's contact details.
 * "Resources" should be "Research Cloud - HPC Cloud"
 * Please mention BBMRIomics resource will be used in the "Description" field
-* You can also request up to 160 hours for "Research Cloud - HPC Cloud: how many consultancy hours (default 8 hours)" if you think you will need additional SURF support on running the Research Cloud services 
+* You can also request up to 160 consultancy hours for "Research Cloud - HPC Cloud: how many consultancy hours (default 8 hours)" if you think you will need additional SURF support on running the Research Cloud services 
 * CPU and GPU core hours can be filled in based on your specific needs. Normally we only need CPU and you could put the maximum number of hours of "50000" in this application. 
 
 ## Step 2: Configuration of SRAM BBMRIomics CO
