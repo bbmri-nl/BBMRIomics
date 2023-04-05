@@ -1,14 +1,12 @@
 # BBMRIomics
 
 BBMRIomics is an R package that facilitates BBMRI-omics downstream
-analysis that is availabe at the [BBMRIomics workspace](TBA) and previously the so-called
+analysis that is availabe at the [BBMRIomics workspace] and previously the so-called
 [BBMRI BIOS virtual machine](http://www.bbmriwiki.nl/wiki/BIOS_VirtualMachine)
-running at SURF Research Cloud.
+running at SURF Research Cloud. The detailed on-boarding procedure for users are explained below.
 
-For an introduction and examples, visit
-[BBMRIomics](http://bios-vm.bbmrirp3-lumc.surf-hosted.nl/BBMRIomics/).
-
-See also the [TODO-list](TODO.md).
+For an introduction and examples of this R package, visit
+[BBMRIomics](https://bbmri-nl.github.io/BBMRIomics/).
 
 ## Features
 
