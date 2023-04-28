@@ -57,7 +57,7 @@ You can log into all web portals described below with your own institutional acc
 
 ## Step 5: Configuration of your account at Research Cloud
 * Log into https://portal.live.surfresearchcloud.nl/ using your institutional credential
-* If you don't have budget, you can click "Request" button in "Request a new wallet" to apply for more resources using your own Personal EINF Budget.
+* For the first time, you need to click "Request" button in "Request a new wallet" to apply for resources using your own Personal EINF Budget.
 * Go to "Profile" tab using the navigation bar at the top of the page.
   * Set up time based password in the "Profile" section by clicking the "more option" button. [more details](https://servicedesk.surf.nl/wiki/display/WIKI/Log+in+to+your+workspace#Logintoyourworkspace-WorkspaceAccesswithTOTP).
   * Link Researchdrive in the "Collaborative organisations" section by by clicking "more option" button. [more details](https://servicedesk.surf.nl/wiki/display/WIKI/Connect+Research+Drive)  
